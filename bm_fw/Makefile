@@ -1,0 +1,59 @@
+# Makefile for standalone applications on ZYNQ7000
+#
+
+# select non-linux compiler
+CROSS = arm-xilinx-eabi-
+CC = $(CROSS)gcc
+
+# include path for libgcc headers (through symlic on system to compiler install path)
+# and inc path for board support package (bsp)
+# furthermore, include xilinx IPLIB
+INC = -Ibsp/include -Iiplib/include
+
+# compiler config
+CFLAGS = -Wall -g -std=c99 $(INC)
+
+# linker config, add search path for libs
+LDFLAGS = -Wl,-Map=$(BIN).map -Wl,-Liplib/lib -Wl,-Lbsp/lib
+
+# NOTE: the libc has to be linked because libxil provides necessary
+#       functions for bare metal (eg startup code), which can not be resolved by the linker
+#		this works only by grouping all libs, see link command below (--start-group)
+LIBS =  -lxil
+LIBS += -lc
+LIBS += -lgcc
+LIBS += -lscugic
+LIBS += -luartps
+LIBS += -lm
+# Add more xilinx drivers or other libs here
+
+
+# specify linker script
+LSCRIPT = lscript.ld
+
+
+# list all objects to be compiled and linked
+OBJ = main.o remoteproc.o virtio_ring.o config.o config_vars.o
+
+# file name for binary output
+BIN = bm_cfg_mgmt
+
+# where to put the object files
+OBJPATH = obj
+
+# where to find the source files
+VPATH = src src/grbl
+
+C_OBJS = $(addprefix $(OBJPATH)/, $(OBJ))
+
+all: $(C_OBJS)
+	$(CC) -T"$(LSCRIPT)" $(LDFLAGS) -o $(BIN) $(C_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group
+	$(CROSS)objdump -D $(BIN) > $(BIN).lss
+#	copy file to destination where the kernel can load it
+#	cp $(BIN) /srv/rootfs/lib/firmware/firmware
+
+$(OBJPATH)/%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm -f $(OBJPATH)/*.o
