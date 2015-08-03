@@ -90,11 +90,11 @@ struct resource_table __resource resources = {
 	//{ TYPE_MMU, 0, TTC_BASEADDR, 0, 0xc02, "ttc", },
 	{ TYPE_MMU, 1, STDOUT_BASEADDRESS, 0, 0xc02, "uart", },
 	{ TYPE_MMU, 2, XPS_SCU_PERIPH_BASE, 0, 0xc02, "scu", },
-	{ TYPE_MMU, 3, 0x41210000, 0, 0xc02, "leds", },
+	{ TYPE_MMU, 3, 0x41200000, 0, 0xc02, "gpio", },
 };
 
 // allocate memory for the channels
-struct rpmsg_channel channels[MAX_RPMSG_CH];
+struct rpmsg_channel channels[MAX_RPMSG_CH] = {0};
 
 
 uint32_t next_rpmsg_addr = APP_ADDR_START;
@@ -127,7 +127,7 @@ static void rxvring_task();
 /* This has to be called periodically by the main loop to perform data processing */
 void rpmsg_poll()
 {
-    Xil_L1DCacheFlush();
+  //  Xil_L1DCacheFlush();
     txvring_task();
     rxvring_task();
 }
@@ -393,9 +393,10 @@ void rpmsg_send(struct rpmsg_channel* ch, const void* data, int len)
 
 void remoteproc_init()
 {
-    xil_printf("%s: clearing channel struct\n", __func__);
+    xil_printf("%s: clearing channel struct at 0x%08x\n", __func__, (uint32_t)channels);
 
-	memset(channels, 0, sizeof(channels)*MAX_RPMSG_CH);
+	//memset(channels, 0, sizeof(channels)*MAX_RPMSG_CH);
+    *pLed = 1;
 
     xil_printf("%s: resoucre table:\n", __func__);
 
@@ -403,7 +404,6 @@ void remoteproc_init()
     // this is the element defined by the vring protocol
     uint32_t addr = resources.rpmsg_vring0.da;
     xil_printf("tx vring is at 0x%08x\n", addr);
-    *pLed = 1;
     vring_init(&tx_vring, addr, &kick_linux);
     addr = resources.rpmsg_vring1.da;
     xil_printf("rx vring is at 0x%08x\n", addr);

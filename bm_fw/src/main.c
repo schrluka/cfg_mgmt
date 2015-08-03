@@ -176,7 +176,8 @@ void outbyte (char ch)
 
     if (ch == '\n')
         outbyte('\r');
-    while (XUartPs_Send(&UartPs, (void*)&ch, 1) != 1);
+    while (XUartPs_Send(&UartPs, (void*)&ch, 1) != 1)
+        __asm("nop");
 
     // if we have a stdio channel via rpmsg, collect data in lines and send it once buffer
     // is full or when a \n comes
