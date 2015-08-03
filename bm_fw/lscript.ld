@@ -9,17 +9,14 @@
 /* Description : Cortex-A9 Linker Script                          */
 /*                                                                 */
 /*******************************************************************/
-/*                                                                 */
-/* Modified by Lukas Schrittwieser, (c) 2015                       */
+/* modified: Lukas Schrittwieser */
 
-/* increased this from 0x2000 */
-_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x20000;
-
-/* increased this from 0x2000 */
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x20000;
+_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x2000;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x2000;
 
 _ABORT_STACK_SIZE = DEFINED(_ABORT_STACK_SIZE) ? _ABORT_STACK_SIZE : 1024;
 _SUPERVISOR_STACK_SIZE = DEFINED(_SUPERVISOR_STACK_SIZE) ? _SUPERVISOR_STACK_SIZE : 2048;
+_IRQ_STACK_SIZE = DEFINED(_IRQ_STACK_SIZE) ? _IRQ_STACK_SIZE : 1024;
 _FIQ_STACK_SIZE = DEFINED(_FIQ_STACK_SIZE) ? _FIQ_STACK_SIZE : 1024;
 _UNDEF_STACK_SIZE = DEFINED(_UNDEF_STACK_SIZE) ? _UNDEF_STACK_SIZE : 1024;
 
@@ -27,10 +24,9 @@ _UNDEF_STACK_SIZE = DEFINED(_UNDEF_STACK_SIZE) ? _UNDEF_STACK_SIZE : 1024;
 
 MEMORY
 {
-   /* highes 64MBytes of DDR memory (512MB total) are resereved for CPU1) */
-   ps7_ddr_0_S_AXI_BASEADDR : ORIGIN = 0x1c000000, LENGTH = 64M
-   ps7_ram_0_S_AXI_BASEADDR : ORIGIN = 0x00000000, LENGTH = 0x00030000
-   ps7_ram_1_S_AXI_BASEADDR : ORIGIN = 0xFFFF0000, LENGTH = 0x0000FE00
+   ps7_ddr_0_S_AXI_BASEADDR : ORIGIN = 0x20000000, LENGTH = 128M
+/*   ps7_ram_0_S_AXI_BASEADDR : ORIGIN = 0x00000000, LENGTH = 0x00030000
+   ps7_ram_1_S_AXI_BASEADDR : ORIGIN = 0xFFFF0000, LENGTH = 0x0000FE00 */
 }
 
 /* Specify the default entry point to the program */
@@ -41,9 +37,8 @@ ENTRY(_vector_table)
 
 SECTIONS
 {
-/* _mem_start = .; */
 .text : {
-   *(.vectors)
+   KEEP (*(.vectors))
    *(.boot)
    *(.text)
    *(.text.*)
@@ -262,11 +257,13 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(16);
    _stack_end = .;
    . += _STACK_SIZE;
+   . = ALIGN(16);
    _stack = .;
    __stack = _stack;
    . = ALIGN(16);
    _irq_stack_end = .;
-   . += _STACK_SIZE;
+   . += _IRQ_STACK_SIZE;
+   . = ALIGN(16);
    __irq_stack = .;
    _supervisor_stack_end = .;
    . += _SUPERVISOR_STACK_SIZE;
@@ -285,11 +282,13 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(16);
    __undef_stack = .;
 } > ps7_ddr_0_S_AXI_BASEADDR
+
 _end = .;
 
 
-    /* REMOTEPROC specific stuff */
-    /* Trace buffer should be inside carverout */
+/* remoteproc specific stuff */
+/* WARNING: THIS IS CARGO CULT */
+/* Trace buffer should be inside carverout */
    __trace_buffer_start = .;
    . = . + 0x8000; /* It should be TRACE_BUFFER_SIZE */
    __trace_buffer_end = .;
@@ -319,11 +318,6 @@ _end = .;
   /*__ring_rx_addr_used_end = .;
   . = ALIGN(0x2000);*/
 
-
-
-
-
 }
-
 
 __elf_len = 0x4000000;
