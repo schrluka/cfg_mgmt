@@ -3,18 +3,21 @@
 
 # select non-linux compiler
 CROSS = arm-xilinx-eabi-
+#CROSS = arm-xilinx-linux-gnueabihf-
 CC = $(CROSS)gcc
 
 # include path for libgcc headers (through symlic on system to compiler install path)
 # and inc path for board support package (bsp)
 # furthermore, include xilinx IPLIB
-INC = -Ibsp/include -Iiplib/include
+#INC = -Ibsp/include -Iiplib/include
+INC = -Ibsp_xsdk/include
 
 # compiler config
 CFLAGS = -Wall -g -std=c99 $(INC)
 
 # linker config, add search path for libs
-LDFLAGS = -Wl,-Map=$(BIN).map -Wl,-Liplib/lib -Wl,-Lbsp/lib
+#LDFLAGS = -Wl,-Map=$(BIN).map -Wl,-Liplib/lib -Wl,-Lbsp/lib
+LDFLAGS = -Wl,-Map=$(BIN).map -Wl,-Lbsp_xsdk/lib
 
 # NOTE: the libc has to be linked because libxil provides necessary
 #       functions for bare metal (eg startup code), which can not be resolved by the linker
@@ -22,8 +25,8 @@ LDFLAGS = -Wl,-Map=$(BIN).map -Wl,-Liplib/lib -Wl,-Lbsp/lib
 LIBS =  -lxil
 LIBS += -lc
 LIBS += -lgcc
-LIBS += -lscugic
-LIBS += -luartps
+#LIBS += -lscugic	# use these with old bsp / iplib
+#LIBS += -luartps
 LIBS += -lm
 # Add more xilinx drivers or other libs here
 
@@ -33,7 +36,7 @@ LSCRIPT = lscript.ld
 
 
 # list all objects to be compiled and linked
-OBJ = main.o remoteproc.o virtio_ring.o config.o config_vars.o
+OBJ = main.o remoteproc.o virtio_ring.o config.o config_vars.o uart.o
 
 # file name for binary output
 BIN = bm_cfg_mgmt
@@ -57,3 +60,4 @@ $(OBJPATH)/%.o: %.c
 
 clean:
 	rm -f $(OBJPATH)/*.o
+

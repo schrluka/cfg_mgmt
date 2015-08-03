@@ -1,8 +1,9 @@
 # original Makefile from Xilinx SDK (/opt/Xilinx/SDK/2014.4/data/embeddedsw/XilinxProcessorIPLib/drivers
 # modified by Lukas Schrittwieser to make it build (some black magic xilinx build tools are usually required)
-
-COMPILER=arm-xilinx-eabi-gcc
-ARCHIVER=arm-xilinx-eabi-ar
+#CROSS=arm-xilinx-linux-gnueabihf-
+CROSS=arm-xilinx-eabi-
+COMPILER=$(CROSS)gcc
+ARCHIVER=$(CROSS)ar
 CP=cp
 COMPILER_FLAGS=-c -O2 -Wall
 EXTRA_COMPILER_FLAGS=
@@ -41,4 +42,5 @@ xuartps_includes:
 
 clean:
 	rm -rf ${OBJECTS}
+
 

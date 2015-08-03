@@ -41,6 +41,7 @@
 
 #include "remoteproc.h"
 #include "config.h"
+#include "uart.h"
 
 
 
@@ -49,7 +50,7 @@
 */
 
 // pointer to GPIO module with LEDS. CAVE: can't read current value, no HW support for this, thanks xilinx!
-volatile uint32_t* const pLed = (void*)(0x41210000);
+volatile uint32_t* const pLed = (void*)(0x41200000);
 
 // Instance of the interrupt controller driver's data structure, this contains all information required by the driver
 XScuGic IntcInst;
@@ -57,14 +58,6 @@ XScuGic IntcInst;
 // rpmsg channel for STDIO
 struct rpmsg_channel* rpmsg_stdio = NULL;
 
-// stepper controller regs
-uint32_t *base = (void*)0x43C20000;
-volatile uint32_t *cfg;
-volatile uint32_t *step;
-volatile uint32_t *dir;
-volatile uint32_t *prd;
-volatile uint32_t *pulse_len;
-volatile uint32_t *i_ref;
 
 
 
@@ -85,30 +78,43 @@ int main(void)
     int l=0;
     int i=0;
 
-    l++;
-    (*pLed) = l;
+    (*pLed) = 0;
 
-    /*if (UartInit() != XST_SUCCESS)
+    if (UartInit() != XST_SUCCESS)
     {
         while(1);
-    }*/
+    }
 
-    l++;
-    (*pLed) = l;
+    //(*pLed) = 1;
 
-	//xil_printf("SCARABAEUS - Baremetal Firmware\n");
+	xil_printf("CFG_MGMT - Example Firmware\n");
+
+    /* uart test
+    while(1)
+    {
+        i++;
+        if (i == 500000)
+        {
+            i = 0;
+            xil_printf("%d\n",l++);
+        }
+    } */
 
 	irq_init();
+	xil_printf("irq_init() done\n");
 
     remoteproc_init();
+    xil_printf("remoteproc_init done\n");
 
 //    for (i=0; i<1000000; i++)
 //        __asm ("nop");
 
 	// create a channel for printf message, we don't receive from the kernel
-    rpmsg_stdio = rpmsg_create_ch ("scarabaeus-stdio", 0);
+    //rpmsg_stdio = rpmsg_create_ch ("stdio", 0);
+    //xil_printf("stdio chnl created\n");
 
     cfgInit();
+    xil_printf("cfg_init() done\n");
 
     xil_printf("init done\n");
 
@@ -118,7 +124,7 @@ int main(void)
         rpmsg_poll();
 
         i++;
-        if (i == 1000000)
+        if (i == 500000)
         {
             i = 0;
             // show the variable values
@@ -146,7 +152,7 @@ void irq_init()
 		return;
 	}
 
-    //xil_printf("GIC base address: 0x%08x\n", IntcConfig->CpuBaseAddress);
+    xil_printf("GIC base address: 0x%08x\n", IntcConfig->CpuBaseAddress);
 
     int Status = XScuGic_CfgInitialize(&IntcInst, IntcConfig, IntcConfig->CpuBaseAddress);
 	if (Status != XST_SUCCESS)
@@ -170,7 +176,7 @@ void outbyte (char ch)
 
     if (ch == '\n')
         outbyte('\r');
-    //while (XUartPs_Send(&UartPs, (void*)&ch, 1) != 1);
+    while (XUartPs_Send(&UartPs, (void*)&ch, 1) != 1);
 
     // if we have a stdio channel via rpmsg, collect data in lines and send it once buffer
     // is full or when a \n comes

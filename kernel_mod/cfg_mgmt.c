@@ -366,6 +366,9 @@ static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
 	int ret,i;
 	char *str;
 
+    dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
+    printk(KERN_INFO "probe starts\n");
+
 	// no request pending
 	memset(&pending_req, 0, sizeof(pending_req));
 	pending_req.type = REQ_NONE;

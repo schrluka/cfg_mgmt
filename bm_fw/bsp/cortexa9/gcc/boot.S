@@ -261,29 +261,18 @@ shareable_loop:
 #endif
 
 	/* In case of AMP, map virtual address 0x20000000 to 0x00000000  and mark it as non-cacheable */
-	/* Lukas: changed this to map 64MB at 0x1c000000 to 0x1c000000 */
 #if USE_AMP==1
-//	ldr	r3, =0x3f			/* 512 entries to cover 512MB DDR */
-//	ldr	r0, =TblBase			/* MMU Table address in memory */
-//	add	r0, r0, #0x700			/* Address of entry in MMU table, for 0x1c000000, div by 1MB yields 1c0, each entry is 4 bytes, so x700 results */
-//	ldr	r2, =0x0c02			/* S=b0 TEX=b000 AP=b11, Domain=b0, C=b0, B=b0 */
-//mmu_loop:
-//	str	r2, [r0]			/* write the entry to MMU table */
-//	add	r0, r0, #0x4			/* next entry in the table */
-//	add	r2, r2, #0x100000		/* next section */
-//	subs	r3, r3, #1
-//	bge	mmu_loop			/* loop till 512MB is covered */
-
-    ldr	r3, =0x1ff			/* 64 entries to cover 64MB DDR */
+	ldr	r3, =0x1ff			/* 512 entries to cover 512MB DDR */
 	ldr	r0, =TblBase			/* MMU Table address in memory */
-	add	r0, r0, #0x700			/* Address of entry in MMU table, for 0x1c000000 */
-	ldr	r2, =0x1c000c02			/* S=b1c0 TEX=b000 AP=b11, Domain=b0, C=b0, B=b0 */
+	add	r0, r0, #0x800			/* Address of entry in MMU table, for 0x20000000, div by 1MB yields 200, each entry is 4 bytes, so x800 results */
+	ldr	r2, =0x0c02			/* S=b0 TEX=b000 AP=b11, Domain=b0, C=b0, B=b0 */
 mmu_loop:
 	str	r2, [r0]			/* write the entry to MMU table */
 	add	r0, r0, #0x4			/* next entry in the table */
 	add	r2, r2, #0x100000		/* next section */
 	subs	r3, r3, #1
-	bge	mmu_loop			/* loop till everything is covered */
+	bge	mmu_loop			/* loop till 512MB is covered */
+
 
 #endif
 

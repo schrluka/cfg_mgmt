@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="scarabaeus_fw" />
+		<Option title="bm_cfg_mgmt" />
 		<Option pch_mode="2" />
 		<Option compiler="null" />
 		<Build>
@@ -13,97 +13,24 @@
 				<Option compiler="null" />
 			</Target>
 		</Build>
+		<Unit filename="../Makefile" />
+		<Unit filename="../lscript.ld" />
 		<Unit filename="../src/config.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/config.h" />
-		<Unit filename="../src/general.c">
+		<Unit filename="../src/config_vars.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/general.h" />
-		<Unit filename="../src/grbl/config.h" />
-		<Unit filename="../src/grbl/coolant_control.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/coolant_control.h" />
-		<Unit filename="../src/grbl/defaults.h" />
-		<Unit filename="../src/grbl/eeprom.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/eeprom.h" />
-		<Unit filename="../src/grbl/gcode.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/gcode.h" />
-		<Unit filename="../src/grbl/grbl_main.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/grbl_main.h" />
-		<Unit filename="../src/grbl/limits.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/limits.h" />
-		<Unit filename="../src/grbl/motion_control.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/motion_control.h" />
-		<Unit filename="../src/grbl/nuts_bolts.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/nuts_bolts.h" />
-		<Unit filename="../src/grbl/pin_map.h" />
-		<Unit filename="../src/grbl/planner.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/planner.h" />
-		<Unit filename="../src/grbl/print.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/print.h" />
-		<Unit filename="../src/grbl/protocol.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/protocol.h" />
-		<Unit filename="../src/grbl/report.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/report.h" />
-		<Unit filename="../src/grbl/serial.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/serial.h" />
-		<Unit filename="../src/grbl/settings.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/settings.h" />
-		<Unit filename="../src/grbl/stepper.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grbl/stepper.h" />
-		<Unit filename="../src/hw.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/hw.h" />
+		<Unit filename="../src/config_vars.h" />
 		<Unit filename="../src/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/mutex.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/mutex.h" />
 		<Unit filename="../src/remoteproc.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/remoteproc.h" />
 		<Unit filename="../src/remoteproc_kernel.h" />
-		<Unit filename="../src/scaraCtrl.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/scaraCtrl.h" />
-		<Unit filename="../src/uart.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/uart.h" />
 		<Unit filename="../src/virtio_ring.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -111,6 +38,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

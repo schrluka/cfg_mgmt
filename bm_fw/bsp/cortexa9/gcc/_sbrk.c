@@ -41,6 +41,10 @@ extern "C" {
 }
 #endif
 
+#ifndef NULL
+    #define NULL    ((void*)0)
+#endif // NULL
+
 __attribute__((weak)) caddr_t _sbrk ( int incr )
 {
   static unsigned char *heap = NULL;

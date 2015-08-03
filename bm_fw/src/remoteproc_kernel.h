@@ -26,12 +26,12 @@ typedef uint32_t    u32;
 *   I N T E R R U P T   C O N F I G
 * This has to match the kernel's device tree entry
 */
-/* Tx Vring IRQ from Linux */
-#define TXVRING_IRQ					2
-/* Rx Vring IRQ from Linux */
-#define RXVRING_IRQ					3
 /* IRQ to notify Linux */
 #define NOTIFY_LINUX_IRQ			8
+/* Tx Vring IRQ from Linux */
+#define TXVRING_IRQ					9
+/* Rx Vring IRQ from Linux */
+#define RXVRING_IRQ					10
 
 
 /* Just load all symbols from Linker script */
@@ -170,6 +170,7 @@ struct rpmsg_hdr {
  *
  * Every message sent(/received) on the rpmsg bus begins with this header.
  */
+
 struct rpmsg_hdr {
 	u32 src;
 	u32 dst;
@@ -177,7 +178,7 @@ struct rpmsg_hdr {
 	u16 len;
 	u16 flags;
 	u8 data[0];
-} __packed;
+} __attribute__((packed));
 
 /**
  * struct rpmsg_ns_msg - dynamic name service announcement message
@@ -191,11 +192,11 @@ struct rpmsg_hdr {
  * or ->remove() handler of the appropriate rpmsg driver will be invoked
  * (if/as-soon-as one is registered).
  */
-struct rpmsg_ns_msg {
+struct rpmsg_ns_msg  {
 	char name[RPMSG_NAME_SIZE];
 	u32 addr;
 	u32 flags;
-} __packed;
+} __attribute__((packed));
 
 /**
  * enum rpmsg_ns_flags - dynamic name service announcement flags

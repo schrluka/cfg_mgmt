@@ -24,7 +24,9 @@
 
 
 // enable debug message printing
-//#define DBG_MSG
+#define DBG_MSG
+
+extern uint32_t *pLed;
 
 /* Linux host needs to know what resources are required by the FreeRTOS
  * firmware.
@@ -76,6 +78,8 @@ struct resource_table __resource resources = {
 			{ 0, 0 }, /* no config data */ },
 
 	/* the two vrings */
+	/* Note: we don't set an address here as this did not work with some kernels, the kernel will
+	   deside where the buffers go and replace the value */
 	{ 0, 0x1000, VRING_SIZE, 1, 0 },
 	{ 0, 0x1000, VRING_SIZE, 2, 0 },
 
@@ -89,7 +93,7 @@ struct resource_table __resource resources = {
 	{ TYPE_MMU, 3, 0x41210000, 0, 0xc02, "leds", },
 };
 
-// allcate memory for the channels
+// allocate memory for the channels
 struct rpmsg_channel channels[MAX_RPMSG_CH];
 
 
@@ -389,18 +393,24 @@ void rpmsg_send(struct rpmsg_channel* ch, const void* data, int len)
 
 void remoteproc_init()
 {
+    xil_printf("%s: clearing channel struct\n", __func__);
+
 	memset(channels, 0, sizeof(channels)*MAX_RPMSG_CH);
+
+    xil_printf("%s: resoucre table:\n", __func__);
 
     // load pointers to vring elements allocated by the kernel
     // this is the element defined by the vring protocol
     uint32_t addr = resources.rpmsg_vring0.da;
+    xil_printf("tx vring is at 0x%08x\n", addr);
+    *pLed = 1;
     vring_init(&tx_vring, addr, &kick_linux);
     addr = resources.rpmsg_vring1.da;
+    xil_printf("rx vring is at 0x%08x\n", addr);
     vring_init(&rx_vring, addr, &kick_linux);
-    //rx_vring.dbg_print = 1; // enable debug print messages
+    rx_vring.dbg_print = 1; // enable debug print messages
 
-	xil_printf("resoucre table:\n");
-	xil_printf("tx vring: desc=%08x avail=%08x used=x%08x len=x%04x\n", (uint32_t)tx_vring.desc, (uint32_t)tx_vring.avail, (uint32_t)tx_vring.used, tx_vring.vring_len);
+    xil_printf("tx vring: desc=%08x avail=%08x used=x%08x len=x%04x\n", (uint32_t)tx_vring.desc, (uint32_t)tx_vring.avail, (uint32_t)tx_vring.used, tx_vring.vring_len);
 	xil_printf("rx vring: desc=%08x avail=%08x used=x%08x\n", (uint32_t)rx_vring.desc, (uint32_t)rx_vring.avail, (uint32_t)rx_vring.used);
 
 	// disable L1 data cache on vrings (this silently assumes that the actual data buffers are covered by the same 1MB region)

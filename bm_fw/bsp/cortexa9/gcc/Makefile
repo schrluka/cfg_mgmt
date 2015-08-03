@@ -41,10 +41,11 @@
 #  5) added s option to ar in order to create an index in the lib
 
 include config.make
-
-AS=arm-xilinx-eabi-as
-CC=arm-xilinx-eabi-gcc
-AR=arm-xilinx-eabi-ar
+#CROSS=arm-xilinx-linux-gnueabihf-
+CROSS=arm-xilinx-eabi-
+AS=$(CROSS)as
+CC=$(CROSS)gcc
+AR=$(CROSS)ar
 CP=cp
 #COMPILER_FLAGS=
 #EXTRA_COMPILER_FLAGS=

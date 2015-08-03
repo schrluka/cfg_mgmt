@@ -1,9 +1,10 @@
 #
 # Original makefile from Xilinx SDK (/opt/Xilinx/SDK/2014.4/data/embeddedsw/XilinxProcessorIPLib/drivers)
 # Modified by Lukas Schrittwieser, 2015
-
-COMPILER=arm-xilinx-eabi-gcc
-ARCHIVER=arm-xilinx-eabi-ar
+#CROSS=arm-xilinx-linux-gnueabihf-
+CROSS=arm-xilinx-eabi-
+COMPILER=$(CROSS)gcc
+ARCHIVER=$(CROSS)ar
 CP=cp
 COMPILER_FLAGS=-c -O2 -Wall
 EXTRA_COMPILER_FLAGS=

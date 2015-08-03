@@ -34,6 +34,7 @@
    function returns its address for use by the macro errno defined in
    errno.h.  */
 
+
 #include <errno.h>
 #include <reent.h>
 
@@ -48,3 +49,4 @@ __errno ()
 {
   return &_REENT->_errno;
 }
+

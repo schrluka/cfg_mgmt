@@ -53,6 +53,7 @@
 // notify: callback function wich gets called when we want to kick linux
 void vring_init(struct vring* vr, uint32_t addr, void (*notify)())
 {
+    xil_printf("vring_init: addr 0x%08x\n", addr);
     vr->desc = (void*)(addr);  // buffer descriptor heads are at the address assigned to us by the kernel
     addr += VRING_SIZE * sizeof(struct vring_desc);
     vr->avail = (void*)(addr); // available ring follows immediatly after descriptor heads

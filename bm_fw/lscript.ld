@@ -285,7 +285,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 
-
+ 
 /* remoteproc specific stuff */
 /* WARNING: THIS IS CARGO CULT */
 /* Trace buffer should be inside carverout */
