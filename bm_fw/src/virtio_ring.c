@@ -83,7 +83,11 @@ int32_t vring_get_buf(struct vring* vr)
     uint16_t krnl_avail_idx = vr->avail->avail_idx;
 
     if (krnl_avail_idx == vr->avail_tail)
+    {
+        //if (vr->dbg_print)
+        //    xil_printf("vring_get_buf: no buffer available\n");
         return -1;    // no buffer available
+    }
 
     if (vr->dbg_print)
         xil_printf("vring_get_buf: krnl_avail_idx: %d  local_avail_idx: %d\n", krnl_avail_idx, vr->avail_tail);
@@ -117,7 +121,10 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
     used_idx = used_idx % VRING_SIZE;
 
     if (idx > VRING_SIZE)
+    {
         xil_printf("vring_publish_buf: idx=%d is invalid (too big)\n", idx);
+        return;
+    }
 
     // make sure the kernel has not set any bogus flags
     vr->desc[idx].flags &= ~VRING_DESC_F_NEXT;
@@ -130,17 +137,25 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
     vr->used->ring[used_idx].len = len;
 
     //dmb();  // ensure memory writes are ordered.
+    dsb();
     __asm__ __volatile__ ("dsb" ::: "memory");
 
     // tell linux that we have placed something in the used ring
     vr->used->idx++;
 
-    //dsb();  // wait until the CPU has updated the memory
+    dsb();  // wait until the CPU has updated the memory
     __asm__  __volatile__  ("dsb" ::: "memory");
     Xil_L1DCacheFlush();    // make sure data arrives at the other end
 
+
     if (vr->dbg_print)
-        xil_printf("vring: used index is now %d\n", vr->used->idx);
+    {
+        xil_printf("vring: used at 0x%08x, index is now %d\n", (int)(vr->used), vr->used->idx);
+        for (int i=0; i<4; i++)
+            xil_printf(" %02x", ((uint8_t*)vr->used)[i]);
+        xil_printf("\n");
+    }
+
 
     // kick the kernel (linux) to make it aware of the new data
     if ((kick != 0) && (vr->notify != 0))
@@ -149,7 +164,7 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
 }
 
 // check if there are buffer available (sent by the other side, ie linux kernel)
-// returns 1 of there is atleast one buffer, 0 otherwise
+// returns 1 of there is at least one buffer, 0 otherwise
 int vring_available(struct vring* vr)
 {
     if (vr->avail->avail_idx == vr->avail_tail)

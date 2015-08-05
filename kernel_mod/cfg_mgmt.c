@@ -28,6 +28,8 @@
 *
 ************************************************************************************************************************/
 
+#define DEBUG
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -55,7 +57,7 @@
 
 // configure size (max length) of the data field in messages exchanged with BM application
 //#define MSG_DATA_SIZE 	(DATA_LEN_MAX-sizeof(cfgMsg_t))
-// This is super uggly hack, have not found a good solution yet. (Total message length is 512 bytes, leave
+// This is a super uggly hack, I have not found a good solution yet. (Total message length is 512 bytes, leave
 // space for headers
 #define MSG_DATA_SIZE 	(400)
 
@@ -160,6 +162,7 @@ static struct rpmsg_device_id rpmsg_channel_id_table[] = {
 	{ .name = "cfg_mgmt" },
 	{},
 };
+MODULE_DEVICE_TABLE(rpmsg, rpmsg_channel_id_table);
 
 // callback functions for RPMSG communication (with bare metal application)
 static struct rpmsg_driver cfg_mgmt_rpmsg_drv = {
@@ -384,6 +387,7 @@ static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
 
 	// create sysfs files
 	n_vars = get_n_vars();
+	dev_dbg(&rpdev->dev, "%s: n_vars=%d\n", __func__, n_vars);
 
 	if (n_vars <= 0)
 		return 0;	// nothing todo as there are no vars or we don't know how many there are
@@ -640,7 +644,7 @@ static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, 
 	// check length
 	if (len < sizeof(cfgMsg_t))
 	{
-		dev_info(&rpdev->dev, "Message from BM application is too short.\n");
+		dev_info(&rpdev->dev, "CFG_MGMT %s: Message from BM application is too short.\n", __func__);
 		return;
 	}
 
@@ -661,7 +665,10 @@ static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, 
 	{
 		// copy the received data into the kernel buffer
 		memcpy((void*)(&response), data, len);
+		dev_info(&rpdev->dev, "CFG_MGMT %s: received reply: seq=%d, ind=%d, val=%d.\n", __func__, response.seq, response.ind, response.val);
 	}
+
+
 
 	// wake the sleeping context
 	response_valid = 1;
@@ -687,6 +694,9 @@ static int get_n_vars()
 		dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: request still pending\n", __func__);
 		return -EINVAL;
 	}
+
+	dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: requesting n_vars\n", __func__);
+
 	// invalidate all request fields
 	pending_req.seq = msg_seq_nr++;
 	pending_req.ind = -1;
@@ -704,6 +714,7 @@ static int get_n_vars()
 	ret = wait_event_interruptible(usr_wait_q, response_valid==1);
 	if (ret) {	// abort in case we got interrupted
         pending_req.type = REQ_NONE;
+        dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: interrupted\n", __func__);
 		return ret;
 	}
 	// check the response
@@ -713,7 +724,7 @@ static int get_n_vars()
 		pending_req.type = REQ_NONE;
 		return response.val;
 	}
-	dev_err(&rpmsg_chnl->dev, "CFG_MGMT: wrong response to N_VARS: %d\n", response.type);
+	dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: wrong response to N_VARS: %d\n", __func__, response.type);
 	pending_req.type = REQ_NONE;
 	return -EINVAL;
 }

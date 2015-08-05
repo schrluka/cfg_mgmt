@@ -33,7 +33,7 @@
 /******************************************************************************************************************************
 *   I N C L U D E S
 */
-
+#include <xil_printf.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -74,6 +74,12 @@
 #define RES_REQ_ERR 255     // unknown request
 
 
+// configure size (max length) of the data field in messages exchanged with BM application
+//#define MSG_DATA_SIZE 	(DATA_LEN_MAX-sizeof(cfgMsg_t))
+// This is a super uggly hack, I have not found a good solution yet. (Total message length is 512 bytes, leave
+// space for headers
+#define MSG_DATA_SIZE 	(400)
+
 
 /******************************************************************************************************************************
 *   G L O B A L S
@@ -90,7 +96,7 @@ typedef struct __attribute__((packed))       // make sure it has no holes (kerne
     int32_t     ind;    // config variable index (<0 means unkown/undefined)
     int32_t     val;    // numerical value (for WR req, RD resp, etc)
     uint32_t    len;    // length of data section (in bytes)
-    uint8_t     data[]; // opt. data section, total messages has to fit into TX_BUFFER_SIZEs
+    uint8_t     data[MSG_DATA_SIZE]; // opt. data section, total messages has to fit into TX_BUFFER_SIZEs
 } cfgMsg_t;
 
 
@@ -139,6 +145,8 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
     rep->seq = req->seq;
     rep->ind = req->ind;
     rep->len = 0;   // assume no additional data
+
+    xil_printf("%s: receveid req, seq: %d, index: %d, type: %d\n",__func__, req->seq, req->ind, req->type);
 
     if (req->type == REQ_NOP)
     {
@@ -238,7 +246,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
 
     }
     // send the reply to the server
-    rpmsg_send(rpmsg_config, (void*)cfgMsgTxBuf, sizeof(cfgMsg_t)+rep->len);
+    rpmsg_send(rpmsg_config, (void*)cfgMsgTxBuf, sizeof(cfgMsg_t));
 }
 
 

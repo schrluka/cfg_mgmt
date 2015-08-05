@@ -27,7 +27,7 @@ LIBS += -lc
 LIBS += -lgcc
 #LIBS += -lscugic	# use these with old bsp / iplib
 #LIBS += -luartps
-LIBS += -lm
+#LIBS += -lm
 # Add more xilinx drivers or other libs here
 
 

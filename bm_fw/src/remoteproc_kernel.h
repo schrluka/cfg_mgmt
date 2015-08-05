@@ -29,9 +29,9 @@ typedef uint32_t    u32;
 /* IRQ to notify Linux */
 #define NOTIFY_LINUX_IRQ			8
 /* Tx Vring IRQ from Linux */
-#define TXVRING_IRQ					9
+#define TXVRING_IRQ					8
 /* Rx Vring IRQ from Linux */
-#define RXVRING_IRQ					10
+#define RXVRING_IRQ					9
 
 
 /* Just load all symbols from Linker script */

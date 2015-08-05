@@ -78,7 +78,7 @@ int main(void)
     int l=0;
     int i=0;
 
-    (*pLed) = 0;
+    (*pLed) = 1;    // led uses neg logic
 
     if (UartInit() != XST_SUCCESS)
     {
@@ -100,21 +100,22 @@ int main(void)
         }
     } */
 
+    Xil_L1DCacheDisable();
+
 	irq_init();
-	xil_printf("irq_init() done\n");
+	//xil_printf("irq_init() done\n");
 
     remoteproc_init();
     xil_printf("remoteproc_init done\n");
 
-//    for (i=0; i<1000000; i++)
-//        __asm ("nop");
+    for (i=0; i<2000000; i++)
+        __asm ("nop");
 
 	// create a channel for printf message, we don't receive from the kernel
     //rpmsg_stdio = rpmsg_create_ch ("stdio", 0);
     //xil_printf("stdio chnl created\n");
 
     cfgInit();
-    xil_printf("cfg_init() done\n");
 
     xil_printf("init done\n");
 
@@ -124,13 +125,13 @@ int main(void)
         rpmsg_poll();
 
         i++;
-        if (i == 500000)
+        if (i == 5000000)
         {
             i = 0;
             // show the variable values
             int32_t v;
             cfgGetValId(CFG_VAR_1, &v);
-            (*pLed) = v;
+            (*pLed) = !v;
             xil_printf("var1: %d  ", v);
             cfgGetValId(CFG_VAR_2, &v);
             xil_printf("var2: %d\n", v);
@@ -181,7 +182,7 @@ void outbyte (char ch)
 
     // if we have a stdio channel via rpmsg, collect data in lines and send it once buffer
     // is full or when a \n comes
-    if (rpmsg_stdio != NULL)
+    /*if (rpmsg_stdio != NULL)
     {
         buf[ind++] = ch;
 
@@ -193,6 +194,5 @@ void outbyte (char ch)
             ind = 0;
         }
 
-    }
-
+    }*/
 }

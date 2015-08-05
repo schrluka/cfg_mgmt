@@ -63,7 +63,7 @@ struct vring_avail {
 // It does _NOT_ reflect the memory layout which is required for correct operation
 // It exists for easier coding, the pointers are set during initialization.
 struct vring {
-    // pointers to the actual rings use for communication with the kernel
+    // pointers to the actual rings used for communication with the kernel
     // buffer descriptor heads (an array of VRING_SIZE elements)
     volatile struct vring_desc* desc;
     // ring buffer kernel->baremetal

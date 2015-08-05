@@ -94,7 +94,7 @@ struct resource_table __resource resources = {
 };
 
 // allocate memory for the channels
-struct rpmsg_channel channels[MAX_RPMSG_CH] = {0};
+struct rpmsg_channel channels[MAX_RPMSG_CH] = {{0}};
 
 
 uint32_t next_rpmsg_addr = APP_ADDR_START;
@@ -127,7 +127,7 @@ static void rxvring_task();
 /* This has to be called periodically by the main loop to perform data processing */
 void rpmsg_poll()
 {
-  //  Xil_L1DCacheFlush();
+    Xil_L1DCacheFlush();
     txvring_task();
     rxvring_task();
 }
@@ -135,14 +135,17 @@ void rpmsg_poll()
 
 void kick_linux()
 {
+    for (int i=0; i<1000000; i++)
+        __asm ("nop");
+    xil_printf("kicking linux\n");
     XScuGic_SoftwareIntr(&IntcInst, NOTIFY_LINUX_IRQ, 1);
-    //xil_printf("kicked linux\n");
 }
 
 
 void txvring_irq2(void *data)
 {
 	txvring_kicks++;
+	rxvring_kicks++;
 }
 
 static void txvring_task( )
@@ -160,6 +163,7 @@ static void txvring_task( )
     if (kicked) {
         // the kernel has sent us something, invalidate our L1 cache to get new data
         //Xil_L1DCacheFlushRange((uint32_t)&tx_vring, tx_vring.vring_len);
+        xil_printf("received TX kick\n");
         Xil_L1DCacheFlush();
     }
 }
@@ -168,6 +172,7 @@ void rxvring_irq3(void *data)
 {
 	/* Linux kick since it has put data to the RX ring */
 	rxvring_kicks++;
+	txvring_kicks++;
 }
 
 static void rxvring_task()
@@ -185,12 +190,16 @@ static void rxvring_task()
     if (kicked) {
         // the kernel has sent us data, invalidate our L1 cache to get new data
         // theoretically the cache is turned off so this should not be required
-        //Xil_L1DCacheFlush();
+        Xil_L1DCacheFlush();
 
-        //xil_printf("reading data from rx vring\n");
+        xil_printf("checking rx vring\n");
         // process all messages
         while (vring_available(&rx_vring))
+        {
+            xil_printf("reading data from rx vring\n");
             read_message();
+        }
+
     }
 }
 
@@ -258,6 +267,12 @@ static void rxvring_task()
  */
 void block_send_message(u32 src, u32 dst, const void *data, u32 len)
 {
+    xil_printf("TX: src=x%x, dst=x%x, len=%d\n", src, dst, len);
+    int i;
+    for (i=0; (i<len) && (i<32); i++)
+        xil_printf(" %02x",((u8*)data)[i]);
+    xil_printf("\n");
+
 	while(__send_message(src, dst, data , len))
 	{
         // wait until a buffer becomes available
@@ -274,7 +289,7 @@ void read_message(void)
 
     if (index < 0)
     {
-        //xil_printf("read_message: no buffer available in rx_vring\n");
+        xil_printf("read_message: no buffer available in rx_vring\n");
         return;
     }
 
@@ -391,33 +406,36 @@ void rpmsg_send(struct rpmsg_channel* ch, const void* data, int len)
 }
 
 
+extern u32 MMUTable;
+
 void remoteproc_init()
 {
-    xil_printf("%s: clearing channel struct at 0x%08x\n", __func__, (uint32_t)channels);
-
-	//memset(channels, 0, sizeof(channels)*MAX_RPMSG_CH);
-    *pLed = 1;
-
-    xil_printf("%s: resoucre table:\n", __func__);
+    memset(channels, 0, sizeof(channels));
 
     // load pointers to vring elements allocated by the kernel
     // this is the element defined by the vring protocol
     uint32_t addr = resources.rpmsg_vring0.da;
-    xil_printf("tx vring is at 0x%08x\n", addr);
+    //xil_printf("tx vring is at 0x%08x\n", addr);
     vring_init(&tx_vring, addr, &kick_linux);
     addr = resources.rpmsg_vring1.da;
-    xil_printf("rx vring is at 0x%08x\n", addr);
+    //xil_printf("rx vring is at 0x%08x\n", addr);
     vring_init(&rx_vring, addr, &kick_linux);
+    tx_vring.dbg_print = 1; // enable debug print messages
     rx_vring.dbg_print = 1; // enable debug print messages
 
+    xil_printf("%s: resoucre table:\n", __func__);
     xil_printf("tx vring: desc=%08x avail=%08x used=x%08x len=x%04x\n", (uint32_t)tx_vring.desc, (uint32_t)tx_vring.avail, (uint32_t)tx_vring.used, tx_vring.vring_len);
 	xil_printf("rx vring: desc=%08x avail=%08x used=x%08x\n", (uint32_t)rx_vring.desc, (uint32_t)rx_vring.avail, (uint32_t)rx_vring.used);
 
 	// disable L1 data cache on vrings (this silently assumes that the actual data buffers are covered by the same 1MB region)
 	// However, this is pretty save as the kernel assigns the buffer in a continuous block outside our memory region
 	// This seemed to cause some problems, so use a cache flush in virtio_ring.c instead
-	//Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x04de2);  // S=b0 TEX=b100 AP=b11, Domain=b1111, C=b0, B=b0
+	Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x04de2);  // S=b0 TEX=b100 AP=b11, Domain=b1111, C=b0, B=b0
     //Xil_EnableMMU();
+
+	uint32_t* ptr = &MMUTable;
+	ptr += ((uint32_t)tx_vring.used) / 0x100000U;
+    xil_printf("MMU attr for tx_vring.used: 0x%08x\n", (*ptr));
 
     //xil_printf("Setup IRQ handlers for remoteproc\n");
 	XScuGic_Connect(&IntcInst, TXVRING_IRQ, &txvring_irq2, NULL);

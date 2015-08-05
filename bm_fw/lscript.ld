@@ -24,7 +24,7 @@ _UNDEF_STACK_SIZE = DEFINED(_UNDEF_STACK_SIZE) ? _UNDEF_STACK_SIZE : 1024;
 
 MEMORY
 {
-   ps7_ddr_0_S_AXI_BASEADDR : ORIGIN = 0x20000000, LENGTH = 128M
+   ps7_ddr_0_S_AXI_BASEADDR : ORIGIN = 0x20000000, LENGTH = 64M
 /*   ps7_ram_0_S_AXI_BASEADDR : ORIGIN = 0x00000000, LENGTH = 0x00030000
    ps7_ram_1_S_AXI_BASEADDR : ORIGIN = 0xFFFF0000, LENGTH = 0x0000FE00 */
 }
@@ -285,7 +285,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 
- 
+
 /* remoteproc specific stuff */
 /* WARNING: THIS IS CARGO CULT */
 /* Trace buffer should be inside carverout */
@@ -319,5 +319,5 @@ _end = .;
   . = ALIGN(0x2000);*/
 
 }
-
+/* this goes into the resource table and tells the kernel how much we need */
 __elf_len = 0x4000000;
