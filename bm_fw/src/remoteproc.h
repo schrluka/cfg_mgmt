@@ -47,7 +47,7 @@ struct rpmsg_channel {
 void remoteproc_init();
 
 // poll function processes data, has to be called periodically
-void rpmsg_poll();
+int rpmsg_poll();
 
 // announce a new channel to linux
 struct rpmsg_channel* rpmsg_create_ch (const char* name,

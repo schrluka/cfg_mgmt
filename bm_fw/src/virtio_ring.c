@@ -107,6 +107,7 @@ int32_t vring_get_buf(struct vring* vr)
     return available_desc_ind;
 }
 
+
 // publish (pass to other side) the buffer described by vr->desc[idx]
 // this will render the buffer visible to the other side (linux kernel)
 // Note: The required index has to be obtained by rpmsg_get_buf()
@@ -138,30 +139,28 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
 
     //dmb();  // ensure memory writes are ordered.
     dsb();
-    __asm__ __volatile__ ("dsb" ::: "memory");
+    //__asm__ __volatile__ ("dsb" ::: "memory");
 
     // tell linux that we have placed something in the used ring
     vr->used->idx++;
 
     dsb();  // wait until the CPU has updated the memory
-    __asm__  __volatile__  ("dsb" ::: "memory");
+    //__asm__  __volatile__  ("dsb" ::: "memory");
     Xil_L1DCacheFlush();    // make sure data arrives at the other end
-
 
     if (vr->dbg_print)
     {
-        xil_printf("vring: used at 0x%08x, index is now %d\n", (int)(vr->used), vr->used->idx);
-        for (int i=0; i<4; i++)
+        xil_printf("vring: used index is now %d\n", vr->used->idx);
+        /*for (int i=0; i<4; i++)
             xil_printf(" %02x", ((uint8_t*)vr->used)[i]);
-        xil_printf("\n");
+        xil_printf("\n");*/
     }
-
 
     // kick the kernel (linux) to make it aware of the new data
     if ((kick != 0) && (vr->notify != 0))
         vr->notify();
-
 }
+
 
 // check if there are buffer available (sent by the other side, ie linux kernel)
 // returns 1 of there is at least one buffer, 0 otherwise

@@ -130,7 +130,7 @@ int cfgSetInd(int i, int32_t val);
 // creates rpmsg channel for communication with kernel
 void cfgInit()
 {
-    // announce a rpmsg channel for gcodes
+    // announce a rpmsg channel for communication with the kernel
     rpmsg_config = rpmsg_create_ch ("cfg_mgmt", &config_msg_handler);
 
 }
@@ -153,7 +153,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
         // simply reply with an OK message
         rep->type = RES_OK;
         rep->val = 0;   // could send some data here
-        rpmsg_send(rpmsg_config, (void*)cfgMsgTxBuf, sizeof(cfgMsg_t));
+        rpmsg_send(rpmsg_config, (void*)rep, sizeof(*rep));
         return;
     }
 
@@ -161,7 +161,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
     {
         rep->type = RES_N_VARS;
         rep->val = n_vars;
-        rpmsg_send(rpmsg_config, (void*)cfgMsgTxBuf, sizeof(cfgMsg_t));
+        rpmsg_send(rpmsg_config, (void*)rep, sizeof(*rep));
         return;
     }
 
@@ -187,7 +187,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
     if ((ind >= n_vars) || (ind < 0))
     {
         rep->type = RES_ID_ERR;
-        rpmsg_send(rpmsg_config, (void*)cfgMsgTxBuf, sizeof(cfgMsg_t));
+        rpmsg_send(rpmsg_config, (void*)rep, sizeof(*rep));
         return;
     }
 
@@ -216,7 +216,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
 
         case REQ_RD_MAX:
             // read request from kernel, reply with max limit value
-            rep->val = vars[ind].val;
+            rep->val = vars[ind].max;
             rep->type = RES_RD_MAX;
             break;
 
@@ -246,7 +246,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
 
     }
     // send the reply to the server
-    rpmsg_send(rpmsg_config, (void*)cfgMsgTxBuf, sizeof(cfgMsg_t));
+    rpmsg_send(rpmsg_config, (void*)rep, sizeof(*rep));
 }
 
 

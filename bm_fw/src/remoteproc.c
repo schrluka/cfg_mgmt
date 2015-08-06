@@ -114,8 +114,8 @@ extern XScuGic IntcInst;
 void block_send_message(u32 src, u32 dst, const void *data, u32 len);
 void read_message(void);
 
-static void txvring_task();
-static void rxvring_task();
+static int txvring_task(void);
+static int rxvring_task(void);
 
 
 // implement a critical section by disabling IRQs
@@ -124,31 +124,30 @@ static void rxvring_task();
 
 
 
-/* This has to be called periodically by the main loop to perform data processing */
-void rpmsg_poll()
+// This has to be called periodically by the main loop to perform data processing
+// returns 0 if there is no peding work (might enter wait loop)
+int rpmsg_poll()
 {
-    Xil_L1DCacheFlush();
-    txvring_task();
-    rxvring_task();
+    int ret = 0;
+    ret |= txvring_task();
+    ret |= rxvring_task();
+    return ret;
 }
 
 
 void kick_linux()
 {
-    for (int i=0; i<1000000; i++)
-        __asm ("nop");
     xil_printf("kicking linux\n");
     XScuGic_SoftwareIntr(&IntcInst, NOTIFY_LINUX_IRQ, 1);
 }
 
 
-void txvring_irq2(void *data)
+void txvring_irq(void *data)
 {
 	txvring_kicks++;
-	rxvring_kicks++;
 }
 
-static void txvring_task( )
+static int txvring_task(void)
 {
     int kicked = 0;
 
@@ -162,20 +161,19 @@ static void txvring_task( )
 
     if (kicked) {
         // the kernel has sent us something, invalidate our L1 cache to get new data
-        //Xil_L1DCacheFlushRange((uint32_t)&tx_vring, tx_vring.vring_len);
         xil_printf("received TX kick\n");
         Xil_L1DCacheFlush();
     }
+    return kicked;
 }
 
-void rxvring_irq3(void *data)
+void rxvring_irq(void *data)
 {
 	/* Linux kick since it has put data to the RX ring */
 	rxvring_kicks++;
-	txvring_kicks++;
 }
 
-static void rxvring_task()
+static int rxvring_task()
 {
 	int kicked = 0;
 
@@ -199,8 +197,10 @@ static void rxvring_task()
             xil_printf("reading data from rx vring\n");
             read_message();
         }
-
+        return 1;   // prob. more data
     }
+
+    return 0;   // done
 }
 
 /* -------------------------------------------------------------------------- */
@@ -334,7 +334,8 @@ void read_message(void)
     }
 
    	// return the buffer to linux (recycling) (don't know what we should put at len)
-   	vring_publish_buf(&rx_vring, index, PACKET_LEN_MAX, 1);
+   	// don't kick linux
+   	vring_publish_buf(&rx_vring, index, PACKET_LEN_MAX, 0);
 	return;
 }
 
@@ -406,7 +407,7 @@ void rpmsg_send(struct rpmsg_channel* ch, const void* data, int len)
 }
 
 
-extern u32 MMUTable;
+//extern u32 MMUTable;
 
 void remoteproc_init()
 {
@@ -420,7 +421,7 @@ void remoteproc_init()
     addr = resources.rpmsg_vring1.da;
     //xil_printf("rx vring is at 0x%08x\n", addr);
     vring_init(&rx_vring, addr, &kick_linux);
-    tx_vring.dbg_print = 1; // enable debug print messages
+    tx_vring.dbg_print = 0; // enable debug print messages
     rx_vring.dbg_print = 1; // enable debug print messages
 
     xil_printf("%s: resoucre table:\n", __func__);
@@ -433,14 +434,14 @@ void remoteproc_init()
 	Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x04de2);  // S=b0 TEX=b100 AP=b11, Domain=b1111, C=b0, B=b0
     //Xil_EnableMMU();
 
-	uint32_t* ptr = &MMUTable;
+	/*uint32_t* ptr = &MMUTable;
 	ptr += ((uint32_t)tx_vring.used) / 0x100000U;
-    xil_printf("MMU attr for tx_vring.used: 0x%08x\n", (*ptr));
+    xil_printf("MMU attr for tx_vring.used: 0x%08x\n", (*ptr));*/
 
     //xil_printf("Setup IRQ handlers for remoteproc\n");
-	XScuGic_Connect(&IntcInst, TXVRING_IRQ, &txvring_irq2, NULL);
+	XScuGic_Connect(&IntcInst, TXVRING_IRQ, &txvring_irq, NULL);
 	XScuGic_Enable(&IntcInst, TXVRING_IRQ);
-	XScuGic_Connect(&IntcInst, RXVRING_IRQ, &rxvring_irq3, NULL);
+	XScuGic_Connect(&IntcInst, RXVRING_IRQ, &rxvring_irq, NULL);
 	XScuGic_Enable(&IntcInst, RXVRING_IRQ);
 }
 

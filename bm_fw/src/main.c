@@ -75,7 +75,6 @@ void irq_init();
 
 int main(void)
 {
-    int l=0;
     int i=0;
 
     (*pLed) = 1;    // led uses neg logic
@@ -85,35 +84,15 @@ int main(void)
         while(1);
     }
 
-    //(*pLed) = 1;
+    xil_printf("CFG_MGMT - Example Firmware\n");
 
-	xil_printf("CFG_MGMT - Example Firmware\n");
-
-    /* uart test
-    while(1)
-    {
-        i++;
-        if (i == 500000)
-        {
-            i = 0;
-            xil_printf("%d\n",l++);
-        }
-    } */
-
-    Xil_L1DCacheDisable();
-
-	irq_init();
-	//xil_printf("irq_init() done\n");
+    irq_init();
 
     remoteproc_init();
-    xil_printf("remoteproc_init done\n");
+    //xil_printf("remoteproc_init done\n");
 
-    for (i=0; i<2000000; i++)
-        __asm ("nop");
-
-	// create a channel for printf message, we don't receive from the kernel
+    // create a channel for printf message, we don't receive from the kernel
     //rpmsg_stdio = rpmsg_create_ch ("stdio", 0);
-    //xil_printf("stdio chnl created\n");
 
     cfgInit();
 
@@ -182,7 +161,7 @@ void outbyte (char ch)
 
     // if we have a stdio channel via rpmsg, collect data in lines and send it once buffer
     // is full or when a \n comes
-    /*if (rpmsg_stdio != NULL)
+    if (rpmsg_stdio != NULL)
     {
         buf[ind++] = ch;
 
@@ -194,5 +173,5 @@ void outbyte (char ch)
             ind = 0;
         }
 
-    }*/
+    }
 }

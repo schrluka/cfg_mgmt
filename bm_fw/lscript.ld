@@ -111,7 +111,16 @@ SECTIONS
 } > ps7_ddr_0_S_AXI_BASEADDR
 
 .got : {
+   /* mod lukas */
+   *(.got.plt)
+   *(.igot.plt)
    *(.got)
+   *(.igot)
+} > ps7_ddr_0_S_AXI_BASEADDR
+
+/* mod lukas */
+.rel.plt : {
+    *(.rel.plt)
 } > ps7_ddr_0_S_AXI_BASEADDR
 
 .ctors : {

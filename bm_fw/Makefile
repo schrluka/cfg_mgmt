@@ -53,7 +53,7 @@ all: $(C_OBJS)
 	$(CC) -T"$(LSCRIPT)" $(LDFLAGS) -o $(BIN) $(C_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group
 	$(CROSS)objdump -D $(BIN) > $(BIN).lss
 #	copy file to destination where the kernel can load it
-#	cp $(BIN) /srv/rootfs/lib/firmware/firmware
+#	cp $(BIN) c:\schrluka\PwmRect\IAF\SoC\root
 
 $(OBJPATH)/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<

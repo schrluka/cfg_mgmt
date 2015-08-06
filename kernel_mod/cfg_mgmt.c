@@ -141,6 +141,7 @@ static int get_desc(int index, char* buf, int len);
 
 static void free_mem(void);
 static int alloc_mem(void);
+static int remove_attrs(struct rpmsg_channel *rpdev);
 static int create_kobjs(struct rpmsg_channel *rpdev);
 
 // sysfs callbacks
@@ -148,8 +149,11 @@ static ssize_t show_val(struct device *dev, struct device_attribute *attr, char 
 static ssize_t show_min(struct device *dev, struct device_attribute *attr, char *buf);
 static ssize_t show_max(struct device *dev, struct device_attribute *attr, char *buf);
 static ssize_t show_desc(struct device *dev, struct device_attribute *attr, char *buf);
+//static ssize_t show_n_vars (struct device *dev, struct device_attribute *attr, char *buf);
+static ssize_t show_update(struct device *dev, struct device_attribute *attr, char *buf);
 static ssize_t store_val(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
 static ssize_t store_none(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+//static ssize_t store_update(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
 
 
 
@@ -228,6 +232,9 @@ static struct kobject *min_kobj;
 static struct kobject *max_kobj;
 static struct kobject *desc_kobj;
 
+//static struct device_attribute attr_n_vars = {.attr.name = "n_vars", /*.attr.owner = THIS_MODULE,*/ .attr.mode=0444};
+static struct device_attribute attr_update = {.attr.name = "update", /*.attr.owner = THIS_MODULE,*/ .attr.mode=0444};
+
 
 
 /******************************************************************************************************************
@@ -272,11 +279,16 @@ static int __init cm_init(void)
 // helper function to read (kernel to user) a variable's value
 static ssize_t show_val (struct device *dev, struct device_attribute *attr, char *buf)
 {
+    int v, ret;
 	// convert to the config variable struct this attribute belongs to
 	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, val);
 	// query the value from the bare metal application
-	int v;
-	int ret = get_val(a->index, &v);
+	//if (dev)
+    //    dev_dbg(dev, "CFG_MGMT %s: reading value for index %d\n", __func__, a->index);
+    //else {
+    //    printk(KERN_ERR "CFG_MGMT %s: dev is NULL\n", __func__);
+    //}
+	ret = get_val(a->index, &v);
 	if (ret)
 		return scnprintf(buf, PAGE_SIZE, "error: %d\n", ret);
 
@@ -321,15 +333,24 @@ static ssize_t show_max (struct device *dev, struct device_attribute *attr, char
 static ssize_t show_desc(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, max);
+	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, desc);
 	// query the value from the bare metal application
 	int len = PAGE_SIZE;
-	int ret = get_desc(a->index, buf, len);
-	// return a error message, don't know if that's a good idea. But what else could we do?
-	if (ret)
-		return scnprintf(buf, PAGE_SIZE, "error: %d\n", ret);
-	return len;
+	return get_desc(a->index, buf, len);
 }
+
+
+// helper function to read (kernel to user) the number of variables
+/*
+static ssize_t show_n_vars (struct device *dev, struct device_attribute *attr, char *buf)
+{
+	// convert to the config variable struct this attribute belongs to
+	dev_dbg(dev, "CFG_MGMT %s: querying n_vars\n", __func__);
+
+	// query the value from the bare metal application
+	// and return it in human readable form
+	return scnprintf(buf, PAGE_SIZE, "%d\n", get_n_vars());
+} */
 
 
 // helper function for sysfs to write a new variable value
@@ -339,18 +360,23 @@ static ssize_t store_val(struct device *dev, struct device_attribute *attr, cons
     long v;
 
 	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, max);
+	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, val);
+    // make sure the string is properly terminated
+    //if (count == PAGE_SIZE) // should never happen, but make sure
+    //    count--;
+    //buf[count] = '\0';
 
-	ret = kstrtol(buf, 0, &v);	// parse user's string
+    ret = kstrtol(buf, 0, &v);	// parse user's string
 	if (ret) {
-		dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: can't parse string '%s', %d\n", __func__, buf, ret);
-		return 0;
+        dev_err(dev, "CFG_MGMT %s: can't parse string: %d\n", __func__, ret);
+        print_hex_dump(KERN_DEBUG, "  str: ", DUMP_PREFIX_NONE, 16, 1, buf, count, true);
+		return -1;
 	}
 	// trigger a write at the BM application
 	ret = set_val(a->index, v);
 	if (ret) {
-        dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: set_val failed: %d\n", __func__, ret);
-		return 0;	// TODO: what is the supposed error handling here?
+        dev_err(dev, "CFG_MGMT %s: set_val failed: %d\n", __func__, ret);
+		return -1;	// TODO: what is the supposed error handling here?
 	}
 	return (count);	// TODO: what should we return here?
 }
@@ -359,58 +385,51 @@ static ssize_t store_val(struct device *dev, struct device_attribute *attr, cons
 // sysfs callback function for writing read only values (aka does nothing)
 static ssize_t store_none(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
+    dev_err(dev, "CFG_MGMT %s: what should I do with your data?\n", __func__);
 	return 0;
 }
 
 
-// probe function, called when the remote side establishes a connection with us
-static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
+// sysfs callback for writing to update file, this will (re)create the file structure
+static ssize_t show_update(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	int ret,i;
+    int ret,i;
 	char *str;
+    struct rpmsg_channel *rpdev = container_of(dev, struct rpmsg_channel, dev);
 
-    dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
-    printk(KERN_INFO "probe starts\n");
+    dev_dbg(dev, "CFG_MGMT %s: starting\n", __func__);
+    //dev_dbg(dev, "CFG_MGMT %s: rpdev at 0x%08x   chnl at 0x%08x \n", __func__, (u32)rpdev, (u32)rpmsg_chnl);
 
-	// no request pending
-	memset(&pending_req, 0, sizeof(pending_req));
-	pending_req.type = REQ_NONE;
-	pending_req.ind = -1;
-	response_valid = 0;
+    n_vars = get_n_vars();
 
-	n_vars  = -1;	// don't know yet
-
-	// save the rpmsg channel pointer for use by all other functions
-	rpmsg_chnl = rpdev;
-
-	msg_seq_nr = 0;
-
-	// create sysfs files
-	n_vars = get_n_vars();
-	dev_dbg(&rpdev->dev, "%s: n_vars=%d\n", __func__, n_vars);
+	dev_dbg(dev, "%s: n_vars=%d\n", __func__, n_vars);
 
 	if (n_vars <= 0)
 		return 0;	// nothing todo as there are no vars or we don't know how many there are
 
 	// allocate memory for all data structs
 	ret = alloc_mem();
-	if (ret < 0)
-		return ret;
+	if (ret < 0) {
+        return scnprintf(buf, PAGE_SIZE, "error in alloc_mem: %d\n", ret);
+	}
 
 	// fill the data structs
 	for (i=0; i<n_vars; i++) {
+         // save the index, this is used to identify the var at the other side (BM)
 		cfg_var_attrs[i].index = i;
 		// STEP 1: get the variable name
 		ret = get_var_name(i, tmp_buf, TMP_BUF_LEN);
 		if (ret < 0) {
-			// TODO: free all memory we claimed
+			dev_err(dev,"CFG_MGMT %s: get var name failed for index %d\n", __func__, i);
+			free_mem();
 			return ret;
 		}
 		// get memory to store the name
 		str = kmalloc(ret+1, GFP_KERNEL);
 		if (!str) {
 			free_mem();
-			return -ENOMEM;
+            dev_err(dev,"CFG_MGMT %s: no memory for allocating var name\n", __func__);
+			return scnprintf(buf, PAGE_SIZE, "no memory\n");
 		}
 		// copy name (strcpy is save as we created the buffer for it)
 		strcpy(str, tmp_buf);
@@ -453,17 +472,64 @@ static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
     // create kobj, this will create folders in sysfs and register all attributes
     ret = create_kobjs(rpdev);
     if (ret) {
+        remove_attrs(rpdev);
         free_mem();
+        n_vars = -1;
         dev_err(&rpdev->dev, "CFG_MGMT %s: could not create the sysfs entries: %d\n", __func__, ret);
+        return scnprintf(buf, PAGE_SIZE, "could not create the sysfs entries: %d\n", ret);
+    }
+
+    dev_dbg(dev, "%s: done\n", __func__);
+
+    return scnprintf(buf, PAGE_SIZE, "ok\n");
+}
+
+
+// probe function, called when the remote side establishes a connection with us
+static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
+{
+	int ret;
+
+    dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
+
+	// no request pending
+	memset(&pending_req, 0, sizeof(pending_req));
+	pending_req.type = REQ_NONE;
+	pending_req.ind = -1;
+	response_valid = 0;
+
+	n_vars  = -1;	// don't know yet
+
+	// save the rpmsg channel pointer for use by all other functions
+	rpmsg_chnl = rpdev;
+
+	msg_seq_nr = 0;
+
+    attr_update.show = &show_update;
+    attr_update.store = NULL;
+
+    cfg_mgmt_kobj = kobject_create_and_add("cfg_mgmt", &(rpdev->dev.kobj));
+    if (!cfg_mgmt_kobj) {
+        dev_err(&rpdev->dev, "%s: could not create kobj:\n", __func__);
+        return -ENOMEM;
+    }
+
+    ret = device_create_file(&rpdev->dev, &attr_update);
+    if (ret) {
+        dev_err(&rpdev->dev, "%s: could not create attribute: %d\n", __func__, ret);
         return ret;
     }
 
-    return 0;
+    dev_dbg(&rpdev->dev, "%s: done\n", __func__);
+
+	return 0;
 }
 
 
 static void free_mem()
 {
+    printk(KERN_DEBUG "CFG_MGMT %s: putting kobjs\n", __func__);
+
     if (desc_kobj)
         kobject_put(desc_kobj);
     desc_kobj = NULL;
@@ -483,6 +549,8 @@ static void free_mem()
     if (cfg_mgmt_kobj)
         kobject_put(cfg_mgmt_kobj);
     cfg_mgmt_kobj = NULL;
+
+    printk(KERN_DEBUG "CFG_MGMT %s: freeing memory\n", __func__);
 
     if (attr_grp_val_p)
         kfree(attr_grp_val_p);
@@ -583,13 +651,25 @@ out_nomem:
 	return -ENOMEM;
 }
 
+static int remove_attrs(struct rpmsg_channel *rpdev)
+{
+    dev_dbg(&rpdev->dev, "CFG_MGMT %s: removing attributes\n", __func__);
+    sysfs_remove_group(desc_kobj, attr_grp_desc_p);
+	sysfs_remove_group(max_kobj, attr_grp_max_p);
+	sysfs_remove_group(min_kobj, attr_grp_min_p);
+	sysfs_remove_group(val_kobj, attr_grp_val_p);
+	return 0;
+}
 
 static int create_kobjs(struct rpmsg_channel *rpdev)
 {
     int ret;
-    cfg_mgmt_kobj = kobject_create_and_add("cfg_mgmt", &(rpdev->dev.kobj));
-    if (!cfg_mgmt_kobj)
-        return -ENOMEM;
+    if (!cfg_mgmt_kobj) {
+        dev_err(&rpdev->dev, "CFG_MGMT %s: cfg_mgmt_kobj not created\n", __func__);
+        return -EINVAL;
+    }
+
+    dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating kobjs\n", __func__);
 
     val_kobj = kobject_create_and_add("val", cfg_mgmt_kobj);
     if (!val_kobj)
@@ -608,25 +688,33 @@ static int create_kobjs(struct rpmsg_channel *rpdev)
         return -ENOMEM;
 
     // register attributes with sysfs, this will create the files
-    ret = sysfs_create_group(val_kobj, attr_grp_val_p);
-    if(ret)
-        return ret;
+    if (attr_grp_val_p) {
+        dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating val group\n", __func__);
+        ret = sysfs_create_group(val_kobj, attr_grp_val_p);
+        if(ret)
+            return ret;
+    }
 
-    ret = sysfs_create_group(val_kobj, attr_grp_val_p);
-    if(ret)
-        return ret;
+    if (attr_grp_min_p) {
+            dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating min group\n", __func__);
+        ret = sysfs_create_group(min_kobj, attr_grp_min_p);
+        if(ret)
+            return ret;
+    }
 
-    ret = sysfs_create_group(min_kobj, attr_grp_min_p);
-    if(ret)
-        return ret;
+    if (attr_grp_max_p) {
+        dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating max group\n", __func__);
+        ret = sysfs_create_group(max_kobj, attr_grp_max_p);
+        if(ret)
+            return ret;
+    }
 
-    ret = sysfs_create_group(max_kobj, attr_grp_max_p);
-    if(ret)
-        return ret;
-
-    ret = sysfs_create_group(desc_kobj, attr_grp_desc_p);
-    if(ret)
-        return ret;
+    if (attr_grp_desc_p) {
+        dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating desc group\n", __func__);
+        ret = sysfs_create_group(desc_kobj, attr_grp_desc_p);
+        if(ret)
+            return ret;
+    }
 
     return 0;
 }
@@ -635,6 +723,15 @@ static int create_kobjs(struct rpmsg_channel *rpdev)
 static void cfg_mgmt_remove(struct rpmsg_channel *rpdev)
 {
 	// remove sysfs files
+	dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
+
+    if (n_vars > 0) {
+        remove_attrs(rpdev);
+        free_mem();
+        n_vars = -1;
+    }
+
+	dev_dbg(&rpdev->dev, "%s: done\n",__func__);
 }
 
 
@@ -678,7 +775,7 @@ static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, 
 
 static void __exit cm_exit(void)
 {
-    free_mem(); // make sure we freed our memory
+    //free_mem(); // make sure we freed our memory
 	printk(KERN_INFO "CFG_MGMT: unloading module\n");
 }
 
@@ -722,6 +819,7 @@ static int get_n_vars()
 	{
 		// ok, we got the correct answer, relay it to the user process
 		pending_req.type = REQ_NONE;
+		dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: n_vars is %d\n", __func__, response.val);
 		return response.val;
 	}
 	dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: wrong response to N_VARS: %d\n", __func__, response.type);
@@ -1003,11 +1101,12 @@ static int get_desc(int index, char* buf, int len)
 	}
 
 	if (response.type == RES_DESC) {
-		len--;	// leave space for \0
+		len -= 2;	// leave space for \n and \0
 		if (response.len < len)	// ensure we don't overfill the buffer and leave space for \0
 			len = response.len;
 		// got it, copy to buffer
 		memcpy(buf, response.data, len);
+		buf[len++] = '\n';
 		buf[len] = '\0';	// make it a proper string
 		pending_req.type = REQ_NONE;
 		return len;
