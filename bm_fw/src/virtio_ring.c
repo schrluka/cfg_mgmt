@@ -137,7 +137,7 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
     vr->used->ring[used_idx].id = idx;
     vr->used->ring[used_idx].len = len;
 
-    //dmb();  // ensure memory writes are ordered.
+    // ensure memory writes are ordered.
     dsb();
     //__asm__ __volatile__ ("dsb" ::: "memory");
 
@@ -145,8 +145,8 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
     vr->used->idx++;
 
     dsb();  // wait until the CPU has updated the memory
-    //__asm__  __volatile__  ("dsb" ::: "memory");
-    Xil_L1DCacheFlush();    // make sure data arrives at the other end
+    // cache are disabled by MMU
+    //Xil_L1DCacheFlush();    // make sure data arrives at the other end
 
     if (vr->dbg_print)
     {

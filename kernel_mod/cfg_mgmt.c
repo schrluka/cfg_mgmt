@@ -42,8 +42,10 @@
 #include <asm/uaccess.h>
 //#include <asm/io.h>
 #include <linux/rpmsg.h>
-#include <linux/sysfs.h>
+//#include <linux/sysfs.h>
 #include <linux/string.h>
+#include <linux/debugfs.h>
+//#include <linux/dcache.h>
 
 #include "cfg_mgmt.h"
 
@@ -64,6 +66,11 @@
 // define size of general kernel space buffer
 // use this only for temporary copy operations, not preserved between func calls
 #define TMP_BUF_LEN 		MSG_DATA_SIZE
+
+// file IOs are made to a buffer in kernel space, define its length
+// as we read/write up to the max transport capability of the underlying comm channel reserver this amount
+#define IO_BUF_SIZE         MSG_DATA_SIZE
+
 
 // request and response types (codes) for communication with bare metal firmware (type field in  cfgReq_t)
 #define REQ_NOP        0       // do nothing
@@ -110,6 +117,7 @@ typedef struct __attribute__((packed))       // make sure it has no holes (kerne
 
 
 // collection of all sysfs attributes (files) for one config variable)
+/*
 struct cfg_var_sysfs_attrs
 {
 	struct device_attribute	val;	// current value
@@ -117,10 +125,24 @@ struct cfg_var_sysfs_attrs
 	struct device_attribute	max;	// maximum (read only)
 	struct device_attribute	desc;	// description (read only)
 	int index;						// used to identify this on the remote side
+}; */
+
+// define an enum which tells the read/write functions what aspect of a var is accessed
+typedef enum {ACC_VAL, ACC_MIN, ACC_MAX, ACC_DESC} access_t;
+
+// group the information about a variable access (this is passed to the file io functions
+// through the inode private data pointer)
+struct var_access_info {
+    int index;
+    access_t type;
 };
 
-
-
+// buffer for IO manipulation by user (reading / writing a file changes this)
+struct file_io_buf {
+    ssize_t len;                // length of string in buf
+    char buf[IO_BUF_SIZE];
+    bool dirty;                 // true if buffer was modified
+};
 
 
 /******************************************************************************************************************
@@ -133,27 +155,21 @@ static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, 
 
 static int get_n_vars(void);
 static int get_var_name(int index, char* buf, int len);
-static int get_val(int index, u32* val);
+static int get_val(int index, s32* val);
 static int set_val(int index, s32 val);
-static int get_min(int index, u32* val);
-static int get_max(int index, u32* val);
+static int get_min(int index, s32* val);
+static int get_max(int index, s32* val);
 static int get_desc(int index, char* buf, int len);
 
-static void free_mem(void);
 static int alloc_mem(void);
-static int remove_attrs(struct rpmsg_channel *rpdev);
-static int create_kobjs(struct rpmsg_channel *rpdev);
+static void free_mem(void);
 
-// sysfs callbacks
-static ssize_t show_val(struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t show_min(struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t show_max(struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t show_desc(struct device *dev, struct device_attribute *attr, char *buf);
-//static ssize_t show_n_vars (struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t show_update(struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t store_val(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
-static ssize_t store_none(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
-//static ssize_t store_update(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+static int debugfs_open_var(struct inode *inod, struct file *filp);
+static ssize_t debugfs_read_var(struct file *filp, char *buff, size_t len, loff_t *off);
+static ssize_t debugfs_write_var(struct file *filp, const char *buff, size_t len, loff_t *ppos);
+static int debugfs_release_var(struct inode *inod, struct file *filp);
+
+static ssize_t debugfs_read_update(struct file *filp, char *buff, size_t len, loff_t *off);
 
 
 
@@ -204,36 +220,37 @@ u32 msg_seq_nr;
 // number of variables exported via sysfs (after a query to remote side)
 static int n_vars;
 
+// DEBUGFS elements for exporting the variables
+// directories
+static struct dentry* cfg_mgmt_dir_p;
+static struct dentry* val_dir_p;
+static struct dentry* min_dir_p;
+static struct dentry* max_dir_p;
+static struct dentry* desc_dir_p;
 
-// sysfs data structures
+static struct dentry* update_file_p;
 
-// array (dyn allocation) of all attribute groups, has n_vars entries
-struct cfg_var_sysfs_attrs *cfg_var_attrs;
+// array of all variables access associated with the files, n_vars entries each
+static struct var_access_info* val_access;
+static struct var_access_info* min_access;
+static struct var_access_info* max_access;
+static struct var_access_info* desc_access;
 
-// array of pointers to all value attributes
-static struct attribute **attrs_val;
-// array of pointers to all minimum attributes
-static struct attribute **attrs_min;
-// array of pointers to all maximum attributes
-static struct attribute **attrs_max;
-// array of pointers to all description attributes
-static struct attribute **attrs_desc;
+static struct file_operations fops_var = {
+    .owner      = THIS_MODULE,
+    .open       = &debugfs_open_var,
+    .read       = &debugfs_read_var,
+	.write      = &debugfs_write_var,
+	.release    = &debugfs_release_var,
+};
 
-// attribute groups, required by sysfs
-static struct attribute_group* attr_grp_val_p;
-static struct attribute_group* attr_grp_min_p;
-static struct attribute_group* attr_grp_max_p;
-static struct attribute_group* attr_grp_desc_p;
-
-// kobjects, these represent folders in sysfs
-static struct kobject *cfg_mgmt_kobj;
-static struct kobject *val_kobj;
-static struct kobject *min_kobj;
-static struct kobject *max_kobj;
-static struct kobject *desc_kobj;
-
-//static struct device_attribute attr_n_vars = {.attr.name = "n_vars", /*.attr.owner = THIS_MODULE,*/ .attr.mode=0444};
-static struct device_attribute attr_update = {.attr.name = "update", /*.attr.owner = THIS_MODULE,*/ .attr.mode=0444};
+// file operations for update file
+static struct file_operations fops_update = {
+    .owner  = THIS_MODULE,
+    .read   = &debugfs_read_update,
+	//.open = dev_open,
+	//.write = debugfs_write_var,   read only
+};
 
 
 
@@ -246,20 +263,15 @@ static int __init cm_init(void)
 {
 	printk(KERN_INFO "CFG_MGMT: Loading configuration variable managment module\n");
 
-    cfg_var_attrs = NULL;
-    attrs_val = NULL;
-    attrs_min = NULL;
-    attrs_max = NULL;
-    attrs_desc = NULL;
-    attr_grp_val_p = NULL;
-    attr_grp_min_p = NULL;
-    attr_grp_max_p = NULL;
-    attr_grp_desc_p = NULL;
-    cfg_mgmt_kobj = NULL;
-    val_kobj = NULL;
-    min_kobj = NULL;
-    max_kobj = NULL;
-    desc_kobj = NULL;
+    cfg_mgmt_dir_p = NULL;
+    val_dir_p = NULL;
+    min_dir_p = NULL;
+    max_dir_p = NULL;
+    desc_dir_p = NULL;
+    val_access = NULL;
+    min_access = NULL;
+    max_access = NULL;
+    desc_access = NULL;
 
     // no request pending
 	memset(&pending_req, 0, sizeof(pending_req));
@@ -275,222 +287,208 @@ static int __init cm_init(void)
 	return register_rpmsg_driver(&cfg_mgmt_rpmsg_drv);
 }
 
-
-// helper function to read (kernel to user) a variable's value
-static ssize_t show_val (struct device *dev, struct device_attribute *attr, char *buf)
+// when a file is opened query the current value and print it into a string buffer
+static int debugfs_open_var(struct inode *inod, struct file *filp)
 {
-    int v, ret;
-	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, val);
-	// query the value from the bare metal application
-	//if (dev)
-    //    dev_dbg(dev, "CFG_MGMT %s: reading value for index %d\n", __func__, a->index);
-    //else {
-    //    printk(KERN_ERR "CFG_MGMT %s: dev is NULL\n", __func__);
-    //}
-	ret = get_val(a->index, &v);
-	if (ret)
-		return scnprintf(buf, PAGE_SIZE, "error: %d\n", ret);
+    int ret;
+    s32 v;
+    struct file_io_buf* iobuf;
+    struct var_access_info* acc_p = inod->i_private;
 
-	// return it in human readable form
-	return scnprintf(buf, PAGE_SIZE, "%d\n", v);
+    dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: index %d\n", __func__, acc_p->index);
+    // get memory for a local kernel buffer
+    iobuf = kzalloc(sizeof(*iobuf), GFP_KERNEL);
+    if (!iobuf)
+        return -ENOMEM;
+
+    // check if the file is opened for reading
+    if (filp->f_mode&FMODE_READ) {
+        // query the value and print it to a local (kernel space) buffer
+        switch (acc_p->type) {
+        case ACC_VAL:
+            ret = get_val(acc_p->index, &v);
+            if (ret)
+                return ret;
+            iobuf->len = scnprintf(iobuf->buf, IO_BUF_SIZE, "%d\n", v);
+            break;
+        case ACC_MIN:
+            ret = get_min(acc_p->index, &v);
+            if (ret)
+                return ret;
+            iobuf->len = scnprintf(iobuf->buf, IO_BUF_SIZE, "%d\n", v);
+            break;
+        case ACC_MAX:
+            ret = get_max(acc_p->index, &v);
+            if (ret)
+                return ret;
+            iobuf->len = scnprintf(iobuf->buf, IO_BUF_SIZE, "%d\n", v);
+            break;
+        case ACC_DESC:
+            ret = get_desc(acc_p->index, iobuf->buf, IO_BUF_SIZE);
+            if (ret < 0)
+                return ret;
+            iobuf->len = ret;
+            break;
+        default:
+            dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: unknown access type\n", __func__);
+            return -EINVAL;
+        }
+    }
+
+    // store a pointer to this buffer in the file structure where read/write functions can use it
+    filp->private_data = (void*)iobuf;
+    return 0;
+}
+
+static ssize_t debugfs_read_var(struct file *filp, char *buff, size_t len, loff_t *ppos)
+{
+    // use a simple helper to allow the user process to read our buffer
+    struct file_io_buf* iobuf;
+    iobuf = filp->private_data;
+    dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: len %d, ppos %lld\n", __func__, len, *ppos);
+    return simple_read_from_buffer(buff, len, ppos, iobuf->buf, iobuf->len);
 }
 
 
-// helper function to read (kernel to user) a variable's minimum
-static ssize_t show_min (struct device *dev, struct device_attribute *attr, char *buf)
+static ssize_t debugfs_write_var(struct file *filp, const char *buff, size_t len, loff_t *ppos)
 {
-	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, min);
-	// query the value from the bare metal application
-	u32 v;
-	int ret = get_min(a->index, &v);
-	if (ret)
-		return scnprintf(buf, PAGE_SIZE, "error: %d\n", ret);
-
-	// return it in human readable form
-	return scnprintf(buf, PAGE_SIZE, "%d\n", v);
+    // use a simple helper to allow the user process to write our buffer
+    struct file_io_buf* iobuf;
+    iobuf = filp->private_data;
+    dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: len %d, ppos %lld\n", __func__, len, *ppos);
+    iobuf->dirty = true;    // buffer is now modified
+    return simple_write_to_buffer(iobuf->buf, IO_BUF_SIZE, ppos, (void*)buff, len);
 }
 
 
-// helper function to read (kernel to user) a variable's minimum
-static ssize_t show_max (struct device *dev, struct device_attribute *attr, char *buf)
-{
-	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, max);
-	// query the value from the bare metal application
-	u32 v;
-	int ret = get_max(a->index, &v);
-	if (ret)
-		return scnprintf(buf, PAGE_SIZE, "error: %d\n", ret);
-
-	// return it in human readable form
-	return scnprintf(buf, PAGE_SIZE, "%d\n", v);
-}
-
-
-// helper function to read (kernel to user) a variable's description
-static ssize_t show_desc(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, desc);
-	// query the value from the bare metal application
-	int len = PAGE_SIZE;
-	return get_desc(a->index, buf, len);
-}
-
-
-// helper function to read (kernel to user) the number of variables
-/*
-static ssize_t show_n_vars (struct device *dev, struct device_attribute *attr, char *buf)
-{
-	// convert to the config variable struct this attribute belongs to
-	dev_dbg(dev, "CFG_MGMT %s: querying n_vars\n", __func__);
-
-	// query the value from the bare metal application
-	// and return it in human readable form
-	return scnprintf(buf, PAGE_SIZE, "%d\n", get_n_vars());
-} */
-
-
-// helper function for sysfs to write a new variable value
-static ssize_t store_val(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+static int debugfs_release_var(struct inode *inod, struct file *filp)
 {
     int ret;
     long v;
+    struct file_io_buf* iobuf = filp->private_data;
+    struct var_access_info* acc_p = inod->i_private;
 
-	// convert to the config variable struct this attribute belongs to
-	struct cfg_var_sysfs_attrs *a = container_of(attr, struct cfg_var_sysfs_attrs, val);
-    // make sure the string is properly terminated
-    //if (count == PAGE_SIZE) // should never happen, but make sure
-    //    count--;
-    //buf[count] = '\0';
+	dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: private at 0x%08x\n", __func__, (int)(filp->private_data));
 
-    ret = kstrtol(buf, 0, &v);	// parse user's string
-	if (ret) {
-        dev_err(dev, "CFG_MGMT %s: can't parse string: %d\n", __func__, ret);
-        print_hex_dump(KERN_DEBUG, "  str: ", DUMP_PREFIX_NONE, 16, 1, buf, count, true);
-		return -1;
-	}
-	// trigger a write at the BM application
-	ret = set_val(a->index, v);
-	if (ret) {
-        dev_err(dev, "CFG_MGMT %s: set_val failed: %d\n", __func__, ret);
-		return -1;	// TODO: what is the supposed error handling here?
-	}
-	return (count);	// TODO: what should we return here?
-}
+    if (!iobuf)
+        return -EINVAL; // should never happen
 
-
-// sysfs callback function for writing read only values (aka does nothing)
-static ssize_t store_none(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
-{
-    dev_err(dev, "CFG_MGMT %s: what should I do with your data?\n", __func__);
+    // write the value back if the file was opened for writing
+    if ((filp->f_mode&FMODE_WRITE) && (iobuf->dirty)) {
+        if (acc_p->type != ACC_VAL) {
+            dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: attempting to write anything other then variable value\n", __func__);
+            return -EINVAL;
+        }
+        // convert string to integer
+        ret = kstrtol(iobuf->buf, 0, &v);
+        if (ret) {
+            dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: can't parse string '%s' %d\n", __func__, iobuf->buf, ret);
+            return ret;
+        }
+        dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: writing val %ld to index %d\n", __func__, v, acc_p->index);
+        // write the new value to the BM application
+        ret = set_val(acc_p->index, v);
+        if (ret) {
+            dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: can't set new value: %d\n", __func__, ret);
+            return ret;
+        }
+    }
+    // remove the io buffer, no longer need it as the file is closed
+    kfree(iobuf);
 	return 0;
 }
 
 
-// sysfs callback for writing to update file, this will (re)create the file structure
-static ssize_t show_update(struct device *dev, struct device_attribute *attr, char *buf)
+// create the required debugfs directories
+static int create_debugfs_dirs(void)
+{
+    if (!cfg_mgmt_dir_p) {
+        dev_err(&rpmsg_chnl->dev, "CFG_MGMT %s: no parent directory\n", __func__);
+        return -ENOENT;
+    }
+
+    val_dir_p = debugfs_create_dir("val", cfg_mgmt_dir_p);
+    min_dir_p = debugfs_create_dir("min", cfg_mgmt_dir_p);
+    max_dir_p = debugfs_create_dir("max", cfg_mgmt_dir_p);
+    desc_dir_p = debugfs_create_dir("desc", cfg_mgmt_dir_p);
+
+    return 0;
+}
+
+
+// callback for read call to update file, this will (re)create the file structure
+//static ssize_t show_update(struct device *dev, struct device_attribute *attr, char *buf)
+static ssize_t debugfs_read_update(struct file *filp, char *buff, size_t len, loff_t *off)
 {
     int ret,i;
-	char *str;
-    struct rpmsg_channel *rpdev = container_of(dev, struct rpmsg_channel, dev);
+    struct device* dev = &rpmsg_chnl->dev;  // abbrevation
 
     dev_dbg(dev, "CFG_MGMT %s: starting\n", __func__);
-    //dev_dbg(dev, "CFG_MGMT %s: rpdev at 0x%08x   chnl at 0x%08x \n", __func__, (u32)rpdev, (u32)rpmsg_chnl);
+
+    if (n_vars > 0) {
+        return copy_to_user(buff, "already done\n", 14);
+    }
 
     n_vars = get_n_vars();
 
 	dev_dbg(dev, "%s: n_vars=%d\n", __func__, n_vars);
 
 	if (n_vars <= 0)
-		return 0;	// nothing todo as there are no vars or we don't know how many there are
+		return -EINVAL;	// nothing todo as there are no vars or we don't know how many there are
 
-	// allocate memory for all data structs
-	ret = alloc_mem();
+    ret = alloc_mem();  // get memory for global arrays
+    if (ret) {
+        n_vars = -1;
+        return ret;
+    }
+
+	// allocate directories
+	ret = create_debugfs_dirs();
 	if (ret < 0) {
-        return scnprintf(buf, PAGE_SIZE, "error in alloc_mem: %d\n", ret);
+        dev_err(dev," CFG_MGMT %s: can't create directories: %d\n", __func__, ret);
+        return -ENOENT;
 	}
 
-	// fill the data structs
+    // fill the data structs
 	for (i=0; i<n_vars; i++) {
-         // save the index, this is used to identify the var at the other side (BM)
-		cfg_var_attrs[i].index = i;
-		// STEP 1: get the variable name
-		ret = get_var_name(i, tmp_buf, TMP_BUF_LEN);
+        val_access[i].index = i; // save it for use by file io functions
+        min_access[i].index = i;
+        max_access[i].index = i;
+        desc_access[i].index = i;
+        // specify what kind of access it is
+        val_access[i].type = ACC_VAL;
+        min_access[i].type = ACC_MIN;
+        max_access[i].type = ACC_MAX;
+        desc_access[i].type = ACC_DESC;
+        // get the variable name
+        ret = get_var_name(i, tmp_buf, TMP_BUF_LEN);
 		if (ret < 0) {
-			dev_err(dev,"CFG_MGMT %s: get var name failed for index %d\n", __func__, i);
-			free_mem();
+			dev_err(dev, "CFG_MGMT %s: get var name failed for index %d\n", __func__, i);
+			// TODO: cleanup
 			return ret;
 		}
-		// get memory to store the name
-		str = kmalloc(ret+1, GFP_KERNEL);
-		if (!str) {
-			free_mem();
-            dev_err(dev,"CFG_MGMT %s: no memory for allocating var name\n", __func__);
-			return scnprintf(buf, PAGE_SIZE, "no memory\n");
-		}
-		// copy name (strcpy is save as we created the buffer for it)
-		strcpy(str, tmp_buf);
-		// TODO: is this really possible, the name is not constant!?!?!
-		cfg_var_attrs[i].val.attr.name = (void*)str;
-		// set the same name for all the sysfs attributes
-		cfg_var_attrs[i].min.attr.name = cfg_var_attrs[i].val.attr.name;
-		cfg_var_attrs[i].max.attr.name = cfg_var_attrs[i].val.attr.name;
-		cfg_var_attrs[i].desc.attr.name = cfg_var_attrs[i].val.attr.name;
-		// SETP 2: set owner and access rights
-		//cfg_var_attrs[i].val.attr.owner = THIS_MODULE;
-		//cfg_var_attrs[i].min.attr.owner = THIS_MODULE;
-		//cfg_var_attrs[i].max.attr.owner = THIS_MODULE;
-		//cfg_var_attrs[i].desc.attr.owner = THIS_MODULE;
-		cfg_var_attrs[i].val.attr.mode = 0666;	// read and write
-		cfg_var_attrs[i].min.attr.mode = 0444;  // others: read only
-		cfg_var_attrs[i].max.attr.mode = 0444;
-		cfg_var_attrs[i].desc.attr.mode = 0444;
-		// STEP 3: callbacks
-		cfg_var_attrs[i].val.show = &show_val;
-		cfg_var_attrs[i].min.show = &show_min;
-		cfg_var_attrs[i].max.show = &show_max;
-		cfg_var_attrs[i].desc.show = &show_desc;
-		cfg_var_attrs[i].val.store = &store_val;
-		cfg_var_attrs[i].min.store = &store_none;
-		cfg_var_attrs[i].max.store = &store_none;
-		cfg_var_attrs[i].desc.store = &store_none;
-		// STEP 4: setup entries in pointer arrays for sysfs
-		attrs_val[i] = &(cfg_var_attrs[i].val.attr);
-		attrs_min[i] = &(cfg_var_attrs[i].min.attr);
-		attrs_max[i] = &(cfg_var_attrs[i].max.attr);
-		attrs_desc[i] = &(cfg_var_attrs[i].desc.attr);
+		// create all files for this variable, save index
+        debugfs_create_file(tmp_buf, 0666, val_dir_p, (void*)(&val_access[i]),
+				       &fops_var);
+        debugfs_create_file(tmp_buf, 0444, min_dir_p, (void*)(&min_access[i]),
+				       &fops_var);
+        debugfs_create_file(tmp_buf, 0444, max_dir_p, (void*)(&max_access[i]),
+				       &fops_var);
+        debugfs_create_file(tmp_buf, 0444, desc_dir_p, (void*)(&desc_access[i]),
+				       &fops_var);
 	}
-	// init the sysfs groups
-	attr_grp_val_p->attrs = attrs_val;
-	attr_grp_min_p->attrs = attrs_min;
-	attr_grp_max_p->attrs = attrs_max;
-	attr_grp_desc_p->attrs = attrs_desc;
-
-    // create kobj, this will create folders in sysfs and register all attributes
-    ret = create_kobjs(rpdev);
-    if (ret) {
-        remove_attrs(rpdev);
-        free_mem();
-        n_vars = -1;
-        dev_err(&rpdev->dev, "CFG_MGMT %s: could not create the sysfs entries: %d\n", __func__, ret);
-        return scnprintf(buf, PAGE_SIZE, "could not create the sysfs entries: %d\n", ret);
-    }
 
     dev_dbg(dev, "%s: done\n", __func__);
 
-    return scnprintf(buf, PAGE_SIZE, "ok\n");
+    return simple_read_from_buffer(buff, len, off, "ok\n", 3);
+
 }
 
 
 // probe function, called when the remote side establishes a connection with us
 static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
 {
-	int ret;
-
-    dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
+	dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
 
 	// no request pending
 	memset(&pending_req, 0, sizeof(pending_req));
@@ -505,229 +503,83 @@ static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
 
 	msg_seq_nr = 0;
 
-    attr_update.show = &show_update;
-    attr_update.store = NULL;
+    // create a new directory in debugfs for our module
+    cfg_mgmt_dir_p = debugfs_create_dir("cfg_mgmt", NULL);
+    if (!cfg_mgmt_dir_p || (cfg_mgmt_dir_p<0)) {
+        dev_err(&rpdev->dev, "CFG_MGMT %s: can't create debugfs directory: %d\n", __func__, (int)cfg_mgmt_dir_p);
+        cfg_mgmt_dir_p = NULL;
+        return -ENOENT;
+    }
 
-    cfg_mgmt_kobj = kobject_create_and_add("cfg_mgmt", &(rpdev->dev.kobj));
-    if (!cfg_mgmt_kobj) {
-        dev_err(&rpdev->dev, "%s: could not create kobj:\n", __func__);
+    // create the update file, reading it will trigger a generation of the variable files
+    update_file_p = debugfs_create_file("update", 0444, cfg_mgmt_dir_p, NULL, &fops_update);
+
+    dev_dbg(&rpdev->dev, "CFG_MGMT %s: done\n", __func__);
+	return 0;
+}
+
+static int alloc_mem(void)
+{
+    struct device* dev = &rpmsg_chnl->dev;  // abbrevation
+    val_access = kmalloc(sizeof(*val_access)*n_vars, GFP_KERNEL);
+    if (!val_access) {
+        dev_err(dev, "CFG_MGMT %s: no memory\n", __func__);
         return -ENOMEM;
     }
 
-    ret = device_create_file(&rpdev->dev, &attr_update);
-    if (ret) {
-        dev_err(&rpdev->dev, "%s: could not create attribute: %d\n", __func__, ret);
-        return ret;
+    min_access = kmalloc(sizeof(*min_access)*n_vars, GFP_KERNEL);
+    if (!min_access) {
+        dev_err(dev, "CFG_MGMT %s: no memory\n", __func__);
+        return -ENOMEM;
     }
 
-    dev_dbg(&rpdev->dev, "%s: done\n", __func__);
+    max_access = kmalloc(sizeof(*max_access)*n_vars, GFP_KERNEL);
+    if (!max_access) {
+        dev_err(dev, "CFG_MGMT %s: no memory\n", __func__);
+        return -ENOMEM;
+    }
 
-	return 0;
+    desc_access = kmalloc(sizeof(*desc_access)*n_vars, GFP_KERNEL);
+    if (!desc_access) {
+        dev_err(dev, "CFG_MGMT %s: no memory\n", __func__);
+        return -ENOMEM;
+    }
+    return 0;
 }
 
 
 static void free_mem()
 {
-    printk(KERN_DEBUG "CFG_MGMT %s: putting kobjs\n", __func__);
+    printk(KERN_DEBUG "CFG_MGMT %s: freeing mem\n", __func__);
 
-    if (desc_kobj)
-        kobject_put(desc_kobj);
-    desc_kobj = NULL;
+    if (cfg_mgmt_dir_p)
+        debugfs_remove_recursive(cfg_mgmt_dir_p);
+    cfg_mgmt_dir_p = NULL;
 
-    if (max_kobj)
-        kobject_put(max_kobj);
-    max_kobj = NULL;
+    if (val_access)
+        kfree(val_access);
+    val_access = NULL;
 
-    if (min_kobj)
-        kobject_put(min_kobj);
-    min_kobj = NULL;
+    if (min_access)
+        kfree(min_access);
+    min_access = NULL;
 
-    if (val_kobj)
-        kobject_put(val_kobj);
-    val_kobj = NULL;
+    if (max_access)
+        kfree(max_access);
+    max_access = NULL;
 
-    if (cfg_mgmt_kobj)
-        kobject_put(cfg_mgmt_kobj);
-    cfg_mgmt_kobj = NULL;
-
-    printk(KERN_DEBUG "CFG_MGMT %s: freeing memory\n", __func__);
-
-    if (attr_grp_val_p)
-        kfree(attr_grp_val_p);
-	attr_grp_val_p = NULL;
-    if (attr_grp_max_p)
-        kfree(attr_grp_max_p);
-	attr_grp_max_p = NULL;
-    if (attr_grp_min_p)
-        kfree(attr_grp_min_p);
-	attr_grp_min_p = NULL;
-    if (attr_grp_val_p)
-        kfree(attr_grp_val_p);
-	attr_grp_min_p = NULL;
-    if (attrs_desc)
-        kfree(attrs_desc);
-	attrs_desc = NULL;
-    if (attrs_max)
-        kfree(attrs_max);
-	attrs_max = NULL;
-    if (attrs_min)
-        kfree(attrs_min);
-	attrs_min = NULL;
-    if (attrs_val)
-        kfree(attrs_val);
-	attrs_val = NULL;
-    if (cfg_var_attrs)
-        kfree(cfg_var_attrs);
-	cfg_var_attrs = NULL;
-}
-
-
-// allocate required memory
-// this is separate function to improve readability
-static int alloc_mem()
-{
-	// get memory for the data structures required by sysfs
-	cfg_var_attrs = kzalloc(sizeof(cfg_var_attrs)*n_vars, GFP_KERNEL);
-	if (!cfg_var_attrs)
-		goto out_nomem;
-	// one extra element for the null termination
-	attrs_val = kzalloc(sizeof(void*)*(n_vars+1), GFP_KERNEL);
-	if (!attrs_val)
-		goto out_cfg_var_attrs;
-	attrs_min = kzalloc(sizeof(void*)*(n_vars+1), GFP_KERNEL);
-	if (!attrs_min)
-		goto out_attrs_val;
-	attrs_max = kzalloc(sizeof(void*)*(n_vars+1), GFP_KERNEL);
-	if (!attrs_max)
-		goto out_attrs_min;
-	attrs_desc = kzalloc(sizeof(void*)*(n_vars+1), GFP_KERNEL);
-	if (!attrs_desc) {
-		n_vars = -1;
-		goto out_attrs_max;
-	}
-
-	attr_grp_val_p = kzalloc(sizeof(*attr_grp_val_p), GFP_KERNEL);
-	if (!attr_grp_val_p)
-		goto out_attrs_desc;
-	attr_grp_min_p = kzalloc(sizeof(*attr_grp_min_p), GFP_KERNEL);
-	if (!attr_grp_min_p)
-		goto out_grp_val;
-	attr_grp_max_p = kzalloc(sizeof(*attr_grp_max_p), GFP_KERNEL);
-	if (!attr_grp_max_p)
-		goto out_grp_min;
-	attr_grp_desc_p = kzalloc(sizeof(*attr_grp_desc_p), GFP_KERNEL);
-	if (!attr_grp_desc_p)
-		goto out_grp_max;
-
-	// ok, we got all the memory we need
-	return 0;
-
-out_grp_max:
-	kfree(attr_grp_max_p);
-	attr_grp_max_p = NULL;
-out_grp_min:
-	kfree(attr_grp_min_p);
-	attr_grp_min_p = NULL;
-out_grp_val:
-	kfree(attr_grp_val_p);
-	attr_grp_min_p = NULL;
-out_attrs_desc:
-	kfree(attrs_desc);
-	attrs_desc = NULL;
-out_attrs_max:
-	kfree(attrs_max);
-	attrs_max = NULL;
-out_attrs_min:
-	kfree(attrs_min);
-	attrs_min = NULL;
-out_attrs_val:
-	kfree(attrs_val);
-	attrs_val = NULL;
-out_cfg_var_attrs:
-	kfree(cfg_var_attrs);
-	cfg_var_attrs = NULL;
-out_nomem:
-	n_vars = -1;
-	return -ENOMEM;
-}
-
-static int remove_attrs(struct rpmsg_channel *rpdev)
-{
-    dev_dbg(&rpdev->dev, "CFG_MGMT %s: removing attributes\n", __func__);
-    sysfs_remove_group(desc_kobj, attr_grp_desc_p);
-	sysfs_remove_group(max_kobj, attr_grp_max_p);
-	sysfs_remove_group(min_kobj, attr_grp_min_p);
-	sysfs_remove_group(val_kobj, attr_grp_val_p);
-	return 0;
-}
-
-static int create_kobjs(struct rpmsg_channel *rpdev)
-{
-    int ret;
-    if (!cfg_mgmt_kobj) {
-        dev_err(&rpdev->dev, "CFG_MGMT %s: cfg_mgmt_kobj not created\n", __func__);
-        return -EINVAL;
-    }
-
-    dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating kobjs\n", __func__);
-
-    val_kobj = kobject_create_and_add("val", cfg_mgmt_kobj);
-    if (!val_kobj)
-        return -ENOMEM;
-
-    min_kobj = kobject_create_and_add("min", cfg_mgmt_kobj);
-    if (!min_kobj)
-        return -ENOMEM;
-
-    max_kobj = kobject_create_and_add("max", cfg_mgmt_kobj);
-    if (!max_kobj)
-        return -ENOMEM;
-
-    desc_kobj = kobject_create_and_add("desc", cfg_mgmt_kobj);
-    if (!desc_kobj)
-        return -ENOMEM;
-
-    // register attributes with sysfs, this will create the files
-    if (attr_grp_val_p) {
-        dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating val group\n", __func__);
-        ret = sysfs_create_group(val_kobj, attr_grp_val_p);
-        if(ret)
-            return ret;
-    }
-
-    if (attr_grp_min_p) {
-            dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating min group\n", __func__);
-        ret = sysfs_create_group(min_kobj, attr_grp_min_p);
-        if(ret)
-            return ret;
-    }
-
-    if (attr_grp_max_p) {
-        dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating max group\n", __func__);
-        ret = sysfs_create_group(max_kobj, attr_grp_max_p);
-        if(ret)
-            return ret;
-    }
-
-    if (attr_grp_desc_p) {
-        dev_dbg(&rpdev->dev, "CFG_MGMT %s: creating desc group\n", __func__);
-        ret = sysfs_create_group(desc_kobj, attr_grp_desc_p);
-        if(ret)
-            return ret;
-    }
-
-    return 0;
+    if (desc_access)
+        kfree(desc_access);
+    desc_access = NULL;
 }
 
 
 static void cfg_mgmt_remove(struct rpmsg_channel *rpdev)
 {
-	// remove sysfs files
 	dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
 
     if (n_vars > 0) {
-        remove_attrs(rpdev);
-        free_mem();
+        free_mem(); // remove all files and free memory
         n_vars = -1;
     }
 
@@ -765,8 +617,6 @@ static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, 
 		dev_info(&rpdev->dev, "CFG_MGMT %s: received reply: seq=%d, ind=%d, val=%d.\n", __func__, response.seq, response.ind, response.val);
 	}
 
-
-
 	// wake the sleeping context
 	response_valid = 1;
 	wake_up_interruptible(&usr_wait_q);
@@ -777,6 +627,7 @@ static void __exit cm_exit(void)
 {
     //free_mem(); // make sure we freed our memory
 	printk(KERN_INFO "CFG_MGMT: unloading module\n");
+	unregister_rpmsg_driver(&cfg_mgmt_rpmsg_drv);
 }
 
 
@@ -882,7 +733,7 @@ static int get_var_name(int index, char* buf, int len)
 
 // query a variable value
 // returns 0 on success or a neg error code
-static int get_val(int index, u32* val)
+static int get_val(int index, s32* val)
 {
     int ret;
 	// make sure no request is pending
@@ -973,7 +824,7 @@ static int set_val(int index, s32 val)
 
 // query a variable's minimum (lower limit)
 // returns 0 on success or a neg error code
-static int get_min(int index, u32* val)
+static int get_min(int index, s32* val)
 {
     int ret;
 	// make sure no request is pending
@@ -1020,7 +871,7 @@ static int get_min(int index, u32* val)
 
 // query a variable maximum (upper limit)
 // returns 0 on success or a neg error code
-static int get_max(int index, u32* val)
+static int get_max(int index, s32* val)
 {
     int ret;
 	// make sure no request is pending
@@ -1128,6 +979,7 @@ static int get_desc(int index, char* buf, int len)
 // specify init / exit functions
 module_init(cm_init);
 module_exit(cm_exit);
+
 
 
 /******************************************************************************************************************

@@ -51,6 +51,8 @@
 
 // pointer to GPIO module with LEDS. CAVE: can't read current value, no HW support for this, thanks xilinx!
 volatile uint32_t* const pLed = (void*)(0x41200000);
+// pointer to GPIO module for switch signals (simple test)
+volatile uint32_t* const p_sw = (void*)(0x41200008);
 
 // Instance of the interrupt controller driver's data structure, this contains all information required by the driver
 XScuGic IntcInst;
@@ -76,6 +78,7 @@ void irq_init();
 int main(void)
 {
     int i=0;
+    int busy;
 
     (*pLed) = 1;    // led uses neg logic
 
@@ -100,11 +103,12 @@ int main(void)
 
     while(1)
     {
+        busy = 0;
         // periodically call the rpmsg workhorse
-        rpmsg_poll();
+        busy |= rpmsg_poll();
 
         i++;
-        if (i == 5000000)
+        if (i == 1500)
         {
             i = 0;
             // show the variable values
@@ -114,6 +118,15 @@ int main(void)
             xil_printf("var1: %d  ", v);
             cfgGetValId(CFG_VAR_2, &v);
             xil_printf("var2: %d\n", v);
+        }
+
+        // update switch signals
+        cfgGetValId(CFG_SW_TEST, p_sw);
+
+        // go to sleep to save energy
+        if (!busy)
+        {
+            __asm__ __volatile__ ("wfe" ::: "memory");
         }
     }
 }

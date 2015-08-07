@@ -24,7 +24,7 @@
 
 
 // enable debug message printing
-#define DBG_MSG
+//#define DBG_MSG
 
 extern uint32_t *pLed;
 
@@ -162,7 +162,7 @@ static int txvring_task(void)
     if (kicked) {
         // the kernel has sent us something, invalidate our L1 cache to get new data
         xil_printf("received TX kick\n");
-        Xil_L1DCacheFlush();
+        //Xil_L1DCacheFlush();
     }
     return kicked;
 }
@@ -188,7 +188,7 @@ static int rxvring_task()
     if (kicked) {
         // the kernel has sent us data, invalidate our L1 cache to get new data
         // theoretically the cache is turned off so this should not be required
-        Xil_L1DCacheFlush();
+        //Xil_L1DCacheFlush();
 
         xil_printf("checking rx vring\n");
         // process all messages
@@ -296,8 +296,9 @@ void read_message(void)
     // load address of the buffer associated with this descriptor
     struct rpmsg_hdr *hdr = (struct rpmsg_hdr *)(rx_vring.desc[index].addr);
 
-     // make sure no old data is in our local L1 cache
-    Xil_L1DCacheFlushRange((uint32_t)hdr, PACKET_LEN_MAX);
+    // make sure no old data is in our local L1 cache
+    // caches are disabled by MMU
+    //Xil_L1DCacheFlushRange((uint32_t)hdr, PACKET_LEN_MAX);
 
 #ifdef DBG_MSG
 //    xil_printf("ring_rx_used at %08x ", ring_rx_used);
@@ -422,7 +423,7 @@ void remoteproc_init()
     //xil_printf("rx vring is at 0x%08x\n", addr);
     vring_init(&rx_vring, addr, &kick_linux);
     tx_vring.dbg_print = 0; // enable debug print messages
-    rx_vring.dbg_print = 1; // enable debug print messages
+    rx_vring.dbg_print = 0; // enable debug print messages
 
     xil_printf("%s: resoucre table:\n", __func__);
     xil_printf("tx vring: desc=%08x avail=%08x used=x%08x len=x%04x\n", (uint32_t)tx_vring.desc, (uint32_t)tx_vring.avail, (uint32_t)tx_vring.used, tx_vring.vring_len);
