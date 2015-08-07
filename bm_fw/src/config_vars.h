@@ -100,9 +100,9 @@ extern const int n_vars;
 
 #define CFG_DFLT_SW_TEST    {   .id=CFG_SW_TEST,  \
                                 .name="sw_test", \
-                                .desc="Test signals for switches", \
+                                .desc="Test signals for Buck and Inj switches", \
                                 .val=0, \
                                 .min=0, \
-                                .max=3 }
+                                .max=15 }
 
 #endif
