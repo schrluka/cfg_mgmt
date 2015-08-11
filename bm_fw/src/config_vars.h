@@ -29,29 +29,11 @@
 *   Define configuration variables, i.e. ID codes, names, default values, limits, description, etc.
 *
 ******************************************************************************************************************************/
-#ifndef __CONFIG_VARS__
-#define __CONFIG_VARS__
+#ifndef __CONFIG_VARS_H__
+#define __CONFIG_VARS_H__
 
 #include <stdint.h>
-
-
-
-/***********************************************************************************************************************
-*   T Y P E S
-*/
-
-// structure for configuration variables
-struct cfg_var
-{
-	int				id;			// identifier
-	const char* 	name;		// human readable, unique name
-	const char*		desc;		// human readable description (for help function etc)
-	int32_t 		val;		// config value
-	int32_t			min;		// min allowed value (hard coded)
-	int32_t			max;		// max allowed value
-};
-
-typedef struct cfg_var cfgVar_t;
+#include "config.h"
 
 
 
@@ -62,6 +44,7 @@ typedef struct cfg_var cfgVar_t;
 extern cfgVar_t vars[];
 
 extern const int n_vars;
+
 
 
 /******************************************************************************************************************************
@@ -103,6 +86,6 @@ extern const int n_vars;
                                 .desc="Test signals for Buck and Inj switches", \
                                 .val=0, \
                                 .min=0, \
-                                .max=15 }
+                                .max=(2<<13)-1 }
 
 #endif

@@ -137,7 +137,9 @@ int rpmsg_poll()
 
 void kick_linux()
 {
+#ifdef DBG_MSG
     xil_printf("kicking linux\n");
+#endif // DBG_MSG
     XScuGic_SoftwareIntr(&IntcInst, NOTIFY_LINUX_IRQ, 1);
 }
 
@@ -161,8 +163,9 @@ static int txvring_task(void)
 
     if (kicked) {
         // the kernel has sent us something, invalidate our L1 cache to get new data
+#ifdef DBG_MSG
         xil_printf("received TX kick\n");
-        //Xil_L1DCacheFlush();
+#endif
     }
     return kicked;
 }
@@ -186,15 +189,13 @@ static int rxvring_task()
     vPortExitCritical();
 
     if (kicked) {
-        // the kernel has sent us data, invalidate our L1 cache to get new data
-        // theoretically the cache is turned off so this should not be required
-        //Xil_L1DCacheFlush();
 
-        xil_printf("checking rx vring\n");
         // process all messages
         while (vring_available(&rx_vring))
         {
+            #ifdef DBG_MSG
             xil_printf("reading data from rx vring\n");
+            #endif
             read_message();
         }
         return 1;   // prob. more data
@@ -267,12 +268,13 @@ static int rxvring_task()
  */
 void block_send_message(u32 src, u32 dst, const void *data, u32 len)
 {
+    #ifdef DBG_MSG
     xil_printf("TX: src=x%x, dst=x%x, len=%d\n", src, dst, len);
     int i;
     for (i=0; (i<len) && (i<32); i++)
         xil_printf(" %02x",((u8*)data)[i]);
     xil_printf("\n");
-
+    #endif
 	while(__send_message(src, dst, data , len))
 	{
         // wait until a buffer becomes available
@@ -433,7 +435,6 @@ void remoteproc_init()
 	// However, this is pretty save as the kernel assigns the buffer in a continuous block outside our memory region
 	// This seemed to cause some problems, so use a cache flush in virtio_ring.c instead
 	Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x04de2);  // S=b0 TEX=b100 AP=b11, Domain=b1111, C=b0, B=b0
-    //Xil_EnableMMU();
 
 	/*uint32_t* ptr = &MMUTable;
 	ptr += ((uint32_t)tx_vring.used) / 0x100000U;

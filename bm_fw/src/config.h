@@ -36,25 +36,53 @@
 #define __CONFIG_H__
 
 /***********************************************************************************************************************
-*   I N C L U D ES
+*   I N C L U D E S
 */
 #include <stdint.h>
-#include "config_vars.h"
+#include <stdbool.h>
+//#include "config_vars.h"
+
 
 
 /***********************************************************************************************************************
-*   D E F I N E S
+*   T Y P E S
 */
 
-// maximum number of config variabless
-//#define CFG_N_MAX	511
+struct cfg_var;
 
+// callback signature for registering callbacks on value read/write
+// var: pointer to affected variable
+// isread: var will be read by kernel once callback is finished
+// data: pointer to private data which was passed to callback registration
+void cfgCallback(struct cfg_var* var, bool isread, void* data);
+
+typedef void(*cfgCallback_t)(struct cfg_var*, bool, void*);
+
+
+
+// structure for configuration variables
+struct cfg_var
+{
+	int				id;			// identifier
+	const char* 	name;		// human readable, unique name
+	const char*		desc;		// human readable description (for help function etc)
+	int32_t 		val;		// config value
+	int32_t			min;		// min allowed value (hard coded)
+	int32_t			max;		// max allowed value
+	cfgCallback_t   rd_cb;      // read access callback function
+	void*           rd_cb_data; // read access cb private data
+	cfgCallback_t   wr_cb;      // write access callback
+	void*           wr_cb_data; // read access cb private data
+};
+
+typedef struct cfg_var cfgVar_t;
 
 
 
 /***********************************************************************************************************************
 *   P R O T O T Y P E S
 */
+
 
 // Initialize config variable management and create rpmsg channel for communication with kernel
 void cfgInit();
@@ -90,10 +118,18 @@ int cfgGetStructId(int id, cfgVar_t* v);
 int cfgGetStructName(const char* n, cfgVar_t* v);
 
 // set variable (given by id) to new value
-// if the new value exceeds the limits (min/max) of the variable it is trimmed accordingly
-// Note that modification is only made to memory, not the eeprom
+// if the new value exceeds the limits (min/max) of the variable it is limited accordingly
+// trigCb: trigger a callback if this is true
 // returns 1 on success and 0 on error
-int cfgSetId(int id, int32_t val);
+int cfgSetId(int id, int32_t val, bool trigCb);
+
+// (un)register a callback function
+// id: variable id for which this callback is registered
+// cb: pointer to callback
+// read: callback on read if true, write on false
+// data: pointer will passed to callback when executed
+int cfgSetCallback(int id, cfgCallback_t cb, bool read, void* data);
+
 
 #endif
 

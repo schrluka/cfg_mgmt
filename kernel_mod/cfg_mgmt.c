@@ -432,7 +432,6 @@ static ssize_t debugfs_read_update(struct file *filp, char *buff, size_t len, lo
     n_vars = get_n_vars();
 
 	dev_dbg(dev, "%s: n_vars=%d\n", __func__, n_vars);
-
 	if (n_vars <= 0)
 		return -EINVAL;	// nothing todo as there are no vars or we don't know how many there are
 

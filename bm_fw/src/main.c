@@ -41,6 +41,7 @@
 
 #include "remoteproc.h"
 #include "config.h"
+#include "config_vars.h"
 #include "uart.h"
 
 
@@ -68,6 +69,8 @@ struct rpmsg_channel* rpmsg_stdio = NULL;
 */
 
 void irq_init();
+
+void var_cb (struct cfg_var* var, bool isread, void* data);
 
 
 
@@ -99,7 +102,14 @@ int main(void)
 
     cfgInit();
 
+    xil_printf("registering wr callback: %d\n", cfgSetCallback(CFG_VAR_2, &var_cb, false, NULL));
+    xil_printf("registering rd callback: %d\n", cfgSetCallback(CFG_VAR_1, &var_cb, true, NULL));
+
+    xil_printf("n_vars: %d, name 1: %s\n", n_vars, vars[1].name);
+
     xil_printf("init done\n");
+
+
 
     while(1)
     {
@@ -107,7 +117,7 @@ int main(void)
         // periodically call the rpmsg workhorse
         busy |= rpmsg_poll();
 
-        i++;
+        /*i++;
         if (i == 1500)
         {
             i = 0;
@@ -118,10 +128,13 @@ int main(void)
             xil_printf("var1: %d  ", v);
             cfgGetValId(CFG_VAR_2, &v);
             xil_printf("var2: %d\n", v);
-        }
+        } */
 
         // update switch signals
-        cfgGetValId(CFG_SW_TEST, p_sw);
+        int32_t v;
+        cfgGetValId(CFG_SW_TEST, &v);
+        v ^= 0x1ff0;
+        *p_sw = v;
 
         // go to sleep to save energy
         if (!busy)
@@ -158,6 +171,17 @@ void irq_init()
 
 	// Register the interrupt controller's handler in the exception table, instance pointer is passed as parameter
     Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, &IntcInst);
+}
+
+
+// callback function for variable read/write
+void var_cb (struct cfg_var* var, bool isread, void* data)
+{
+    if (isread)
+        xil_printf("read ");
+    else
+        xil_printf("write ");
+    xil_printf("callback of %s, val=%d\n", var->name, var->val);
 }
 
 

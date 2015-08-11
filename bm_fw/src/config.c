@@ -38,6 +38,7 @@
 #include <string.h>
 
 #include "config.h"
+#include "config_vars.h"
 #include "remoteproc.h"
 
 
@@ -119,7 +120,7 @@ struct rpmsg_channel* rpmsg_config = NULL;
 void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len);
 
 // set new value for variable at index i in global variable array
-int cfgSetInd(int i, int32_t val);
+int cfgSetInd(int i, int32_t val, bool trigCb);
 
 
 
@@ -146,8 +147,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
     rep->ind = req->ind;
     rep->len = 0;   // assume no additional data
 
-    xil_printf("%s: receveid req, seq: %d, index: %d, type: %d\n",__func__, req->seq, req->ind, req->type);
-
+    //xil_printf("%s: receveid req, seq: %d, index: %d, type: %d\n",__func__, req->seq, req->ind, req->type);
     if (req->type == REQ_NOP)
     {
         // simply reply with an OK message
@@ -168,7 +168,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
     // all other commands require a clear identification of a variable
     // try to identify the variable requested by the kernel
     int32_t ind = req->ind;
-    if (ind < 0)
+    /*if (ind < 0)
     {
         // no index specified, check for name string in the data section
         if (req->len > 0)
@@ -182,7 +182,8 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
                 }
             }
         }
-    }
+    }*/
+
     // check index, all remaining commands require a valid index
     if ((ind >= n_vars) || (ind < 0))
     {
@@ -196,7 +197,7 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
     {
        case REQ_WR:
             // write request from kernel, set new value
-            if (cfgSetInd(ind, req->val) == 1)
+            if (cfgSetInd(ind, req->val, true) == 1)
                 rep->type = RES_OK;
             else
                 rep->type = RES_ID_ERR;
@@ -204,6 +205,9 @@ void config_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
 
         case REQ_RD:
             // read request from kernel, reply with current value
+            // trigger read callback if available (do this before we copy the value)
+            if (vars[ind].rd_cb != NULL)
+                vars[ind].rd_cb(&vars[ind], true, vars[ind].rd_cb_data);
             rep->val = vars[ind].val;
             rep->type = RES_RD_VAL;
             break;
@@ -370,36 +374,29 @@ int cfgGetStructName(const char* n, cfgVar_t* v)
 }
 
 // set variable (given by id) to new value
-// if the new value exceeds the limits (min/max) of the variable it is trimmed accordingly
-// Note that modification is only made to memory, not the eeprom
+// if the new value exceeds the limits (min/max) of the variable it is limited accordingly
+// trigCb: trigger a callback if this is true
 // returns 1 on success and 0 on error
-int cfgSetId(int id, int32_t val)
+int cfgSetId(int id, int32_t val, bool trigCb)
 {
 	// check all ids
 	for (int i=0; i<n_vars; i++)
 	{
 		if (vars[i].id == id)
 		{
-			// limit new value
-			if (val > vars[i].max)
-				val = vars[i].max;
-			if (val < vars[i].min)
-				val = vars[i].min;
-			// set new value
-			vars[i].val = val;
-			// TODO: add callback handler or some other method to notify other parts of the firmware of a variable change?
-			return 1;
+			return cfgSetInd(i, val, trigCb);
 		}
 	}
 	// we could not find this id
 	return 0;
 }
 
+
 // set variable (given index into global cfg var array) to new value
 // if the new value exceeds the limits (min/max) of the variable it is trimmed accordingly
-// Note that modification is only made to memory, not the eeprom
+// trigCb: trigger a callback if this is true
 // returns 1 on success and 0 on error
-int cfgSetInd(int i, int32_t val)
+int cfgSetInd(int i, int32_t val, bool trigCb)
 {
     if (i < 0)
         return 0;
@@ -413,9 +410,35 @@ int cfgSetInd(int i, int32_t val)
         val = vars[i].min;
     // set new value
     vars[i].val = val;
-    // TODO: add callback handler or some other method to notify other parts of the firmware of a variable change?
+    // execute the callback if requested and available
+    if (trigCb && (vars[i].wr_cb!=NULL))
+        vars[i].wr_cb(&(vars[i]), false, vars[i].wr_cb_data);
     return 1;
 }
 
-// end of file config.c
 
+int cfgSetCallback(int id, cfgCallback_t cb, bool read, void* data)
+{
+    // check all ids
+	for (int i=0; i<n_vars; i++)
+	{
+		if (vars[i].id == id)
+		{
+		    if (read)
+            {
+                vars[i].rd_cb = cb;
+                vars[i].rd_cb_data = data;
+            }
+            else
+            {
+                vars[i].wr_cb = cb;
+                vars[i].wr_cb_data = data;
+            }
+			return 1;
+		}
+	}
+	// we could not find this id
+	return 0;
+}
+
+// end of file config.c

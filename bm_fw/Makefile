@@ -49,12 +49,11 @@ VPATH = src src/grbl
 
 C_OBJS = $(addprefix $(OBJPATH)/, $(OBJ))
 
-all: $(C_OBJS)
+all: $(C_OBJS) config_vars.h
 	$(CC) -T"$(LSCRIPT)" $(LDFLAGS) -o $(BIN) $(C_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group
 	$(CROSS)objdump -D $(BIN) > $(BIN).lss
 #	copy file to destination where the kernel can load it
-	scp $(BIN) root@129.132.124.67:/lib/firmware/firmware
-#	cp $(BIN) c:\schrluka\PwmRect\IAF\SoC\root
+	scp -i ../../PwmRect/IAF/SoC/ssh-keys/id_TE0720 $(BIN) root@129.132.124.67:/lib/firmware/firmware
 
 $(OBJPATH)/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
