@@ -613,7 +613,7 @@ static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, 
 	{
 		// copy the received data into the kernel buffer
 		memcpy((void*)(&response), data, len);
-		dev_info(&rpdev->dev, "CFG_MGMT %s: received reply: seq=%d, ind=%d, val=%d.\n", __func__, response.seq, response.ind, response.val);
+		dev_dbg(&rpdev->dev, "CFG_MGMT %s: received reply: seq=%d, ind=%d, val=%d.\n", __func__, response.seq, response.ind, response.val);
 	}
 
 	// wake the sleeping context
