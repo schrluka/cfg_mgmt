@@ -168,18 +168,17 @@ int show(const char* cfg_mgmt_path)
 		l = strlen(maxima[i]);
 		if (l > nMax)
 			nMax = l;
-		i++;
 	}
 
 	// add one to all length to include an extra space for the longest name
-	nName++;
-	nVal++;
-	nMin++;
-	nMax++;
+	nName += 2;
+	nVal += 2;
+	nMin += 2;
+	nMax += 2;
     // print the header
     puts_pad("Name", nName);
     puts_pad("Value", nVal);
-    puts_pad("Minimum,", nMin);
+    puts_pad("Minimum", nMin);
     puts_pad("Maximum", nMax);
     puts("Description");
     // show all variables
@@ -206,7 +205,7 @@ void load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** va
     int i = 0;
     while (ep=readdir(dirp)) {
         // ignore all files starting with a .
-        if (ep->d_name[0] != '.')
+        if (ep->d_name[0] == '.')
             continue;
         // make sure the index does not overflow
         if (i >= num)
@@ -239,7 +238,7 @@ void load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** va
             exit(-1);
         }
         // load description
-        snprintf(fn, fn_buf_len, "%s/descs/%s", cfg_mgmt_path, names[i]);
+        snprintf(fn, fn_buf_len, "%s/desc/%s", cfg_mgmt_path, names[i]);
         descs[i] = malloc(MAX_DESC_LEN);
         ret = load_file(fn, descs[i], MAX_DESC_LEN);
         if (ret < 0) {
@@ -268,6 +267,10 @@ int load_file(const char* fn, char* buf, int n)
 
     if (ret < 0)
         return ret;
+
+    // remove trailing \n
+    if (buf[bytes-1] == '\n')
+        buf[bytes-1] = '\0';
 
     buf[bytes] = '\0';
     return bytes;
