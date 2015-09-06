@@ -34,29 +34,30 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/fs.h>
-#include <linux/wait.h>
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/ioport.h>
-#include <linux/slab.h>
+//#include <linux/types.h>
+//#include <linux/sched.h>
+//#include <linux/slab.h>
+#include <linux/kfifo.h>
 #include <asm/uaccess.h>
-//#include <asm/io.h>
 #include <linux/rpmsg.h>
-//#include <linux/sysfs.h>
 #include <linux/string.h>
-#include <linux/debugfs.h>
-//#include <linux/dcache.h>
 
-#include "cfg_mgmt.h"
+
+
+//#include "cfg_mgmt.h"
 
 #define DRIVER_AUTHOR "Lukas Schrittwieser"
 #define DRIVER_DESC   "Driver for stdio communication between linux and bare metal app over an rpmsg link"
 
 
 /******************************************************************************************************************
-*   D E F I N E S   F O R   B M   I N T E R F A C E
+*   D E F I N E S
 */
 
+// use a major file number assigned for experimental use
+#define MAJOR_NR 242
+
+#define TX_BUF_SIZE     256
 
 
 
@@ -75,11 +76,13 @@ static int bm_stdio_probe(struct rpmsg_channel *rpdev);
 static void bm_stdio_remove(struct rpmsg_channel *rpdev);
 static void bm_stdio_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *priv, u32 src);
 
-static loff_t dev_llseek(struct file *filp, loff_t off, int whence);
+
+//static loff_t dev_llseek(struct file *filp, loff_t off, int whence);
 static int dev_open(struct inode*, struct file*);
 static int dev_rls(struct inode*, struct file*);
 static ssize_t dev_read(struct file*, char*, size_t, loff_t *);
 static ssize_t dev_write(struct file*, const char*, size_t, loff_t *);
+
 
 
 
@@ -95,8 +98,8 @@ static struct rpmsg_device_id rpmsg_channel_id_table[] = {
 MODULE_DEVICE_TABLE(rpmsg, rpmsg_channel_id_table);
 
 // callback functions for RPMSG communication (with bare metal application)
-static struct rpmsg_driver cfg_mgmt_rpmsg_drv = {
-	.drv.name = "bm_stdio_rpmsg",
+static struct rpmsg_driver bm_stdio_rpmsg_drv = {
+	.drv.name = KBUILD_MODNAME,
 	.drv.owner = THIS_MODULE,
 	.id_table = rpmsg_channel_id_table,
 	.probe = &bm_stdio_probe,
@@ -104,11 +107,26 @@ static struct rpmsg_driver cfg_mgmt_rpmsg_drv = {
 	.callback = &bm_stdio_rpmsg_cb,
 };
 
+static struct file_operations fops_bm_stdio =
+{
+	//.llseek = dev_llseek,
+	.read = dev_read,
+	.open = dev_open,
+	.write = dev_write,
+	//.unlocked_ioctl = dev_ioctl,
+	.release = dev_rls,
+};
 
-// data buffers
-static char bm2lin_buf [BUF_LEN];
-static char lin2bm_buf [BUF_LEN];
+// rpmsg channel for communication with the bare metal application
+struct rpmsg_channel* rpmsg_chnl;
 
+// use two kernel fifos to transfer data to and from BM application
+//DEFINE_KFIFO(lin2bm_fifo, u8, 8*1024);
+DEFINE_KFIFO(bm2lin_fifo, u8, 64*1024);
+
+static int times = 0;
+
+static u8 tx_buf[TX_BUF_SIZE];
 
 
 
@@ -117,182 +135,129 @@ static char lin2bm_buf [BUF_LEN];
 */
 
 // init function, called upon module start
-static int __init cm_init(void)
+static int __init bm_init(void)
 {
-	printk(KERN_INFO "CFG_MGMT: Loading configuration variable managment module\n");
+    printk(KERN_INFO "bm_stdio: Loading baremetal app stdio message forwarding module\n");
 
-    cfg_mgmt_dir_p = NULL;
-    val_dir_p = NULL;
-    min_dir_p = NULL;
-    max_dir_p = NULL;
-    desc_dir_p = NULL;
-    val_access = NULL;
-    min_access = NULL;
-    max_access = NULL;
-    desc_access = NULL;
-
-    // no request pending
-	memset(&pending_req, 0, sizeof(pending_req));
-	pending_req.type = REQ_NONE;
-	pending_req.ind = -1;
-	response_valid = 0;
-
-	n_vars  = -1;	// don't know yet
-
-	init_waitqueue_head(&usr_wait_q);
-
-	// register as rpmsg driver module, we will get probed once the other side establishes a connection
-	return register_rpmsg_driver(&cfg_mgmt_rpmsg_drv);
+    // register as rpmsg driver module, we will get probed once the other side establishes a connection
+	return register_rpmsg_driver(&bm_stdio_rpmsg_drv);
 }
 
 
-
 // probe function, called when the remote side establishes a connection with us
-static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
+static int bm_stdio_probe (struct rpmsg_channel *rpdev)
 {
-	dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
+    int ret;
+	dev_dbg(&rpdev->dev, "%s: starting\n", __func__);
 
-	// no request pending
-	memset(&pending_req, 0, sizeof(pending_req));
-	pending_req.type = REQ_NONE;
-	pending_req.ind = -1;
-	response_valid = 0;
+    rpmsg_chnl = rpdev;
 
-	n_vars  = -1;	// don't know yet
+	//INIT_KFIFO(lin2bm_fifo);
+	INIT_KFIFO(bm2lin_fifo);
 
-	// save the rpmsg channel pointer for use by all other functions
-	rpmsg_chnl = rpdev;
+    ret = register_chrdev(MKDEV(MAJOR_NR,0), "bm_stdio", &fops_bm_stdio);
+    dev_dbg(&rpdev->dev, "%s: register_chrdev ret: %d\n", __func__, ret);
 
-	msg_seq_nr = 0;
+    // we have to send a message to the other side, otherwise the BM app can't know our address
+    ret = 0;
+    ret = rpmsg_send(rpmsg_chnl, &ret, 1);
+    dev_dbg(&rpdev->dev, "%s: rmpsg_send ret: %d\n", __func__, ret);
 
-    // create a new directory in debugfs for our module
-    cfg_mgmt_dir_p = debugfs_create_dir("cfg_mgmt", NULL);
-    if (!cfg_mgmt_dir_p || (cfg_mgmt_dir_p<0)) {
-        dev_err(&rpdev->dev, "CFG_MGMT %s: can't create debugfs directory: %d\n", __func__, (int)cfg_mgmt_dir_p);
-        cfg_mgmt_dir_p = NULL;
-        return -ENOENT;
-    }
-
-    // create the update file, reading it will trigger a generation of the variable files
-    update_file_p = debugfs_create_file("update", 0444, cfg_mgmt_dir_p, NULL, &fops_update);
-
-    dev_dbg(&rpdev->dev, "CFG_MGMT %s: done\n", __func__);
+    dev_dbg(&rpdev->dev, "%s: done\n", __func__);
 	return 0;
 }
 
 
-static void cfg_mgmt_remove(struct rpmsg_channel *rpdev)
+static void bm_stdio_remove(struct rpmsg_channel *rpdev)
 {
 	dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
 
-    if (n_vars > 0) {
-        free_mem(); // remove all files and free memory
-        n_vars = -1;
-    }
+    unregister_chrdev(MKDEV(MAJOR_NR,0), "bm_stdio");
 
 	dev_dbg(&rpdev->dev, "%s: done\n",__func__);
 }
 
 
 // rpmsg callback function: receives messages from the bare metal application
-static void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *priv, u32 src)
+static void bm_stdio_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *priv, u32 src)
 {
-	// check length
-	if (len < sizeof(cfgMsg_t))
-	{
-		dev_info(&rpdev->dev, "CFG_MGMT %s: Message from BM application is too short.\n", __func__);
-		return;
-	}
-
-	if (pending_req.type == REQ_NONE)
-	{
-		printk(KERN_ERR "CFG_MGMT %s: received message via rpmsg but no request pending.\n", __func__);
-		return;
-	}
-
-	// sanity check length
-	if (len > sizeof(response))
-	{
-		printk(KERN_ERR "CFG_MGMT %s: message received via rpmsg is too long.\n", __func__);
-		// create a response with an error
-		response.type = RES_REQ_ERR;
-	}
-	else
-	{
-		// copy the received data into the kernel buffer
-		memcpy((void*)(&response), data, len);
-		dev_info(&rpdev->dev, "CFG_MGMT %s: received reply: seq=%d, ind=%d, val=%d.\n", __func__, response.seq, response.ind, response.val);
-	}
-
-	// wake the sleeping context
-	response_valid = 1;
-	wake_up_interruptible(&usr_wait_q);
+	dev_dbg(&rpdev->dev, "%s: received data: %s\n", __func__, (char*)data);
+	// put data into fifo
+	kfifo_in(&bm2lin_fifo, data, len);
 }
 
 
-static void __exit cm_exit(void)
+static void __exit bm_exit(void)
 {
-    //free_mem(); // make sure we freed our memory
-	printk(KERN_INFO "CFG_MGMT: unloading module\n");
-	unregister_rpmsg_driver(&cfg_mgmt_rpmsg_drv);
+    printk(KERN_INFO "bm_stdio: unloading module\n");
+	unregister_rpmsg_driver(&bm_stdio_rpmsg_drv);
 }
-
 
 
 static int dev_open(struct inode *inod, struct file *fil)
 {
 	times++;
-	printk(KERN_INFO "AMP_CTRL: Prog Mem Device opened %d times\n",times);
+	dev_dbg(&rpmsg_chnl->dev, "%s: deviced opened %d times\n", __func__, times);
 	return 0;
 }
 
-static ssize_t dev_read(struct file *filp, char *buff, size_t len, loff_t *off)
-{
-    size_t todo;
-	//kernel_buf = (char*)kmalloc(len, GFP_KERNEL);
 
-	if(len > PROG_MEM_LEN) {
-		len = PROG_MEM_LEN;
-	}
-	// use the static buffer to transfer data from CPU1 to the user application
-	todo = len;
-    while (todo > 0)
-    {
-        size_t l = (todo > KBUF_LEN) ? KBUF_LEN : todo;
-        memcpy_fromio(kernel_buf, progMemp, l);
-        copy_to_user(buff,kernel_buf,l);
-        todo -= l;
+static ssize_t dev_read(struct file *filp, char *buf, size_t len, loff_t *off)
+{
+    size_t copied;
+
+    int ret = kfifo_to_user(&bm2lin_fifo, buf, len, &copied);
+
+    dev_dbg(&rpmsg_chnl->dev, "%s: kfifo copied %d bytes (ret %d)\n", __func__, copied, ret);
+
+    if (ret < 0) {
+        dev_err(&rpmsg_chnl->dev, "%s: can't copy from kfifo to user space: %d\n", __func__, ret);
+        return ret;
     }
 
-	//kfree(kernel_buf);
-	return len;
+    return copied;
 }
 
-static ssize_t dev_write(struct file *filp, const char *buff, size_t len, loff_t *ppos)
+
+static ssize_t dev_write(struct file *filp, const char *buf, size_t len, loff_t *ppos)
 {
-	printk(KERN_INFO "AMP_CTRL: Prom Mem Write, len %d, file ptr %d, offset %llu\n", len, (int)(filp->f_pos), (*ppos));
+	size_t copied = 0;
+    int ret;
+    size_t n;
 
-	if(len + *ppos > PROG_MEM_LEN) {
-		len = PROG_MEM_LEN - *ppos;
-	}
+    while (copied < len) {
+        // copy data in TX_BUF_SIZE long chuncks
+        if ((len-copied) > TX_BUF_SIZE)
+            n = TX_BUF_SIZE;
+        else
+            n = len-copied;
+        ret = copy_from_user(tx_buf, buf, n);
+        if (ret) {
+            dev_err(&rpmsg_chnl->dev, "%s: can't read from user space\n", __func__);
+            return -1;
+        }
+        // send message to BM app
+        ret = rpmsg_send(rpmsg_chnl, tx_buf, n);
+        if (ret) {
+            dev_err(&rpmsg_chnl->dev, "%s: can't transmit on RPMSG channel: %d\n", __func__, ret);
+            return ret;
+        }
+        copied += len;
+    }
 
-	memcpy_toio(progMemp + *ppos, buff, len);
-
-	*ppos = *ppos + len;
-
-	return len;
+    return copied;
 }
+
 
 static int dev_rls(struct inode *inod, struct file *fil)
 {
-	printk(KERN_ALERT "AMP_CTRL: Prog Mem Device Closed\n");
 	return 0;
 }
 
 
 // specify init / exit functions
-module_init(cm_init);
-module_exit(cm_exit);
+module_init(bm_init);
+module_exit(bm_exit);
 
 
 
