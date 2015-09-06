@@ -51,9 +51,7 @@
 */
 
 // pointer to GPIO module with LEDS. CAVE: can't read current value, no HW support for this, thanks xilinx!
-volatile uint32_t* const pLed = (void*)(0x41200000);
-// pointer to GPIO module for switch signals (simple test)
-volatile uint32_t* const p_sw = (void*)(0x41200008);
+volatile uint32_t* const pLed = (void*)(0x41210000);
 
 // Instance of the interrupt controller driver's data structure, this contains all information required by the driver
 XScuGic IntcInst;
@@ -61,7 +59,7 @@ XScuGic IntcInst;
 // rpmsg channel for STDIO
 struct rpmsg_channel* rpmsg_stdio = NULL;
 
-
+static int stdio_init = 0;
 
 
 /******************************************************************************************************************************
@@ -72,6 +70,8 @@ void irq_init();
 
 void var_cb (struct cfg_var* var, bool isread, void* data);
 
+void stdio_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len);
+
 
 
 /******************************************************************************************************************************
@@ -81,14 +81,10 @@ void var_cb (struct cfg_var* var, bool isread, void* data);
 int main(void)
 {
     int i=0;
+    int led = 0;
     int busy;
 
     (*pLed) = 1;    // led uses neg logic
-
-    if (UartInit() != XST_SUCCESS)
-    {
-        while(1);
-    }
 
     xil_printf("CFG_MGMT - Example Firmware\n");
 
@@ -97,15 +93,21 @@ int main(void)
     remoteproc_init();
     //xil_printf("remoteproc_init done\n");
 
+    (*pLed) = 2;    // led uses neg logic
+
     // create a channel for printf message, we don't receive from the kernel
-    //rpmsg_stdio = rpmsg_create_ch ("stdio", 0);
+    stdio_init = 0;
+    rpmsg_stdio = rpmsg_create_ch ("bm_stdio", stdio_msg_handler);
+    // wait until the kernel has told us his rpmsg address (it sends a dummy message)
+    while (!stdio_init)
+        rpmsg_poll();
+
+    (*pLed) = led = 3;    // led uses neg logic
 
     cfgInit();
 
     xil_printf("registering wr callback: %d\n", cfgSetCallback(CFG_VAR_2, &var_cb, false, NULL));
     xil_printf("registering rd callback: %d\n", cfgSetCallback(CFG_VAR_1, &var_cb, true, NULL));
-
-    xil_printf("n_vars: %d, name 1: %s\n", n_vars, vars[1].name);
 
     xil_printf("init done\n");
 
@@ -117,7 +119,7 @@ int main(void)
         // periodically call the rpmsg workhorse
         busy |= rpmsg_poll();
 
-        /*i++;
+        i++;
         if (i == 1500)
         {
             i = 0;
@@ -128,13 +130,8 @@ int main(void)
             xil_printf("var1: %d  ", v);
             cfgGetValId(CFG_VAR_2, &v);
             xil_printf("var2: %d\n", v);
-        } */
-
-        // update switch signals
-        int32_t v;
-        cfgGetValId(CFG_SW_TEST, &v);
-        v ^= 0x1ff0;
-        *p_sw = v;
+            (*pLed) = led++;
+        }
 
         // go to sleep to save energy
         if (!busy)
@@ -180,7 +177,11 @@ void var_cb (struct cfg_var* var, bool isread, void* data)
     if (isread)
         xil_printf("read ");
     else
+    {
+        if (var->id == CFG_VAR_1)
+            (*pLed) = var->val;
         xil_printf("write ");
+    }
     xil_printf("callback of %s, val=%d\n", var->name, var->val);
 }
 
@@ -190,11 +191,27 @@ void outbyte (char ch)
 {
     static char buf[DATA_LEN_MAX];   // has to be shorter than max message size
     static int ind=0;
+    static char* trace_buf = NULL;
+    static int trace_ind = 0;
+    static int trace_size = 0;
+
+    if (!trace_buf)
+    {
+        // load trace buffer settings from remoteproc
+        struct fw_rsc_trace rsc_trace;
+        rpmsg_get_trace_buf_settings (&rsc_trace);
+        trace_buf = (void*)(rsc_trace.da);
+        trace_size = rsc_trace.len;
+        trace_ind = 0;
+    }
 
     if (ch == '\n')
         outbyte('\r');
-    while (XUartPs_Send(&UartPs, (void*)&ch, 1) != 1)
-        __asm("nop");
+
+    // copy data to trace buffer if we have it and it's not full
+    if ((trace_buf) && (trace_ind < trace_size))
+        trace_buf[trace_ind++] = ch;
+
 
     // if we have a stdio channel via rpmsg, collect data in lines and send it once buffer
     // is full or when a \n comes
@@ -211,4 +228,18 @@ void outbyte (char ch)
         }
 
     }
+}
+
+// receives stdio coming from the kernel
+void stdio_msg_handler(struct rpmsg_channel* ch, uint8_t* data, uint32_t len)
+{
+    if (!stdio_init)
+    {
+        // this is the first message from the kernel, which is used to tell the rpmsg logic
+        // the kernel side address. we can igonre it as there is no meaningful data in it
+        stdio_init = 1;
+        return;
+    }
+    data[len] = '\0';
+    xil_printf("stdio input: %s", data);
 }

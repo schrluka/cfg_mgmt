@@ -31,6 +31,10 @@
 		</Unit>
 		<Unit filename="../src/remoteproc.h" />
 		<Unit filename="../src/remoteproc_kernel.h" />
+		<Unit filename="../src/uart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/uart.h" />
 		<Unit filename="../src/virtio_ring.c">
 			<Option compilerVar="CC" />
 		</Unit>

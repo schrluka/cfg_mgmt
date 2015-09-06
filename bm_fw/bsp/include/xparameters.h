@@ -3,7 +3,7 @@
 // USER CONFIGURATION (usually done by Xilinx SDK libgen)
 
 // use UART1 as stdout
-#define STDOUT_BASEADDRESS      0xE0001000
+#define STDOUT_BASEADDRESS      XPS_UART0_BASEADDR
 
 // CPU runs with 666MHz core clock
 #define XPAR_CPU_CORTEXA9_0_CPU_CLK_FREQ_HZ     666000000UL
@@ -37,7 +37,7 @@
 
 /* Definitions for peripheral PS7_UART_1, pointing to UART0 */
 #define XPAR_PS7_UART_1_DEVICE_ID           1
-#define XPAR_PS7_UART_1_BASEADDR            XPS_UART1_BASEADDR
-#define XPAR_PS7_UART_1_HIGHADDR            0xE0001FFF
+#define XPAR_PS7_UART_1_BASEADDR            XPS_UART0_BASEADDR
+#define XPAR_PS7_UART_1_HIGHADDR            (XPS_UART0_BASEADDR+0xFFF)
 #define XPAR_PS7_UART_1_UART_CLK_FREQ_HZ    50000000
 #define XPAR_PS7_UART_1_HAS_MODEM           0

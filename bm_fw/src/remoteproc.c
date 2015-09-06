@@ -163,6 +163,7 @@ static int txvring_task(void)
 
     if (kicked) {
         // the kernel has sent us something, invalidate our L1 cache to get new data
+        //Xil_L1DCacheFlush();
 #ifdef DBG_MSG
         xil_printf("received TX kick\n");
 #endif
@@ -189,7 +190,7 @@ static int rxvring_task()
     vPortExitCritical();
 
     if (kicked) {
-
+        //Xil_L1DCacheFlush();
         // process all messages
         while (vring_available(&rx_vring))
         {
@@ -280,7 +281,7 @@ void block_send_message(u32 src, u32 dst, const void *data, u32 len)
         // wait until a buffer becomes available
         // send cpu to sleep, we wake when automatically on an interrupt
         //__asm__ __volatile__ ("wfe" ::: "memory");
-        txvring_task(); // this checks for kicks from the kernel and
+        txvring_task(); // this checks for kicks from the kernel
 	}
 }
 
@@ -447,5 +448,11 @@ void remoteproc_init()
 	XScuGic_Enable(&IntcInst, RXVRING_IRQ);
 }
 
+void rpmsg_get_trace_buf_settings (struct fw_rsc_trace* d)
+{
+    if (!d)
+        return;
 
+        memcpy((void*)d, (void*)(&resources.trace), sizeof(*d));
+}
 

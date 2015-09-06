@@ -55,7 +55,7 @@ extern const int n_vars;
 
 #define CFG_VAR_1           1
 #define CFG_VAR_2           2
-#define CFG_SW_TEST         3
+
 
 
 /******************************************************************************************************************************
@@ -81,11 +81,5 @@ extern const int n_vars;
                                 .min=0, \
                                 .max=2147483647 }
 
-#define CFG_DFLT_SW_TEST    {   .id=CFG_SW_TEST,  \
-                                .name="sw_test", \
-                                .desc="Test signals for Buck and Inj switches", \
-                                .val=0, \
-                                .min=0, \
-                                .max=(2<<13)-1 }
 
 #endif

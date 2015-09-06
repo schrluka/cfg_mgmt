@@ -15,7 +15,7 @@
 #define MAX_RPMSG_CH      5
 
 /* Resource table setup */
-void mmu_resource_table_setup(void);
+//void mmu_resource_table_setup(void);
 
 /* Structure of a message passed between the application and the remoteproc
  * handler */
@@ -56,6 +56,7 @@ struct rpmsg_channel* rpmsg_create_ch (const char* name,
 // send data to remote side (linux) using channel ch (has to be created in advance)
 void rpmsg_send(struct rpmsg_channel* ch, const void* data, int len);
 
-
+// copy the trace buffer settings to d
+void rpmsg_get_trace_buf_settings (struct fw_rsc_trace* d);
 
 #endif /* REMOTEPROC_H */
