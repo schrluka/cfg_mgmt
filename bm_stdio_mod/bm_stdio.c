@@ -21,10 +21,10 @@
 *
 ************************************************************************************************************************
 *
-* cfg_mgmt.c
+* bm_stdio.c
 *
-* Main File of Kernel Module which uses a rpmsg channel to communicate with the bare metal code and exposes
-* its config variables to the user via the kernel's confifs
+* Main File of Kernel module which uses a rpmsg channel to send/receive stdio data of a baremetal appliation running
+* on CPU1 and exports this to a char-dev file
 *
 ************************************************************************************************************************/
 
@@ -154,6 +154,8 @@ static int bm_stdio_probe (struct rpmsg_channel *rpdev)
 
 	//INIT_KFIFO(lin2bm_fifo);
 	INIT_KFIFO(bm2lin_fifo);
+
+
 
     ret = register_chrdev(MKDEV(MAJOR_NR,0), "bm_stdio", &fops_bm_stdio);
     dev_dbg(&rpdev->dev, "%s: register_chrdev ret: %d\n", __func__, ret);
