@@ -52,7 +52,7 @@ struct vring_used {
 
 // ring of buffer descriptor (desc) indices linux wants to send to us (baremetal)
 struct vring_avail {
-    uint16_t avail_flags;
+    uint16_t flags;
     uint16_t avail_idx;
     uint16_t ring[VRING_SIZE];
     uint16_t used_event_idx;

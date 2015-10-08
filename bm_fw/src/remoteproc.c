@@ -11,13 +11,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "xil_printf.h"
-#include "xil_cache.h"
-#include "xil_cache_l.h"
-#include "xil_mmu.h"
+//#include <xil_cache.h>
+#include <xil_cache_l.h>
+#include <xil_mmu.h>
 #include <xscugic.h>
 
-//#include "mutex.h"
 #include "remoteproc_kernel.h"
 #include "remoteproc.h"
 #include "virtio_ring.h"
@@ -26,9 +24,8 @@
 // enable debug message printing
 //#define DBG_MSG
 
-extern uint32_t *pLed;
 
-/* Linux host needs to know what resources are required by the FreeRTOS
+/* Linux host needs to know what resources are required by the bare metal
  * firmware.
  *
  * This table is accessed by the kernel during initialisation of the remoteproc
@@ -56,17 +53,13 @@ struct resource_table {
 
 struct resource_table __resource resources = {
 	1, /* we're the first version that implements this */
-	6, /* number of entries in the table */
+	3, /* number of entries in the table */
 	{ 0, 0, }, /* reserved, must be zero */
 	/* offsets to entries */
 	{
 		offsetof(struct resource_table, text_cout),
 		offsetof(struct resource_table, rpmsg_vdev),
 		offsetof(struct resource_table, trace),
-		//offsetof(struct resource_table, slcr),
-		offsetof(struct resource_table, uart0),
-		offsetof(struct resource_table, scu),
-		offsetof(struct resource_table, leds),
 	},
 
 	/* End of ELF file */
@@ -86,11 +79,7 @@ struct resource_table __resource resources = {
 	/* Trace buffer */
 	{ TYPE_TRACE, TRACE_BUFFER_START, TRACE_BUFFER_SIZE, 0, "trace_buffer", },
 
-	/* Peripherals */
-	//{ TYPE_MMU, 0, TTC_BASEADDR, 0, 0xc02, "ttc", },
-	{ TYPE_MMU, 1, STDOUT_BASEADDRESS, 0, 0xc02, "uart", },
-	{ TYPE_MMU, 2, XPS_SCU_PERIPH_BASE, 0, 0xc02, "scu", },
-	{ TYPE_MMU, 3, 0x41200000, 0, 0xc02, "gpio", },
+	/* Could add peripherals here (only needed for systems with an IOMMU */
 };
 
 // allocate memory for the channels
@@ -109,7 +98,7 @@ static struct vring rx_vring;
 // interrupt controller driver data structure is defined in main file
 extern XScuGic IntcInst;
 
-
+extern volatile uint32_t* const pLed;
 
 void block_send_message(u32 src, u32 dst, const void *data, u32 len);
 void read_message(void);
@@ -117,10 +106,6 @@ void read_message(void);
 static int txvring_task(void);
 static int rxvring_task(void);
 
-
-// implement a critical section by disabling IRQs
-#define vPortEnterCritical()    Xil_ExceptionDisable()
-#define vPortExitCritical()     Xil_ExceptionEnable()
 
 
 
@@ -138,7 +123,7 @@ int rpmsg_poll()
 void kick_linux()
 {
 #ifdef DBG_MSG
-    xil_printf("kicking linux\n");
+    fprintf(stderr, "kicking linux\n");
 #endif // DBG_MSG
     XScuGic_SoftwareIntr(&IntcInst, NOTIFY_LINUX_IRQ, 1);
 }
@@ -151,51 +136,38 @@ void txvring_irq(void *data)
 
 static int txvring_task(void)
 {
-    int kicked = 0;
+    static unsigned int processed_kicks = 0;
 
-    // Enter a critical section, for atomicity (IRQ)
-    vPortEnterCritical();
-    if (txvring_kicks) {
-        txvring_kicks--;
-        kicked = 1;
-    }
-    vPortExitCritical();
-
-    if (kicked) {
+    if (txvring_kicks != processed_kicks) {
+        processed_kicks++;
         // the kernel has sent us something, invalidate our L1 cache to get new data
-        //Xil_L1DCacheFlush();
+        Xil_L1DCacheFlush();
 #ifdef DBG_MSG
-        xil_printf("received TX kick\n");
+        fprintf(stderr, "received TX kick\n");
 #endif
+        return 1;   // might have more work to do
     }
-    return kicked;
+    return 0;
 }
 
 void rxvring_irq(void *data)
 {
-	/* Linux kick since it has put data to the RX ring */
+	// Linux kick's us since it has put data to the RX ring
 	rxvring_kicks++;
 }
 
 static int rxvring_task()
 {
-	int kicked = 0;
+	static unsigned int processed_kicks = 0;
 
-    /* Enter a critical section, for atomicity */
-    vPortEnterCritical();
-    if (rxvring_kicks) {
-        rxvring_kicks--;
-        kicked = 1;
-    }
-    vPortExitCritical();
-
-    if (kicked) {
-        //Xil_L1DCacheFlush();
+    if (rxvring_kicks != processed_kicks) {
+        processed_kicks++;
+        Xil_L1DCacheFlush();    // make sure there is no stale data in our cache
         // process all messages
         while (vring_available(&rx_vring))
         {
             #ifdef DBG_MSG
-            xil_printf("reading data from rx vring\n");
+            fprintf(stderr, "reading data from rx vring, rxvring_kicks: %u\n", rxvring_kicks);
             #endif
             read_message();
         }
@@ -205,20 +177,7 @@ static int rxvring_task()
     return 0;   // done
 }
 
-/* -------------------------------------------------------------------------- */
 
-/*
- * Function to send messages to Linux through txvring. It prepends the data
- *   with the required rpmsg header
- * @para:
- *  src: source address of the remote processor message
- *  dst: destination address of the remote processor message
- *  data: data of the message
- *  len: length of the data, will be truncated to DATA_LEN_MAX
- * @return:
- *  0: succeeded
- *  1: failed
- */
  int __send_message(u32 src, u32 dst, const void *data, u32 len)
  {
     int32_t idx;
@@ -231,7 +190,7 @@ static int rxvring_task()
 
     // ok, we have a descriptor, lets look at its content
 #ifdef DBG_MSG
-    xil_printf("TX: using buffer at x%08x with flagsx%04x\n", tx_vring.desc[idx].addr, tx_vring.desc[idx].flags);
+    fprintf(stderr, "TX: using buffer at x%08x with flagsx%04x\n", (unsigned int)tx_vring.desc[idx].addr, (unsigned int)tx_vring.desc[idx].flags);
 #endif
     // create the rpmsg header and add payload data
     struct rpmsg_hdr *hdr = (struct rpmsg_hdr *)(tx_vring.desc[idx].addr);
@@ -241,7 +200,7 @@ static int rxvring_task()
 	hdr->flags = 0;
 	if (len > DATA_LEN_MAX)
 	{
-        xil_printf("rpmsg __send_message: len=%d is too long, truncating, ie data loss\n", len);
+        fprintf(stderr, "rpmsg __send_message: len=%d is too long, truncating, ie data loss\n", (unsigned int)len);
         len = DATA_LEN_MAX;
 	}
 	hdr->len = (unsigned short)len; // data len
@@ -270,17 +229,17 @@ static int rxvring_task()
 void block_send_message(u32 src, u32 dst, const void *data, u32 len)
 {
     #ifdef DBG_MSG
-    xil_printf("TX: src=x%x, dst=x%x, len=%d\n", src, dst, len);
+    fprintf(stderr, "TX: src=x%x, dst=x%x, len=%d\n", (unsigned int)src, (unsigned int)dst, (unsigned int)len);
     int i;
     for (i=0; (i<len) && (i<32); i++)
-        xil_printf(" %02x",((u8*)data)[i]);
-    xil_printf("\n");
+        fprintf(stderr, " %02x",((u8*)data)[i]);
+    fprintf(stderr, "\n");
     #endif
 	while(__send_message(src, dst, data , len))
 	{
         // wait until a buffer becomes available
         // send cpu to sleep, we wake when automatically on an interrupt
-        //__asm__ __volatile__ ("wfe" ::: "memory");
+        __asm__ __volatile__ ("wfe" ::: "memory");
         txvring_task(); // this checks for kicks from the kernel
 	}
 }
@@ -292,26 +251,20 @@ void read_message(void)
 
     if (index < 0)
     {
-        xil_printf("read_message: no buffer available in rx_vring\n");
+        fprintf(stderr, "read_message: no buffer available in rx_vring\n");
         return;
     }
 
     // load address of the buffer associated with this descriptor
     struct rpmsg_hdr *hdr = (struct rpmsg_hdr *)(rx_vring.desc[index].addr);
 
-    // make sure no old data is in our local L1 cache
-    // caches are disabled by MMU
-    //Xil_L1DCacheFlushRange((uint32_t)hdr, PACKET_LEN_MAX);
-
-#ifdef DBG_MSG
-//    xil_printf("ring_rx_used at %08x ", ring_rx_used);
-//	xil_printf("ring_rx is at %08x\n", ring_rx);
-//    xil_printf("ring_rx_used: idx=%d\n", ring_rx_used->idx);
-    xil_printf("RX: mem=x%08x, src=x%x, dst=x%x, flags=x%08x, len=%d\n", (u32)hdr, hdr->src, hdr->dst, hdr->flags, hdr->len);
+ #ifdef DBG_MSG
+    fprintf(stderr, "RX: mem=x%08x, src=x%x, dst=x%x, flags=x%08x, len=%d\n", (unsigned int)hdr,
+        (unsigned int)hdr->src, (unsigned int)hdr->dst, (unsigned int)hdr->flags, (unsigned int)hdr->len);
     int i;
     for (i=0; (i<hdr->len) && (i<32); i++)
-        xil_printf(" %02x",hdr->data[i]);
-    xil_printf("\n");
+        fprintf(stderr, " %02x",hdr->data[i]);
+    fprintf(stderr, "\n");
 #endif
 
 	// search which channel this message belongs to
@@ -323,7 +276,7 @@ void read_message(void)
             if (hdr->dst == channels[i].local_addr)
             {
                 struct rpmsg_channel* ch = channels+i;
-                // this channel is address, deliver message
+                // this channel is addressed, deliver message
                 ch->remote_addr = hdr->src;    // remember link partner's address
                 ch->state = CH_UP;
                 // check if we have a valid callback and call it
@@ -338,7 +291,7 @@ void read_message(void)
     }
 
    	// return the buffer to linux (recycling) (don't know what we should put at len)
-   	// don't kick linux
+   	// don't kick linux? or should we?
    	vring_publish_buf(&rx_vring, index, PACKET_LEN_MAX, 0);
 	return;
 }
@@ -366,7 +319,7 @@ struct rpmsg_channel* rpmsg_create_ch (const char* name,
     }
     if (ch == NULL)
     {
-        xil_printf("Can't create channel: no channel struct available.\n");
+        fprintf(stderr, "Can't create channel: no channel struct available.\n");
         return ch;
     }
 
@@ -381,7 +334,7 @@ struct rpmsg_channel* rpmsg_create_ch (const char* name,
     ch->state = CH_ANNOUNCED;
     ch->cb = cb;
 
-    xil_printf("announcing channel '%s' with addr x%x\n", name, ch->local_addr);
+    fprintf(stderr, "announcing channel '%s' with addr x%x\n", name, (unsigned int)ch->local_addr);
 
     // send announcement message to linux
     struct rpmsg_ns_msg ns_msg;
@@ -411,37 +364,35 @@ void rpmsg_send(struct rpmsg_channel* ch, const void* data, int len)
 }
 
 
-//extern u32 MMUTable;
-
 void remoteproc_init()
 {
     memset(channels, 0, sizeof(channels));
 
+    // disable L1 data cache on vrings (this silently assumes that the actual data buffers are covered by the same 1MB region)
+	// However, this is pretty save as the kernel assigns the buffer in a continuous block outside our memory region
+	// This seemed to cause some problems, so use a cache flush in virtio_ring.c instead
+	//Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x04de2);  // S=b0 TEX=b100 AP=b11, Domain=b1111, C=b0, B=b0
+	Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x15dea); // write through L1, write back L2
+
     // load pointers to vring elements allocated by the kernel
     // this is the element defined by the vring protocol
     uint32_t addr = resources.rpmsg_vring0.da;
-    //xil_printf("tx vring is at 0x%08x\n", addr);
+    //fprintf(stderr, "tx vring is at 0x%08x\n", addr);
     vring_init(&tx_vring, addr, &kick_linux);
     addr = resources.rpmsg_vring1.da;
-    //xil_printf("rx vring is at 0x%08x\n", addr);
+    //fprintf(stderr, "rx vring is at 0x%08x\n", addr);
     vring_init(&rx_vring, addr, &kick_linux);
-    tx_vring.dbg_print = 0; // enable debug print messages
-    rx_vring.dbg_print = 0; // enable debug print messages
+#ifdef DBG_MSG
+    tx_vring.dbg_print = 1; // enable debug print messages
+    rx_vring.dbg_print = 1; // enable debug print messages
+#endif
+/*
+    fprintf(stderr, "%s: resoucre table:\n", __func__);
+    fprintf(stderr, "tx vring: desc=%08x avail=%08x used=x%08x len=x%04x\n",
+        (unsigned int)tx_vring.desc, (unsigned int)tx_vring.avail, (unsigned int)tx_vring.used, (unsigned int)tx_vring.vring_len);
+	fprintf(stderr, "rx vring: desc=%08x avail=%08x used=x%08x\n",
+        (unsigned int)rx_vring.desc, (unsigned int)rx_vring.avail, (unsigned int)rx_vring.used);*/
 
-    xil_printf("%s: resoucre table:\n", __func__);
-    xil_printf("tx vring: desc=%08x avail=%08x used=x%08x len=x%04x\n", (uint32_t)tx_vring.desc, (uint32_t)tx_vring.avail, (uint32_t)tx_vring.used, tx_vring.vring_len);
-	xil_printf("rx vring: desc=%08x avail=%08x used=x%08x\n", (uint32_t)rx_vring.desc, (uint32_t)rx_vring.avail, (uint32_t)rx_vring.used);
-
-	// disable L1 data cache on vrings (this silently assumes that the actual data buffers are covered by the same 1MB region)
-	// However, this is pretty save as the kernel assigns the buffer in a continuous block outside our memory region
-	// This seemed to cause some problems, so use a cache flush in virtio_ring.c instead
-	Xil_SetTlbAttributes(resources.rpmsg_vring0.da & 0xFFF00000, 0x04de2);  // S=b0 TEX=b100 AP=b11, Domain=b1111, C=b0, B=b0
-
-	/*uint32_t* ptr = &MMUTable;
-	ptr += ((uint32_t)tx_vring.used) / 0x100000U;
-    xil_printf("MMU attr for tx_vring.used: 0x%08x\n", (*ptr));*/
-
-    //xil_printf("Setup IRQ handlers for remoteproc\n");
 	XScuGic_Connect(&IntcInst, TXVRING_IRQ, &txvring_irq, NULL);
 	XScuGic_Enable(&IntcInst, TXVRING_IRQ);
 	XScuGic_Connect(&IntcInst, RXVRING_IRQ, &rxvring_irq, NULL);
@@ -453,6 +404,6 @@ void rpmsg_get_trace_buf_settings (struct fw_rsc_trace* d)
     if (!d)
         return;
 
-        memcpy((void*)d, (void*)(&resources.trace), sizeof(*d));
+    memcpy((void*)d, (void*)(&resources.trace), sizeof(*d));
 }
 

@@ -1,4 +1,4 @@
-target remote 129.132.124.168:1234
+target remote 127.0.0.1:1234
 file bm_cfg_mgmt
 directory bsp/common/
 directory bsp/cortexa9/

@@ -34,17 +34,11 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/fs.h>
-//#include <linux/types.h>
-//#include <linux/sched.h>
-//#include <linux/slab.h>
 #include <linux/kfifo.h>
 #include <asm/uaccess.h>
 #include <linux/rpmsg.h>
 #include <linux/string.h>
 
-
-
-//#include "cfg_mgmt.h"
 
 #define DRIVER_AUTHOR "Lukas Schrittwieser"
 #define DRIVER_DESC   "Driver for stdio communication between linux and bare metal app over an rpmsg link"
@@ -148,41 +142,44 @@ static int __init bm_init(void)
 static int bm_stdio_probe (struct rpmsg_channel *rpdev)
 {
     int ret;
-	dev_dbg(&rpdev->dev, "%s: starting\n", __func__);
+	dev_info(&rpdev->dev, "%s: starting\n", __func__);
 
     rpmsg_chnl = rpdev;
 
 	//INIT_KFIFO(lin2bm_fifo);
 	INIT_KFIFO(bm2lin_fifo);
 
-
-
     ret = register_chrdev(MKDEV(MAJOR_NR,0), "bm_stdio", &fops_bm_stdio);
-    dev_dbg(&rpdev->dev, "%s: register_chrdev ret: %d\n", __func__, ret);
-
+    if (ret) {
+        dev_dbg(&rpdev->dev, "%s: register_chrdev failed: %d\n", __func__, ret);
+        return ret;
+    }
     // we have to send a message to the other side, otherwise the BM app can't know our address
     ret = 0;
     ret = rpmsg_send(rpmsg_chnl, &ret, 1);
-    dev_dbg(&rpdev->dev, "%s: rmpsg_send ret: %d\n", __func__, ret);
+    dev_info(&rpdev->dev, "%s: rmpsg_send ret: %d\n", __func__, ret);
 
-    dev_dbg(&rpdev->dev, "%s: done\n", __func__);
+    dev_info(&rpdev->dev, "%s: done\n", __func__);
 	return 0;
 }
 
 
 static void bm_stdio_remove(struct rpmsg_channel *rpdev)
 {
-	dev_dbg(&rpdev->dev, "%s: starting\n",__func__);
+	dev_info(&rpdev->dev, "%s: starting\n",__func__);
 
     unregister_chrdev(MKDEV(MAJOR_NR,0), "bm_stdio");
 
-	dev_dbg(&rpdev->dev, "%s: done\n",__func__);
+	dev_info(&rpdev->dev, "%s: done\n",__func__);
 }
 
 
 // rpmsg callback function: receives messages from the bare metal application
 static void bm_stdio_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *priv, u32 src)
 {
+	// do we have to append a \0 to the string here?
+	char* d = data;
+	d[len] = '\0';   // FIXME: check for buffer overrun here
 	dev_dbg(&rpdev->dev, "%s: received data: %s\n", __func__, (char*)data);
 	// put data into fifo
 	kfifo_in(&bm2lin_fifo, data, len);
@@ -193,6 +190,7 @@ static void __exit bm_exit(void)
 {
     printk(KERN_INFO "bm_stdio: unloading module\n");
 	unregister_rpmsg_driver(&bm_stdio_rpmsg_drv);
+	printk(KERN_INFO "bm_stdio: unload done\n");
 }
 
 

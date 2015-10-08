@@ -14,11 +14,12 @@
 /* use 1MB for stack and heap */
 _STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x100000;
 _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x100000;
+ TRACE_BUFFER_SIZE = DEFINED(TRACE_BUFFER_SIZE) ? TRACE_BUFFER_SIZE : 0x8000;
 
 _ABORT_STACK_SIZE = DEFINED(_ABORT_STACK_SIZE) ? _ABORT_STACK_SIZE : 1024;
 _SUPERVISOR_STACK_SIZE = DEFINED(_SUPERVISOR_STACK_SIZE) ? _SUPERVISOR_STACK_SIZE : 2048;
-_IRQ_STACK_SIZE = DEFINED(_IRQ_STACK_SIZE) ? _IRQ_STACK_SIZE : 1024;
-_FIQ_STACK_SIZE = DEFINED(_FIQ_STACK_SIZE) ? _FIQ_STACK_SIZE : 1024;
+_IRQ_STACK_SIZE = DEFINED(_IRQ_STACK_SIZE) ? _IRQ_STACK_SIZE : 0x100000;
+_FIQ_STACK_SIZE = DEFINED(_FIQ_STACK_SIZE) ? _FIQ_STACK_SIZE : 0x100000;
 _UNDEF_STACK_SIZE = DEFINED(_UNDEF_STACK_SIZE) ? _UNDEF_STACK_SIZE : 1024;
 
 /* Define Memories in the system */
@@ -297,8 +298,9 @@ _end = .;
 /* remoteproc specific stuff */
 /* WARNING: THIS IS CARGO CULT */
 /* Trace buffer should be inside carverout */
+     . = ALIGN(0x2000); /* align trace buffer to avoide cache conflicts etc */
    __trace_buffer_start = .;
-   . = . + 0x8000; /* It should be TRACE_BUFFER_SIZE */
+   . = . + TRACE_BUFFER_SIZE; /* It should be TRACE_BUFFER_SIZE */
    __trace_buffer_end = .;
    __elf_end = .; /* This is size of carveout */
 

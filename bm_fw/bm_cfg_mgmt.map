@@ -1,0 +1,1690 @@
+Archive member included to satisfy reference by file (symbol)
+
+bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+                              obj/main.o (XScuGic_CfgInitialize)
+bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+                              obj/main.o (XScuGic_InterruptHandler)
+bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+                              obj/main.o (XScuGic_LookupConfig)
+bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+                              obj/main.o (XScuTimer_CfgInitialize)
+bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+                              obj/main.o (XScuTimer_LookupConfig)
+bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+                              (_vector_table)
+bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o) (_prestart)
+bsp_xsdk/2014.4/lib/libxil.a(translation_table.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(boot.o) (MMUTable)
+bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+                              obj/main.o (usleep)
+bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o) (FIQInterrupt)
+bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(boot.o) (_start)
+bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xscugic.o) (Xil_Assert)
+bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+                              obj/main.o (Xil_DCacheFlushRange)
+bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+                              obj/main.o (Xil_ExceptionInit)
+bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+                              obj/main.o (Xil_In32)
+bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+                              obj/main.o (Xil_SetTlbAttributes)
+bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o) (XTime_SetTime)
+bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o) (XScuGic_ConfigTable)
+bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o) (XScuTimer_ConfigTable)
+bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o) (__cpu_init)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o) (exit)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fini.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o) (__libc_fini_array)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o)
+                              obj/main.o (fprintf)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o)
+                              obj/remoteproc.o (fwrite)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o) (_global_impure_ptr)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-init.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o) (__libc_init_array)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memcpy.o)
+                              obj/main.o (memcpy)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memset.o)
+                              obj/remoteproc.o (memset)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-printf.o)
+                              obj/main.o (printf)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+                              obj/main.o (puts)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strcmp.o)
+                              obj/config.o (strcmp)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strlen-armv7.o)
+                              obj/config.o (strlen)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strncpy.o)
+                              obj/remoteproc.o (strncpy)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o) (_vfprintf_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (__swsetup_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o) (__call_exitprocs)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o) (atexit)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (_dtoa_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fflush.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (_fflush_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o) (__sinit)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o) (_free_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o) (__sfvwrite_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwalk.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o) (_fwalk)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (_localeconv_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o) (__smakebuf_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mallocr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o) (_malloc_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memchr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (memchr)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memmove.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o) (memmove)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mlock.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o) (__malloc_lock)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o) (_Balloc)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reallocr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o) (_realloc_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-s_fpclassify.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (__fpclassifyd)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o) (_sbrk_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o) (__sread)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (__sprint_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-writer.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o) (_write_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__atexit.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o) (__register_exitproc)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-callocr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o) (_calloc_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o) (_close_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fclose.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o) (fclose)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o) (_fputwc_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o) (_fstat_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o) (_isatty_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o) (_lseek_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o) (_read_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o) (errno)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wbuf.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o) (__swbuf_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o) (_wcrtomb_r)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wctomb_r.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o) (__wctomb)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o) (__aeabi_uidiv)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_dvmd_tls.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o) (__aeabi_idiv0)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o) (__aeabi_uldivmod)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o) (__gnu_uldivmod_helper)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o) (__divdi3)
+/opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o) (__udivdi3)
+bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o) (_exit)
+bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o) (_sbrk)
+bsp_xsdk/2014.4/lib/libxil.a(close.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o) (_close)
+bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o) (_fstat)
+bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o) (_isatty)
+bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o) (_lseek)
+bsp_xsdk/2014.4/lib/libxil.a(read.o)
+                              /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o) (_read)
+bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(lseek.o) (__errno)
+bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(read.o) (inbyte)
+bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+                              bsp_xsdk/2014.4/lib/libxil.a(inbyte.o) (XUartPs_RecvByte)
+
+Allocating common symbols
+Common symbol       size              file
+
+errno               0x4               /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+cfgMsgTxBuf         0x1f0             obj/config.o
+Xil_AssertStatus    0x4               bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+IntcInst            0xc               obj/main.o
+timerInst           0x10              obj/main.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ps7_ddr_0_S_AXI_BASEADDR 0x1c000000         0x04000000
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+                0x00008000                TRACE_BUFFER_SIZE = 0x8000
+LOAD obj/main.o
+LOAD obj/remoteproc.o
+LOAD obj/virtio_ring.o
+LOAD obj/config.o
+LOAD obj/config_vars.o
+START GROUP
+LOAD bsp_xsdk/2014.4/lib/libxil.a
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libm.a
+END GROUP
+START GROUP
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a
+END GROUP
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+LOAD /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+                0x00100000                _STACK_SIZE = DEFINED (_STACK_SIZE)?_STACK_SIZE:0x100000
+                0x00100000                _HEAP_SIZE = DEFINED (_HEAP_SIZE)?_HEAP_SIZE:0x100000
+                0x00008000                TRACE_BUFFER_SIZE = DEFINED (TRACE_BUFFER_SIZE)?TRACE_BUFFER_SIZE:0x8000
+                0x00000400                _ABORT_STACK_SIZE = DEFINED (_ABORT_STACK_SIZE)?_ABORT_STACK_SIZE:0x400
+                0x00000800                _SUPERVISOR_STACK_SIZE = DEFINED (_SUPERVISOR_STACK_SIZE)?_SUPERVISOR_STACK_SIZE:0x800
+                0x00100000                _IRQ_STACK_SIZE = DEFINED (_IRQ_STACK_SIZE)?_IRQ_STACK_SIZE:0x100000
+                0x00100000                _FIQ_STACK_SIZE = DEFINED (_FIQ_STACK_SIZE)?_FIQ_STACK_SIZE:0x100000
+                0x00000400                _UNDEF_STACK_SIZE = DEFINED (_UNDEF_STACK_SIZE)?_UNDEF_STACK_SIZE:0x400
+
+.text           0x1c000000     0xe2f0
+ *(.vectors)
+ .vectors       0x1c000000       0xfc bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+                0x1c000000                _vector_table
+                0x1c000020                IRQHandler
+ *(.boot)
+ .boot          0x1c0000fc      0x294 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+                0x1c0000fc                _boot
+                0x1c0000fc                _prestart
+ *(.text)
+ .text          0x1c000390        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+ .text          0x1c000390      0x114 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ .text          0x1c0004a4      0x950 obj/main.o
+                0x1c0004a4                main
+                0x1c0006d4                mmu_init
+                0x1c000780                irq_init
+                0x1c00083c                sys_timer_init
+                0x1c00097c                sys_timer_ISR
+                0x1c000a10                var_cb
+                0x1c000aa4                outbyte
+                0x1c000b44                _write
+                0x1c000d74                stdio_msg_handler
+ .text          0x1c000df4      0x8d4 obj/remoteproc.o
+                0x1c000df4                rpmsg_poll
+                0x1c000e40                kick_linux
+                0x1c000e60                txvring_irq
+                0x1c000ef4                rxvring_irq
+                0x1c000fa8                __send_message
+                0x1c0010f4                block_send_message
+                0x1c001144                read_message
+                0x1c001348                rpmsg_create_ch
+                0x1c001520                rpmsg_send
+                0x1c001598                remoteproc_init
+                0x1c00168c                rpmsg_get_trace_buf_settings
+ .text          0x1c0016c8      0x508 obj/virtio_ring.o
+                0x1c0016c8                vring_init
+                0x1c001820                vring_get_buf
+                0x1c001924                vring_publish_buf
+                0x1c001b84                vring_available
+ .text          0x1c001bd0     0x1024 obj/config.o
+                0x1c001bd0                cfgInit
+                0x1c001c00                config_msg_handler
+                0x1c002328                cfgGetValId
+                0x1c002400                cfgGetValName
+                0x1c0024e8                cfgGetName
+                0x1c00259c                cfgGetNameList
+                0x1c002608                cfgGetStructId
+                0x1c0026d8                cfgGetStructName
+                0x1c0027bc                cfgSetId
+                0x1c002864                cfgSetInd
+                0x1c002a88                cfgSetCallback
+ .text          0x1c002bf4        0x0 obj/config_vars.o
+ .text          0x1c002bf4      0x80c bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+                0x1c002c44                XScuGic_CfgInitialize
+                0x1c002d24                XScuGic_Connect
+                0x1c002dfc                XScuGic_Disconnect
+                0x1c002ed4                XScuGic_Enable
+                0x1c002f90                XScuGic_Disable
+                0x1c00304c                XScuGic_SoftwareIntr
+                0x1c003138                XScuGic_SetPriorityTriggerType
+                0x1c0032c0                XScuGic_GetPriorityTriggerType
+ .text          0x1c003400       0x94 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+                0x1c003400                XScuGic_InterruptHandler
+ .text          0x1c003494       0x1c bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+                0x1c003494                XScuGic_LookupConfig
+ .text          0x1c0034b0      0x314 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+                0x1c0034b0                XScuTimer_CfgInitialize
+                0x1c003560                XScuTimer_Start
+                0x1c0035fc                XScuTimer_Stop
+                0x1c003690                XScuTimer_SetPrescaler
+                0x1c003738                XScuTimer_GetPrescaler
+ .text          0x1c0037c4       0x1c bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+                0x1c0037c4                XScuTimer_LookupConfig
+ .text          0x1c0037e0        0x0 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .text          0x1c0037e0        0x0 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .text          0x1c0037e0        0x0 bsp_xsdk/2014.4/lib/libxil.a(translation_table.o)
+ .text          0x1c0037e0       0x44 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+                0x1c0037e0                usleep
+ .text          0x1c003824       0x8c bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+                0x1c003824                FIQInterrupt
+                0x1c003840                IRQInterrupt
+                0x1c00385c                SWInterrupt
+                0x1c003878                DataAbortInterrupt
+                0x1c003894                PrefetchAbortInterrupt
+ .text          0x1c0038b0       0x78 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+                0x1c0038c4                _start
+ .text          0x1c003928       0x48 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+                0x1c003928                Xil_Assert
+                0x1c00395c                Xil_AssertSetCallback
+                0x1c00396c                XNullHandler
+ .text          0x1c003970      0x890 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+                0x1c003970                Xil_DCacheInvalidateLine
+                0x1c003998                Xil_DCacheFlushLine
+                0x1c0039c0                Xil_DCacheFlushRange
+                0x1c003a04                Xil_DCacheStoreLine
+                0x1c003a2c                Xil_ICacheEnable
+                0x1c003a48                Xil_ICacheDisable
+                0x1c003a64                Xil_ICacheInvalidate
+                0x1c003a8c                Xil_ICacheInvalidateLine
+                0x1c003ab4                Xil_ICacheInvalidateRange
+                0x1c003adc                Xil_L1DCacheInvalidate
+                0x1c003b88                Xil_DCacheInvalidate
+                0x1c003ba4                Xil_L1DCacheEnable
+                0x1c003bc4                Xil_DCacheEnable
+                0x1c003bc8                Xil_L1DCacheInvalidateLine
+                0x1c003be0                Xil_L1DCacheInvalidateRange
+                0x1c003c28                Xil_L1DCacheFlush
+                0x1c003cbc                Xil_DCacheFlush
+                0x1c003cd8                Xil_L1DCacheDisable
+                0x1c003cf0                Xil_DCacheDisable
+                0x1c003d08                Xil_L1DCacheFlushLine
+                0x1c003d20                Xil_L1DCacheFlushRange
+                0x1c003d68                Xil_L1DCacheStoreLine
+                0x1c003d80                Xil_L1ICacheEnable
+                0x1c003d9c                Xil_L1ICacheDisable
+                0x1c003db8                Xil_L1ICacheInvalidate
+                0x1c003dd0                Xil_L1ICacheInvalidateLine
+                0x1c003de8                Xil_L1ICacheInvalidateRange
+                0x1c003e30                Xil_L2CacheInvalidate
+                0x1c003e70                Xil_L2CacheEnable
+                0x1c003f20                Xil_L2CacheInvalidateLine
+                0x1c003f3c                Xil_L2CacheInvalidateRange
+                0x1c003fac                Xil_L2CacheFlush
+                0x1c004010                Xil_L2CacheDisable
+                0x1c004050                Xil_L2CacheFlushLine
+                0x1c004080                Xil_DCacheInvalidateRange
+                0x1c004164                Xil_L2CacheFlushRange
+                0x1c0041e4                Xil_L2CacheStoreLine
+ .text          0x1c004200       0x54 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+                0x1c004204                Xil_DataAbortHandler
+                0x1c00420c                Xil_PrefetchAbortHandler
+                0x1c004214                Xil_ExceptionInit
+                0x1c004218                Xil_ExceptionRegisterHandler
+                0x1c004230                Xil_ExceptionRemoveHandler
+ .text          0x1c004254       0xc0 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+                0x1c004254                Xil_In8
+                0x1c00425c                Xil_In16
+                0x1c004264                Xil_In32
+                0x1c00426c                Xil_Out8
+                0x1c004274                Xil_Out16
+                0x1c00427c                Xil_Out32
+                0x1c004284                Xil_In16BE
+                0x1c004294                Xil_In32BE
+                0x1c0042b8                Xil_Out16BE
+                0x1c0042c4                Xil_Out32BE
+                0x1c0042e8                Xil_EndianSwap16
+                0x1c0042f4                Xil_EndianSwap32
+ .text          0x1c004314       0x80 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+                0x1c004314                Xil_SetTlbAttributes
+                0x1c004348                Xil_EnableMMU
+                0x1c00436c                Xil_DisableMMU
+ .text          0x1c004394       0xa0 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+                0x1c004394                XTime_SetTime
+                0x1c0043e4                XTime_GetTime
+ .text          0x1c004434        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .text          0x1c004434        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .text          0x1c004434       0x40 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+                0x1c004434                __cpu_init
+ .text          0x1c004474       0x34 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o)
+                0x1c004474                exit
+ .text          0x1c0044a8       0x40 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fini.o)
+                0x1c0044a8                __libc_fini_array
+ .text          0x1c0044e8       0x6c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o)
+                0x1c0044e8                _fprintf_r
+                0x1c004514                fprintf
+ .text          0x1c004554       0xdc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o)
+                0x1c004554                _fwrite_r
+                0x1c0045f4                fwrite
+ .text          0x1c004630        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+ .text          0x1c004630       0x7c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-init.o)
+                0x1c004630                __libc_init_array
+ *fill*         0x1c0046ac       0x14 
+ .text          0x1c0046c0      0x500 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memcpy.o)
+                0x1c0046c0                memcpy
+ .text          0x1c004bc0       0xf8 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memset.o)
+                0x1c004bc0                memset
+ .text          0x1c004cb8       0x74 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-printf.o)
+                0x1c004cb8                _printf_r
+                0x1c004cec                printf
+ .text          0x1c004d2c       0xa0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+                0x1c004d2c                _puts_r
+                0x1c004db8                puts
+ .text          0x1c004dcc      0x280 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strcmp.o)
+                0x1c004dcc                strcmp
+ *fill*         0x1c00504c       0x34 
+ .text          0x1c005080      0x100 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strlen-armv7.o)
+                0x1c005080                strlen
+ .text          0x1c005180       0xd4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strncpy.o)
+                0x1c005180                strncpy
+ *fill*         0x1c005254        0x4 
+ .text          0x1c005258     0x2058 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+                0x1c005258                _vfprintf_r
+                0x1c0071b4                vfprintf
+ .text          0x1c0072b0      0x15c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o)
+                0x1c0072b0                __swsetup_r
+ .text          0x1c00740c      0x168 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+                0x1c00740c                __call_exitprocs
+ .text          0x1c007574       0x14 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o)
+                0x1c007574                atexit
+ .text          0x1c007588     0x1428 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+                0x1c007754                _dtoa_r
+ .text          0x1c0089b0      0x2c0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fflush.o)
+                0x1c0089b0                __sflush_r
+                0x1c008bf0                _fflush_r
+                0x1c008c40                fflush
+ .text          0x1c008c70      0x310 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o)
+                0x1c008c80                _cleanup_r
+                0x1c008c8c                __sfmoreglue
+                0x1c008cd4                _cleanup
+                0x1c008cec                __sinit
+                0x1c008e50                __sfp
+                0x1c008f40                __sfp_lock_acquire
+                0x1c008f44                __sfp_lock_release
+                0x1c008f48                __sinit_lock_acquire
+                0x1c008f4c                __sinit_lock_release
+                0x1c008f50                __fp_lock_all
+                0x1c008f68                __fp_unlock_all
+ .text          0x1c008f80      0x36c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o)
+                0x1c008f80                _malloc_trim_r
+                0x1c00907c                _free_r
+ .text          0x1c0092ec      0x4bc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o)
+                0x1c0092ec                __sfvwrite_r
+ .text          0x1c0097a8       0xf8 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwalk.o)
+                0x1c0097a8                _fwalk
+                0x1c009820                _fwalk_reent
+ .text          0x1c0098a0       0xd0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+                0x1c0098a0                _setlocale_r
+                0x1c009910                __locale_charset
+                0x1c00991c                __locale_mb_cur_max
+                0x1c00992c                __locale_msgcharset
+                0x1c009938                __locale_cjk_lang
+                0x1c009940                _localeconv_r
+                0x1c00994c                setlocale
+                0x1c009964                localeconv
+ .text          0x1c009970      0x170 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o)
+                0x1c009970                __smakebuf_r
+ .text          0x1c009ae0      0x734 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mallocr.o)
+                0x1c009ae0                _malloc_r
+ *fill*         0x1c00a214        0xc 
+ .text          0x1c00a220       0xa0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memchr.o)
+                0x1c00a220                memchr
+ .text          0x1c00a2c0      0x134 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memmove.o)
+                0x1c00a2c0                memmove
+ .text          0x1c00a3f4        0x8 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mlock.o)
+                0x1c00a3f4                __malloc_lock
+                0x1c00a3f8                __malloc_unlock
+ .text          0x1c00a3fc      0xcac /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+                0x1c00a3fc                _Balloc
+                0x1c00a488                _Bfree
+                0x1c00a4a4                __multadd
+                0x1c00a574                __s2b
+                0x1c00a658                __hi0bits
+                0x1c00a6b4                __lo0bits
+                0x1c00a748                __i2b
+                0x1c00a768                __multiply
+                0x1c00a938                __pow5mult
+                0x1c00aa34                __lshift
+                0x1c00ab44                __mcmp
+                0x1c00aba4                __mdiff
+                0x1c00ace4                __ulp
+                0x1c00ad48                __b2d
+                0x1c00ae00                __d2b
+                0x1c00af08                __ratio
+                0x1c00af84                _mprec_log10
+                0x1c00afbc                __copybits
+                0x1c00b02c                __any_on
+ .text          0x1c00b0a8      0x554 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reallocr.o)
+                0x1c00b0a8                _realloc_r
+ .text          0x1c00b5fc       0x6c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-s_fpclassify.o)
+                0x1c00b5fc                __fpclassifyd
+ .text          0x1c00b668       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o)
+                0x1c00b668                _sbrk_r
+ .text          0x1c00b6a0       0xc0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o)
+                0x1c00b6a0                __sread
+                0x1c00b6d0                __seofread
+                0x1c00b6d8                __swrite
+                0x1c00b72c                __sseek
+                0x1c00b758                __sclose
+ .text          0x1c00b760     0x1470 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+                0x1c00b804                __sprint_r
+                0x1c00b820                _vfiprintf_r
+                0x1c00cad8                vfiprintf
+ .text          0x1c00cbd0       0x40 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-writer.o)
+                0x1c00cbd0                _write_r
+ .text          0x1c00cc10       0xf0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__atexit.o)
+                0x1c00cc10                __register_exitproc
+ .text          0x1c00cd00       0x94 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-callocr.o)
+                0x1c00cd00                _calloc_r
+ .text          0x1c00cd94       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o)
+                0x1c00cd94                _close_r
+ .text          0x1c00cdcc       0xfc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fclose.o)
+                0x1c00cdcc                _fclose_r
+                0x1c00ceb4                fclose
+ .text          0x1c00cec8      0x18c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o)
+                0x1c00cec8                _fputwc_r
+                0x1c00d00c                fputwc
+ .text          0x1c00d054       0x3c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o)
+                0x1c00d054                _fstat_r
+ .text          0x1c00d090       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o)
+                0x1c00d090                _isatty_r
+ .text          0x1c00d0c8       0x40 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o)
+                0x1c00d0c8                _lseek_r
+ .text          0x1c00d108       0x40 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o)
+                0x1c00d108                _read_r
+ .text          0x1c00d148      0x128 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+                0x1c00d148                cleanup_glue
+                0x1c00d174                _reclaim_reent
+ .text          0x1c00d270      0x138 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wbuf.o)
+                0x1c00d270                __swbuf_r
+                0x1c00d390                __swbuf
+ .text          0x1c00d3a8      0x118 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o)
+                0x1c00d3a8                _wcrtomb_r
+                0x1c00d434                wcrtomb
+ .text          0x1c00d4c0       0x78 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wctomb_r.o)
+                0x1c00d4c0                __ascii_wctomb
+                0x1c00d4f0                _wctomb_r
+ .text          0x1c00d538      0x20c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o)
+                0x1c00d538                __udivsi3
+                0x1c00d538                __aeabi_uidiv
+                0x1c00d724                __aeabi_uidivmod
+ .text          0x1c00d744        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_dvmd_tls.o)
+                0x1c00d744                __aeabi_ldiv0
+                0x1c00d744                __aeabi_idiv0
+ .text          0x1c00d748       0x3c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o)
+                0x1c00d748                __aeabi_uldivmod
+ .text          0x1c00d784       0x78 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o)
+                0x1c00d784                __gnu_ldivmod_helper
+                0x1c00d7c0                __gnu_uldivmod_helper
+ .text          0x1c00d7fc      0x48c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+                0x1c00d7fc                __divdi3
+ .text          0x1c00dc88      0x430 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+                0x1c00dc88                __udivdi3
+ .text          0x1c00e0b8        0x4 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+                0x1c00e0b8                _exit
+ .text          0x1c00e0bc       0x3c bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+                0x1c00e0bc                _sbrk
+ .text          0x1c00e0f8        0x8 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+                0x1c00e0f8                _close
+ .text          0x1c00e100       0x10 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+                0x1c00e100                _fstat
+ .text          0x1c00e110       0x10 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+                0x1c00e110                isatty
+                0x1c00e118                _isatty
+ .text          0x1c00e120       0x30 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+                0x1c00e120                lseek
+                0x1c00e138                _lseek
+ .text          0x1c00e150       0x80 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+                0x1c00e150                read
+                0x1c00e190                _read
+ .text          0x1c00e1d0       0x10 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+                0x1c00e1d0                __errno
+ .text          0x1c00e1e0        0x8 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+                0x1c00e1e0                inbyte
+ .text          0x1c00e1e8       0xec bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+                0x1c00e1e8                XUartPs_SendByte
+                0x1c00e218                XUartPs_RecvByte
+                0x1c00e244                XUartPs_ResetHw
+ .text          0x1c00e2d4        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+ .text          0x1c00e2d4        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+ *(.text.*)
+ .text.startup  0x1c00e2d4       0x1c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+ *(.gnu.linkonce.t.*)
+ *(.plt)
+ *(.gnu_warning)
+ *(.gcc_execpt_table)
+ *(.glue_7)
+ .glue_7        0x00000000        0x0 linker stubs
+ *(.glue_7t)
+ .glue_7t       0x00000000        0x0 linker stubs
+ *(.vfp11_veneer)
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+ *(.ARM.extab)
+ .ARM.extab     0x1c00e2f0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+ .ARM.extab     0x1c00e2f0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+ *(.gnu.linkonce.armextab.*)
+
+.v4_bx          0x1c00e2f0        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.iplt           0x1c00e2f0        0x0
+ .iplt          0x00000000        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+
+.init           0x1c00e2f0       0x18
+ *(.init)
+ .init          0x1c00e2f0        0xc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+                0x1c00e2f0                _init
+ .init          0x1c00e2fc        0xc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+
+.fini           0x1c00e308       0x18
+ *(.fini)
+ .fini          0x1c00e308        0xc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+                0x1c00e308                _fini
+ .fini          0x1c00e314        0xc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+
+.rodata         0x1c00e320      0x630
+                0x1c00e320                __rodata_start = .
+ *(.rodata)
+ .rodata        0x1c00e320      0x194 obj/main.o
+                0x1c00e320                pLed
+ .rodata        0x1c00e4b4       0xd0 obj/remoteproc.o
+ .rodata        0x1c00e584      0x15c obj/virtio_ring.o
+ .rodata        0x1c00e6e0        0xc obj/config.o
+ .rodata        0x1c00e6ec       0x64 obj/config_vars.o
+                0x1c00e74c                n_vars
+ .rodata        0x1c00e750        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+                0x1c00e750                _global_impure_ptr
+ .rodata        0x1c00e754       0x20 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+ *fill*         0x1c00e774        0x4 
+ .rodata        0x1c00e778      0x128 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+                0x1c00e788                __mprec_tens
+                0x1c00e850                __mprec_tinytens
+                0x1c00e878                __mprec_bigtens
+ .rodata        0x1c00e8a0       0x20 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+ *(.rodata.*)
+ .rodata.str1.4
+                0x1c00e8c0        0xa bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+                                  0xc (size before relaxing)
+ *fill*         0x1c00e8ca        0x2 
+ .rodata.str1.4
+                0x1c00e8cc        0xf bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+                                 0x10 (size before relaxing)
+ *fill*         0x1c00e8db        0x1 
+ .rodata.str1.4
+                0x1c00e8dc        0xc bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .rodata.str1.4
+                0x1c00e8e8        0x2 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+                                  0x4 (size before relaxing)
+ *fill*         0x1c00e8ea        0x2 
+ .rodata.str1.4
+                0x1c00e8ec        0x2 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+                                  0x4 (size before relaxing)
+ *fill*         0x1c00e8ee        0x2 
+ .rodata.str1.4
+                0x1c00e8f0       0x42 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+                                 0x44 (size before relaxing)
+ *fill*         0x1c00e932        0x2 
+ .rodata.str1.4
+                0x1c00e934       0x10 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+                                 0x14 (size before relaxing)
+ .rodata.str1.4
+                0x1c00e944        0xc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+                                 0x14 (size before relaxing)
+ .rodata.str1.4
+                0x00000000       0x30 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+ *(.gnu.linkonce.r.*)
+                0x1c00e950                __rodata_end = .
+
+.rel.dyn        0x1c00e950        0x0
+ .rel.iplt      0x00000000        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+
+.rodata1        0x1c00e950        0x0
+                0x1c00e950                __rodata1_start = .
+ *(.rodata1)
+ *(.rodata1.*)
+                0x1c00e950                __rodata1_end = .
+
+.sdata2         0x1c00e950        0x0
+                0x1c00e950                __sdata2_start = .
+ *(.sdata2)
+ *(.sdata2.*)
+ *(.gnu.linkonce.s2.*)
+                0x1c00e950                __sdata2_end = .
+
+.sbss2          0x1c00e950        0x0
+                0x1c00e950                __sbss2_start = .
+ *(.sbss2)
+ *(.sbss2.*)
+ *(.gnu.linkonce.sb2.*)
+                0x1c00e950                __sbss2_end = .
+
+.data           0x1c00e950      0xc64
+                0x1c00e950                __data_start = .
+ *(.data)
+ .data          0x1c00e950        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+ .data          0x1c00e950        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+                0x1c00e950                __dso_handle
+ .data          0x1c00e954        0x0 obj/main.o
+ .data          0x1c00e954        0x4 obj/remoteproc.o
+                0x1c00e954                next_rpmsg_addr
+ .data          0x1c00e958        0x0 obj/virtio_ring.o
+ .data          0x1c00e958        0x0 obj/config.o
+ .data          0x1c00e958       0x50 obj/config_vars.o
+                0x1c00e958                vars
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(translation_table.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .data          0x1c00e9a8        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .data          0x1c00e9a8        0x4 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+                0x1c00e9a8                Xil_AssertWait
+ .data          0x1c00e9ac        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .data          0x1c00e9ac       0x38 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+                0x1c00e9ac                XExc_VectorTable
+ .data          0x1c00e9e4        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .data          0x1c00e9e4        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .data          0x1c00e9e4        0x0 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .data          0x1c00e9e4      0x304 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+                0x1c00e9e4                XScuGic_ConfigTable
+ .data          0x1c00ece8        0x8 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+                0x1c00ece8                XScuTimer_ConfigTable
+ .data          0x1c00ecf0        0x0 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .data          0x1c00ecf0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o)
+ .data          0x1c00ecf0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fini.o)
+ .data          0x1c00ecf0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o)
+ .data          0x1c00ecf0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o)
+ .data          0x1c00ecf0      0x430 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+                0x1c00ecf0                _impure_ptr
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-init.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memcpy.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memset.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-printf.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strcmp.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strlen-armv7.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strncpy.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fflush.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o)
+ .data          0x1c00f120        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwalk.o)
+ .data          0x1c00f120       0x7c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+                0x1c00f140                __mb_cur_max
+ .data          0x1c00f19c        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o)
+ .data          0x1c00f19c      0x410 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mallocr.o)
+                0x1c00f19c                __malloc_av_
+                0x1c00f5a4                __malloc_sbrk_base
+                0x1c00f5a8                __malloc_trim_threshold
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memchr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memmove.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mlock.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reallocr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-s_fpclassify.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-writer.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__atexit.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-callocr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fclose.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wbuf.o)
+ .data          0x1c00f5ac        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o)
+ .data          0x1c00f5ac        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wctomb_r.o)
+                0x1c00f5ac                __wctomb
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o)
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_dvmd_tls.o)
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o)
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o)
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .data          0x1c00f5b0        0x0 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+ .data          0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+ *(.data.*)
+ *(.gnu.linkonce.d.*)
+ *(.jcr)
+ .jcr           0x1c00f5b0        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ .jcr           0x1c00f5b0        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+ *(.got)
+ *(.got.plt)
+                0x1c00f5b4                __data_end = .
+
+.tm_clone_table
+                0x1c00f5b4        0x0
+ .tm_clone_table
+                0x1c00f5b4        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ .tm_clone_table
+                0x1c00f5b4        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+
+.resource_table
+                0x1c00f5b4      0x18c
+ .resource_table
+                0x1c00f5b4      0x18c obj/remoteproc.o
+                0x1c00f5b4                resources
+
+.got2           0x1c00f740        0x0
+ .got2          0x1c00f740        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+
+.data1          0x1c00f740        0x0
+                0x1c00f740                __data1_start = .
+ *(.data1)
+ *(.data1.*)
+                0x1c00f740                __data1_end = .
+
+.got            0x1c00f740        0x0
+ *(.got.plt)
+ *(.igot.plt)
+ .igot.plt      0x00000000        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ *(.got)
+ *(.igot)
+
+.rel.plt
+ *(.rel.plt)
+
+.ctors          0x1c00f740        0x0
+                0x1c00f740                __CTOR_LIST__ = .
+                0x1c00f740                ___CTORS_LIST___ = .
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *(.ctors)
+                0x1c00f740                __CTOR_END__ = .
+                0x1c00f740                ___CTORS_END___ = .
+
+.dtors          0x1c00f740        0x0
+                0x1c00f740                __DTOR_LIST__ = .
+                0x1c00f740                ___DTORS_LIST___ = .
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *(.dtors)
+                0x1c00f740                __DTOR_END__ = .
+                0x1c00f740                ___DTORS_END___ = .
+
+.fixup          0x1c00f740        0x0
+                0x1c00f740                __fixup_start = .
+ *(.fixup)
+                0x1c00f740                __fixup_end = .
+
+.eh_frame       0x1c00f740        0x4
+ *(.eh_frame)
+ .eh_frame      0x1c00f740        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ .eh_frame      0x1c00f740        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+
+.eh_framehdr    0x1c00f744        0x0
+                0x1c00f744                __eh_framehdr_start = .
+ *(.eh_framehdr)
+                0x1c00f744                __eh_framehdr_end = .
+
+.gcc_except_table
+ *(.gcc_except_table)
+
+.mmu_tbl        0x1c010000     0x4000
+                0x1c010000                __mmu_tbl_start = .
+ *(.mmu_tbl)
+ .mmu_tbl       0x1c010000     0x4000 bsp_xsdk/2014.4/lib/libxil.a(translation_table.o)
+                0x1c010000                MMUTable
+                0x1c014000                __mmu_tbl_end = .
+
+.ARM.exidx      0x1c014000        0x8
+                0x1c014000                __exidx_start = .
+ *(.ARM.exidx*)
+ .ARM.exidx     0x1c014000        0x8 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+ .ARM.exidx     0x1c014008        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+                                  0x8 (size before relaxing)
+ *(.gnu.linkonce.armexidix.*.*)
+                0x1c014008                __exidx_end = .
+
+.preinit_array  0x1c014008        0x0
+                0x1c014008                __preinit_array_start = .
+ *(SORT(.preinit_array.*))
+ *(.preinit_array)
+                0x1c014008                __preinit_array_end = .
+
+.init_array     0x1c014008        0x8
+                0x1c014008                __init_array_start = .
+ *(SORT(.init_array.*))
+ .init_array.00000
+                0x1c014008        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+ *(.init_array)
+ .init_array    0x1c01400c        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+                0x1c014010                __init_array_end = .
+
+.fini_array     0x1c014010        0x4
+                0x1c014010                __fini_array_start = .
+ *(SORT(.fini_array.*))
+ *(.fini_array)
+ .fini_array    0x1c014010        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+                0x1c014014                __fini_array_end = .
+
+.ARM.attributes
+                0x1c014014       0x33
+                0x1c014014                __ARM.attributes_start = .
+ *(.ARM.attributes)
+ .ARM.attributes
+                0x1c014014       0x25 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+ .ARM.attributes
+                0x1c014039       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ .ARM.attributes
+                0x1c014070       0x37 obj/main.o
+ .ARM.attributes
+                0x1c0140a7       0x37 obj/remoteproc.o
+ .ARM.attributes
+                0x1c0140de       0x37 obj/virtio_ring.o
+ .ARM.attributes
+                0x1c014115       0x37 obj/config.o
+ .ARM.attributes
+                0x1c01414c       0x37 obj/config_vars.o
+ .ARM.attributes
+                0x1c014183       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .ARM.attributes
+                0x1c0141ba       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .ARM.attributes
+                0x1c0141f1       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .ARM.attributes
+                0x1c014228       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .ARM.attributes
+                0x1c01425f       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .ARM.attributes
+                0x1c014296       0x21 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .ARM.attributes
+                0x1c0142b7       0x21 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .ARM.attributes
+                0x1c0142d8       0x21 bsp_xsdk/2014.4/lib/libxil.a(translation_table.o)
+ .ARM.attributes
+                0x1c0142f9       0x2f bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .ARM.attributes
+                0x1c014328       0x2f bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .ARM.attributes
+                0x1c014357       0x21 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .ARM.attributes
+                0x1c014378       0x2f bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .ARM.attributes
+                0x1c0143a7       0x2f bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .ARM.attributes
+                0x1c0143d6       0x2f bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .ARM.attributes
+                0x1c014405       0x2f bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .ARM.attributes
+                0x1c014434       0x2f bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .ARM.attributes
+                0x1c014463       0x2f bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .ARM.attributes
+                0x1c014492       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .ARM.attributes
+                0x1c0144c9       0x37 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .ARM.attributes
+                0x1c014500       0x21 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .ARM.attributes
+                0x1c014521       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o)
+ .ARM.attributes
+                0x1c014558       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fini.o)
+ .ARM.attributes
+                0x1c01458f       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o)
+ .ARM.attributes
+                0x1c0145c6       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o)
+ .ARM.attributes
+                0x1c0145fd       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+ .ARM.attributes
+                0x1c014634       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-init.o)
+ .ARM.attributes
+                0x1c01466b       0x21 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memcpy.o)
+ .ARM.attributes
+                0x1c01468c       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memset.o)
+ .ARM.attributes
+                0x1c0146c3       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-printf.o)
+ .ARM.attributes
+                0x1c0146fa       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+ .ARM.attributes
+                0x1c014731       0x23 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strcmp.o)
+ .ARM.attributes
+                0x1c014754       0x23 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strlen-armv7.o)
+ .ARM.attributes
+                0x1c014777       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strncpy.o)
+ .ARM.attributes
+                0x1c0147ae       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+ .ARM.attributes
+                0x1c0147e5       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o)
+ .ARM.attributes
+                0x1c01481c       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+ .ARM.attributes
+                0x1c014853       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o)
+ .ARM.attributes
+                0x1c01488a       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+ .ARM.attributes
+                0x1c0148c1       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fflush.o)
+ .ARM.attributes
+                0x1c0148f8       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o)
+ .ARM.attributes
+                0x1c01492f       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o)
+ .ARM.attributes
+                0x1c014966       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o)
+ .ARM.attributes
+                0x1c01499d       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwalk.o)
+ .ARM.attributes
+                0x1c0149d4       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+ .ARM.attributes
+                0x1c014a0b       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o)
+ .ARM.attributes
+                0x1c014a42       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mallocr.o)
+ .ARM.attributes
+                0x1c014a79       0x23 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memchr.o)
+ .ARM.attributes
+                0x1c014a9c       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memmove.o)
+ .ARM.attributes
+                0x1c014ad3       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mlock.o)
+ .ARM.attributes
+                0x1c014b0a       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+ .ARM.attributes
+                0x1c014b41       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reallocr.o)
+ .ARM.attributes
+                0x1c014b78       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-s_fpclassify.o)
+ .ARM.attributes
+                0x1c014baf       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o)
+ .ARM.attributes
+                0x1c014be6       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o)
+ .ARM.attributes
+                0x1c014c1d       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+ .ARM.attributes
+                0x1c014c54       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-writer.o)
+ .ARM.attributes
+                0x1c014c8b       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__atexit.o)
+ .ARM.attributes
+                0x1c014cc2       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-callocr.o)
+ .ARM.attributes
+                0x1c014cf9       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o)
+ .ARM.attributes
+                0x1c014d30       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fclose.o)
+ .ARM.attributes
+                0x1c014d67       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o)
+ .ARM.attributes
+                0x1c014d9e       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o)
+ .ARM.attributes
+                0x1c014dd5       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o)
+ .ARM.attributes
+                0x1c014e0c       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o)
+ .ARM.attributes
+                0x1c014e43       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o)
+ .ARM.attributes
+                0x1c014e7a       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+ .ARM.attributes
+                0x1c014eb1       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wbuf.o)
+ .ARM.attributes
+                0x1c014ee8       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o)
+ .ARM.attributes
+                0x1c014f1f       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wctomb_r.o)
+ .ARM.attributes
+                0x1c014f56       0x25 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x1c014f7b       0x25 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x1c014fa0       0x25 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o)
+ .ARM.attributes
+                0x1c014fc5       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o)
+ .ARM.attributes
+                0x1c014ffc       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+ .ARM.attributes
+                0x1c015033       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+ .ARM.attributes
+                0x1c01506a       0x2f bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .ARM.attributes
+                0x1c015099       0x2f bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .ARM.attributes
+                0x1c0150c8       0x2f bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .ARM.attributes
+                0x1c0150f7       0x2f bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .ARM.attributes
+                0x1c015126       0x2f bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .ARM.attributes
+                0x1c015155       0x2f bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .ARM.attributes
+                0x1c015184       0x2f bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .ARM.attributes
+                0x1c0151b3       0x2f bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .ARM.attributes
+                0x1c0151e2       0x2f bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .ARM.attributes
+                0x1c015211       0x37 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+ .ARM.attributes
+                0x1c015248       0x37 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+ .ARM.attributes
+                0x1c01527f       0x25 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+                0x1c0152a4                __ARM.attributes_end = .
+
+.sdata          0x1c014014        0x0
+                0x1c014014                __sdata_start = .
+ *(.sdata)
+ *(.sdata.*)
+ *(.gnu.linkonce.s.*)
+                0x1c014014                __sdata_end = .
+
+.sbss           0x1c014014        0x0
+                0x1c014014                __sbss_start = .
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.sb.*)
+                0x1c014014                __sbss_end = .
+
+.tdata          0x1c014014        0x0
+                0x1c014014                __tdata_start = .
+ *(.tdata)
+ *(.tdata.*)
+ *(.gnu.linkonce.td.*)
+                0x1c014014                __tdata_end = .
+
+.tbss           0x1c014014        0x0
+                0x1c014014                __tbss_start = .
+ *(.tbss)
+ *(.tbss.*)
+ *(.gnu.linkonce.tb.*)
+                0x1c014014                __tbss_end = .
+
+.bss            0x1c014014      0x5bc
+                0x1c014014                __bss_start = .
+ *(.bss)
+ .bss           0x1c014014        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crti.o
+ .bss           0x1c014014       0x1c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtbegin.o
+ .bss           0x1c014030      0x210 obj/main.o
+                0x1c014030                rpmsg_stdio
+                0x1c014038                sys_tick
+ .bss           0x1c014240      0x130 obj/remoteproc.o
+                0x1c014240                channels
+                0x1c014330                txvring_kicks
+                0x1c014334                rxvring_kicks
+ .bss           0x1c014370        0x0 obj/virtio_ring.o
+ .bss           0x1c014370        0x4 obj/config.o
+                0x1c014370                rpmsg_config
+ .bss           0x1c014374        0x0 obj/config_vars.o
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(translation_table.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .bss           0x1c014374        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .bss           0x1c014374        0x4 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .bss           0x1c014378        0x0 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fini.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-impure.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-init.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memcpy.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memset.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-printf.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strcmp.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strlen-armv7.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strncpy.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fflush.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o)
+ .bss           0x1c014378        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwalk.o)
+ .bss           0x1c014378        0xc /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+                0x1c014378                _PathLocale
+                0x1c01437c                __mlocale_changed
+                0x1c014380                __nlocale_changed
+ .bss           0x1c014384        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o)
+ .bss           0x1c014384       0x34 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mallocr.o)
+                0x1c014384                __malloc_top_pad
+                0x1c014388                __malloc_current_mallinfo
+                0x1c0143b0                __malloc_max_sbrked_mem
+                0x1c0143b4                __malloc_max_total_mem
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memchr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memmove.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mlock.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reallocr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-s_fpclassify.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-writer.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__atexit.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-callocr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fclose.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wbuf.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wctomb_r.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_dvmd_tls.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+ .bss           0x1c0143b8        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+ .bss           0x1c0143b8        0x0 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .bss           0x1c0143b8        0x4 bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .bss           0x1c0143bc        0x0 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+ .bss           0x1c0143bc        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtend.o
+ .bss           0x1c0143bc        0x0 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/crtn.o
+ *(.bss.*)
+ *(.gnu.linkonce.b.*)
+ *(COMMON)
+ COMMON         0x1c0143bc       0x1c obj/main.o
+                0x1c0143bc                IntcInst
+                0x1c0143c8                timerInst
+ COMMON         0x1c0143d8      0x1f0 obj/config.o
+                0x1c0143d8                cfgMsgTxBuf
+ COMMON         0x1c0145c8        0x4 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+                0x1c0145c8                Xil_AssertStatus
+ COMMON         0x1c0145cc        0x4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+                0x1c0145cc                errno
+                0x1c0145d0                __bss_end = .
+                0x1c014014                _SDA_BASE_ = (__sdata_start + ((__sbss_end - __sdata_start) / 0x2))
+                0x1c00e950                _SDA2_BASE_ = (__sdata2_start + ((__sbss2_end - __sdata2_start) / 0x2))
+
+.heap           0x1c0145d0   0x100000
+                0x1c0145d0                . = ALIGN (0x10)
+ *fill*         0x1c0145d0        0x0 
+                0x1c0145d0                _heap = .
+                0x1c0145d0                HeapBase = .
+                0x1c0145d0                _heap_start = .
+                0x1c1145d0                . = (. + _HEAP_SIZE)
+ *fill*         0x1c0145d0   0x100000 
+                0x1c1145d0                _heap_end = .
+                0x1c1145d0                HeapLimit = .
+
+.stack          0x1c1145d0   0x301000
+                0x1c1145d0                . = ALIGN (0x10)
+                0x1c1145d0                _stack_end = .
+                0x1c2145d0                . = (. + _STACK_SIZE)
+ *fill*         0x1c1145d0   0x100000 
+                0x1c2145d0                . = ALIGN (0x10)
+                0x1c2145d0                _stack = .
+                0x1c2145d0                __stack = _stack
+                0x1c2145d0                . = ALIGN (0x10)
+                0x1c2145d0                _irq_stack_end = .
+                0x1c3145d0                . = (. + _IRQ_STACK_SIZE)
+ *fill*         0x1c2145d0   0x100000 
+                0x1c3145d0                . = ALIGN (0x10)
+                0x1c3145d0                __irq_stack = .
+                0x1c3145d0                _supervisor_stack_end = .
+                0x1c314dd0                . = (. + _SUPERVISOR_STACK_SIZE)
+ *fill*         0x1c3145d0      0x800 
+                0x1c314dd0                . = ALIGN (0x10)
+                0x1c314dd0                __supervisor_stack = .
+                0x1c314dd0                _abort_stack_end = .
+                0x1c3151d0                . = (. + _ABORT_STACK_SIZE)
+ *fill*         0x1c314dd0      0x400 
+                0x1c3151d0                . = ALIGN (0x10)
+                0x1c3151d0                __abort_stack = .
+                0x1c3151d0                _fiq_stack_end = .
+                0x1c4151d0                . = (. + _FIQ_STACK_SIZE)
+ *fill*         0x1c3151d0   0x100000 
+                0x1c4151d0                . = ALIGN (0x10)
+                0x1c4151d0                __fiq_stack = .
+                0x1c4151d0                _undef_stack_end = .
+                0x1c4155d0                . = (. + _UNDEF_STACK_SIZE)
+ *fill*         0x1c4151d0      0x400 
+                0x1c4155d0                . = ALIGN (0x10)
+                0x1c4155d0                __undef_stack = .
+                0x1c4155d0                _end = .
+                0x1c416000                . = ALIGN (0x2000)
+                0x1c416000                __trace_buffer_start = .
+                0x1c41e000                . = (. + TRACE_BUFFER_SIZE)
+                0x1c41e000                __trace_buffer_end = .
+                0x1c41e000                __elf_end = .
+                0x04000000                __elf_len = 0x4000000
+OUTPUT(bm_cfg_mgmt elf32-littlearm)
+
+.debug_info     0x00000000     0x7e8e
+ .debug_info    0x00000000      0xf71 obj/main.o
+ .debug_info    0x00000f71     0x12c0 obj/remoteproc.o
+ .debug_info    0x00002231      0xb7c obj/virtio_ring.o
+ .debug_info    0x00002dad      0x616 obj/config.o
+ .debug_info    0x000033c3      0x183 obj/config_vars.o
+ .debug_info    0x00003546      0x881 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .debug_info    0x00003dc7      0x1ed bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .debug_info    0x00003fb4      0x1a5 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .debug_info    0x00004159      0x3fa bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .debug_info    0x00004553      0x13d bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .debug_info    0x00004690       0xa9 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .debug_info    0x00004739       0xa2 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .debug_info    0x000047db       0xca bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .debug_info    0x000048a5      0x128 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .debug_info    0x000049cd       0xa6 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .debug_info    0x00004a73      0x162 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .debug_info    0x00004bd5     0x1234 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .debug_info    0x00005e09      0x263 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .debug_info    0x0000606c      0x48f bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .debug_info    0x000064fb      0x1a2 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .debug_info    0x0000669d      0x19b bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .debug_info    0x00006838      0x15e bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .debug_info    0x00006996       0xeb bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .debug_info    0x00006a81       0xa6 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .debug_info    0x00006b27       0x99 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .debug_info    0x00006bc0       0xee bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .debug_info    0x00006cae       0x55 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .debug_info    0x00006d03      0x222 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .debug_info    0x00006f25       0xc6 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .debug_info    0x00006feb      0x13f bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .debug_info    0x0000712a      0x143 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .debug_info    0x0000726d      0x889 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .debug_info    0x00007af6       0xe3 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .debug_info    0x00007bd9      0x2b5 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_abbrev   0x00000000     0x2338
+ .debug_abbrev  0x00000000      0x2dd obj/main.o
+ .debug_abbrev  0x000002dd      0x360 obj/remoteproc.o
+ .debug_abbrev  0x0000063d      0x214 obj/virtio_ring.o
+ .debug_abbrev  0x00000851      0x1bd obj/config.o
+ .debug_abbrev  0x00000a0e       0xaa obj/config_vars.o
+ .debug_abbrev  0x00000ab8      0x237 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .debug_abbrev  0x00000cef       0xff bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .debug_abbrev  0x00000dee       0xfe bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .debug_abbrev  0x00000eec      0x18c bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .debug_abbrev  0x00001078       0xd1 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .debug_abbrev  0x00001149       0x14 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .debug_abbrev  0x0000115d       0x14 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .debug_abbrev  0x00001171       0xb8 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .debug_abbrev  0x00001229       0xaa bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .debug_abbrev  0x000012d3       0x14 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .debug_abbrev  0x000012e7       0xcb bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .debug_abbrev  0x000013b2      0x2d3 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .debug_abbrev  0x00001685      0x172 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .debug_abbrev  0x000017f7      0x1c7 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .debug_abbrev  0x000019be       0xcc bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .debug_abbrev  0x00001a8a       0xf3 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .debug_abbrev  0x00001b7d       0xac bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .debug_abbrev  0x00001c29       0x7f bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .debug_abbrev  0x00001ca8       0x14 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .debug_abbrev  0x00001cbc       0x51 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .debug_abbrev  0x00001d0d       0x8b bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .debug_abbrev  0x00001d98       0x4a bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .debug_abbrev  0x00001de2       0xaa bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .debug_abbrev  0x00001e8c       0x6f bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .debug_abbrev  0x00001efb       0x98 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .debug_abbrev  0x00001f93       0x9a bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .debug_abbrev  0x0000202d      0x18f bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .debug_abbrev  0x000021bc       0x94 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .debug_abbrev  0x00002250       0xe8 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_aranges  0x00000000      0x428
+ .debug_aranges
+                0x00000000       0x20 obj/main.o
+ .debug_aranges
+                0x00000020       0x20 obj/remoteproc.o
+ .debug_aranges
+                0x00000040       0x20 obj/virtio_ring.o
+ .debug_aranges
+                0x00000060       0x20 obj/config.o
+ .debug_aranges
+                0x00000080       0x18 obj/config_vars.o
+ .debug_aranges
+                0x00000098       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .debug_aranges
+                0x000000b8       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .debug_aranges
+                0x000000d8       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .debug_aranges
+                0x000000f8       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .debug_aranges
+                0x00000118       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .debug_aranges
+                0x00000138       0x20 bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .debug_aranges
+                0x00000158       0x20 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .debug_aranges
+                0x00000178       0x20 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .debug_aranges
+                0x00000198       0x20 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .debug_aranges
+                0x000001b8       0x20 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .debug_aranges
+                0x000001d8       0x20 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .debug_aranges
+                0x000001f8       0x20 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .debug_aranges
+                0x00000218       0x20 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .debug_aranges
+                0x00000238       0x20 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .debug_aranges
+                0x00000258       0x20 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .debug_aranges
+                0x00000278       0x20 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .debug_aranges
+                0x00000298       0x18 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .debug_aranges
+                0x000002b0       0x18 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .debug_aranges
+                0x000002c8       0x20 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .debug_aranges
+                0x000002e8       0x20 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .debug_aranges
+                0x00000308       0x20 bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .debug_aranges
+                0x00000328       0x20 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .debug_aranges
+                0x00000348       0x20 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .debug_aranges
+                0x00000368       0x20 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .debug_aranges
+                0x00000388       0x20 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .debug_aranges
+                0x000003a8       0x20 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .debug_aranges
+                0x000003c8       0x20 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .debug_aranges
+                0x000003e8       0x20 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .debug_aranges
+                0x00000408       0x20 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_line     0x00000000     0x2339
+ .debug_line    0x00000000      0x287 obj/main.o
+ .debug_line    0x00000287      0x276 obj/remoteproc.o
+ .debug_line    0x000004fd      0x1a0 obj/virtio_ring.o
+ .debug_line    0x0000069d      0x1c8 obj/config.o
+ .debug_line    0x00000865       0x85 obj/config_vars.o
+ .debug_line    0x000008ea      0x4ae bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .debug_line    0x00000d98      0x113 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .debug_line    0x00000eab       0xc9 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .debug_line    0x00000f74      0x233 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .debug_line    0x000011a7       0xba bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .debug_line    0x00001261       0x7e bsp_xsdk/2014.4/lib/libxil.a(asm_vectors.o)
+ .debug_line    0x000012df       0xf0 bsp_xsdk/2014.4/lib/libxil.a(boot.o)
+ .debug_line    0x000013cf       0x54 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .debug_line    0x00001423       0x5e bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .debug_line    0x00001481       0x53 bsp_xsdk/2014.4/lib/libxil.a(xil-crt0.o)
+ .debug_line    0x000014d4       0x5b bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .debug_line    0x0000152f      0x364 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .debug_line    0x00001893       0xc8 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .debug_line    0x0000195b       0xe1 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .debug_line    0x00001a3c       0xbb bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .debug_line    0x00001af7       0xc4 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .debug_line    0x00001bbb       0xb3 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .debug_line    0x00001c6e       0xa4 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .debug_line    0x00001d12       0x49 bsp_xsdk/2014.4/lib/libxil.a(cpu_init.o)
+ .debug_line    0x00001d5b       0x82 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .debug_line    0x00001ddd       0x8a bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .debug_line    0x00001e67       0x38 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .debug_line    0x00001e9f       0x9b bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .debug_line    0x00001f3a       0x86 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .debug_line    0x00001fc0       0x9d bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .debug_line    0x0000205d       0x5d bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .debug_line    0x000020ba       0xf9 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .debug_line    0x000021b3       0xb0 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .debug_line    0x00002263       0xd6 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_str      0x00000000     0x19a5
+ .debug_str     0x00000000      0x757 obj/main.o
+                                0x800 (size before relaxing)
+ .debug_str     0x00000757      0x2c9 obj/remoteproc.o
+                                0x98c (size before relaxing)
+ .debug_str     0x00000a20       0x85 obj/virtio_ring.o
+                                0x63e (size before relaxing)
+ .debug_str     0x00000aa5       0xd7 obj/config.o
+                                0x2e5 (size before relaxing)
+ .debug_str     0x00000b7c       0x12 obj/config_vars.o
+                                0x1a7 (size before relaxing)
+ .debug_str     0x00000b8e      0x221 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+                                0x37e (size before relaxing)
+ .debug_str     0x00000daf       0x4a bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+                                0x285 (size before relaxing)
+ .debug_str     0x00000df9       0x40 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+                                0x239 (size before relaxing)
+ .debug_str     0x00000e39      0x115 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+                                0x2a7 (size before relaxing)
+ .debug_str     0x00000f4e       0x3f bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+                                0x1de (size before relaxing)
+ .debug_str     0x00000f8d       0xfd bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+                                0x121 (size before relaxing)
+ .debug_str     0x0000108a       0x86 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+                                0x1f2 (size before relaxing)
+ .debug_str     0x00001110       0x7f bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+                                0x1f7 (size before relaxing)
+ .debug_str     0x0000118f      0x3fd bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+                                0x586 (size before relaxing)
+ .debug_str     0x0000158c       0xc2 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+                                0x27d (size before relaxing)
+ .debug_str     0x0000164e       0x9b bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+                                0x237 (size before relaxing)
+ .debug_str     0x000016e9       0x54 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+                                0x1eb (size before relaxing)
+ .debug_str     0x0000173d       0x23 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+                                0x1ab (size before relaxing)
+ .debug_str     0x00001760        0xc bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+                                0x213 (size before relaxing)
+ .debug_str     0x0000176c        0xe bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+                                0x1b6 (size before relaxing)
+ .debug_str     0x0000177a        0xe bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+                                0x16d (size before relaxing)
+ .debug_str     0x00001788       0x3b bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+                                0x198 (size before relaxing)
+ .debug_str     0x000017c3        0x8 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+                                 0xd5 (size before relaxing)
+ .debug_str     0x000017cb       0xd8 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+                                0x254 (size before relaxing)
+ .debug_str     0x000018a3       0x11 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+                                0x170 (size before relaxing)
+ .debug_str     0x000018b4       0x1e bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+                                0x190 (size before relaxing)
+ .debug_str     0x000018d2       0x15 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+                                0x178 (size before relaxing)
+ .debug_str     0x000018e7        0x8 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+                                0x52a (size before relaxing)
+ .debug_str     0x000018ef       0x1a bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+                                0x18a (size before relaxing)
+ .debug_str     0x00001909       0x9c bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+                                0x1cf (size before relaxing)
+
+.comment        0x00000000       0x46
+ .comment       0x00000000       0x46 obj/main.o
+                                 0x47 (size before relaxing)
+ .comment       0x00000000       0x47 obj/remoteproc.o
+ .comment       0x00000000       0x47 obj/virtio_ring.o
+ .comment       0x00000000       0x47 obj/config.o
+ .comment       0x00000000       0x47 obj/config_vars.o
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscugic_g.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_g.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .comment       0x00000000       0x47 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_frame    0x00000000     0x1d18
+ .debug_frame   0x00000000      0x10c obj/main.o
+ .debug_frame   0x0000010c      0x174 obj/remoteproc.o
+ .debug_frame   0x00000280       0x7c obj/virtio_ring.o
+ .debug_frame   0x000002fc      0x134 obj/config.o
+ .debug_frame   0x00000430      0x104 bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .debug_frame   0x00000534       0x2c bsp_xsdk/2014.4/lib/libxil.a(xscugic_intr.o)
+ .debug_frame   0x00000560       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .debug_frame   0x00000580       0x9c bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .debug_frame   0x0000061c       0x20 bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .debug_frame   0x0000063c       0x30 bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .debug_frame   0x0000066c       0x88 bsp_xsdk/2014.4/lib/libxil.a(vectors.o)
+ .debug_frame   0x000006f4       0x48 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .debug_frame   0x0000073c      0x308 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .debug_frame   0x00000a44       0x70 bsp_xsdk/2014.4/lib/libxil.a(xil_exception.o)
+ .debug_frame   0x00000ab4       0xd0 bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .debug_frame   0x00000b84       0x58 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .debug_frame   0x00000bdc       0x48 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .debug_frame   0x00000c24       0x28 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-exit.o)
+ .debug_frame   0x00000c4c       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fini.o)
+ .debug_frame   0x00000c78       0x54 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fprintf.o)
+ .debug_frame   0x00000ccc       0x50 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwrite.o)
+ .debug_frame   0x00000d1c       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-init.o)
+ .debug_frame   0x00000d48       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memset.o)
+ .debug_frame   0x00000d74       0x58 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-printf.o)
+ .debug_frame   0x00000dcc       0x3c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-puts.o)
+ .debug_frame   0x00000e08       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-strncpy.o)
+ .debug_frame   0x00000e34       0x88 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfprintf.o)
+ .debug_frame   0x00000ebc       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wsetup.o)
+ .debug_frame   0x00000ee8       0x48 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__call_atexit.o)
+ .debug_frame   0x00000f30       0x20 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-atexit.o)
+ .debug_frame   0x00000f50       0x68 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-dtoa.o)
+ .debug_frame   0x00000fb8       0x5c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fflush.o)
+ .debug_frame   0x00001014      0x110 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-findfp.o)
+ .debug_frame   0x00001124       0x50 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-freer.o)
+ .debug_frame   0x00001174       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fvwrite.o)
+ .debug_frame   0x000011ac       0x54 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fwalk.o)
+ .debug_frame   0x00001200       0x98 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-locale.o)
+ .debug_frame   0x00001298       0x30 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-makebuf.o)
+ .debug_frame   0x000012c8       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mallocr.o)
+ .debug_frame   0x00001300       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-memmove.o)
+ .debug_frame   0x0000132c       0x30 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mlock.o)
+ .debug_frame   0x0000135c      0x210 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-mprec.o)
+ .debug_frame   0x0000156c       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reallocr.o)
+ .debug_frame   0x000015a4       0x20 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-s_fpclassify.o)
+ .debug_frame   0x000015c4       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-sbrkr.o)
+ .debug_frame   0x000015f0       0x80 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-stdio.o)
+ .debug_frame   0x00001670       0xb4 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-vfiprintf.o)
+ .debug_frame   0x00001724       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-writer.o)
+ .debug_frame   0x00001750       0x30 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-__atexit.o)
+ .debug_frame   0x00001780       0x28 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-callocr.o)
+ .debug_frame   0x000017a8       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-closer.o)
+ .debug_frame   0x000017d4       0x3c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fclose.o)
+ .debug_frame   0x00001810       0x50 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fputwc.o)
+ .debug_frame   0x00001860       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-fstatr.o)
+ .debug_frame   0x0000188c       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-isattyr.o)
+ .debug_frame   0x000018b8       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-lseekr.o)
+ .debug_frame   0x000018e4       0x2c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-readr.o)
+ .debug_frame   0x00001910       0x48 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-reent.o)
+ .debug_frame   0x00001958       0x3c /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wbuf.o)
+ .debug_frame   0x00001994       0x58 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wcrtomb.o)
+ .debug_frame   0x000019ec       0x44 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/../../../../arm-xilinx-eabi/lib/libc.a(lib_a-wctomb_r.o)
+ .debug_frame   0x00001a30       0x20 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivsi3.o)
+ .debug_frame   0x00001a50       0x28 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x00001a78       0x58 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(bpabi.o)
+ .debug_frame   0x00001ad0       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_divdi3.o)
+ .debug_frame   0x00001b08       0x38 /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.8.3/libgcc.a(_udivdi3.o)
+ .debug_frame   0x00001b40       0x20 bsp_xsdk/2014.4/lib/libxil.a(_exit.o)
+ .debug_frame   0x00001b60       0x20 bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .debug_frame   0x00001b80       0x20 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .debug_frame   0x00001ba0       0x20 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .debug_frame   0x00001bc0       0x30 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .debug_frame   0x00001bf0       0x40 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .debug_frame   0x00001c30       0x48 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .debug_frame   0x00001c78       0x20 bsp_xsdk/2014.4/lib/libxil.a(errno.o)
+ .debug_frame   0x00001c98       0x20 bsp_xsdk/2014.4/lib/libxil.a(inbyte.o)
+ .debug_frame   0x00001cb8       0x60 bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_loc      0x00000000     0x1ff5
+ .debug_loc     0x00000000      0xa8d bsp_xsdk/2014.4/lib/libxil.a(xscugic.o)
+ .debug_loc     0x00000a8d       0x4d bsp_xsdk/2014.4/lib/libxil.a(xscugic_sinit.o)
+ .debug_loc     0x00000ada      0x30c bsp_xsdk/2014.4/lib/libxil.a(xscutimer.o)
+ .debug_loc     0x00000de6       0x4d bsp_xsdk/2014.4/lib/libxil.a(xscutimer_sinit.o)
+ .debug_loc     0x00000e33       0x1e bsp_xsdk/2014.4/lib/libxil.a(usleep.o)
+ .debug_loc     0x00000e51       0x42 bsp_xsdk/2014.4/lib/libxil.a(xil_assert.o)
+ .debug_loc     0x00000e93      0xa4f bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)
+ .debug_loc     0x000018e2      0x24f bsp_xsdk/2014.4/lib/libxil.a(xil_io.o)
+ .debug_loc     0x00001b31      0x100 bsp_xsdk/2014.4/lib/libxil.a(xil_mmu.o)
+ .debug_loc     0x00001c31       0x82 bsp_xsdk/2014.4/lib/libxil.a(xtime_l.o)
+ .debug_loc     0x00001cb3       0x21 bsp_xsdk/2014.4/lib/libxil.a(_sbrk.o)
+ .debug_loc     0x00001cd4       0x21 bsp_xsdk/2014.4/lib/libxil.a(close.o)
+ .debug_loc     0x00001cf5       0x21 bsp_xsdk/2014.4/lib/libxil.a(fstat.o)
+ .debug_loc     0x00001d16       0x42 bsp_xsdk/2014.4/lib/libxil.a(isatty.o)
+ .debug_loc     0x00001d58       0xc6 bsp_xsdk/2014.4/lib/libxil.a(lseek.o)
+ .debug_loc     0x00001e1e      0x128 bsp_xsdk/2014.4/lib/libxil.a(read.o)
+ .debug_loc     0x00001f46       0xaf bsp_xsdk/2014.4/lib/libxil.a(xuartps_hw.o)
+
+.debug_ranges   0x00000000       0x30
+ .debug_ranges  0x00000000       0x30 bsp_xsdk/2014.4/lib/libxil.a(xil_cache.o)

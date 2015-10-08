@@ -17,8 +17,9 @@
 ******************************************************************************************************************************/
 
 #include <stdint.h>
+#include <stdio.h>
 #include "virtio_ring.h"
-#include "xil_printf.h"
+//#include "xil_printf.h"
 #include "xpseudo_asm_gcc.h"
 #include "xil_cache_l.h"
 
@@ -53,7 +54,7 @@
 // notify: callback function wich gets called when we want to kick linux
 void vring_init(struct vring* vr, uint32_t addr, void (*notify)())
 {
-    xil_printf("vring_init: addr 0x%08x\n", addr);
+    fprintf(stderr, "vring_init: addr 0x%08x\n", (unsigned int)addr);
     vr->desc = (void*)(addr);  // buffer descriptor heads are at the address assigned to us by the kernel
     addr += VRING_SIZE * sizeof(struct vring_desc);
     vr->avail = (void*)(addr); // available ring follows immediatly after descriptor heads
@@ -66,11 +67,14 @@ void vring_init(struct vring* vr, uint32_t addr, void (*notify)())
         addr <<= 12;
     }
     vr->vring_len = addr+sizeof(struct vring_used) - (uint32_t)(vr->desc);
-    // used section follows after padding (padding is inserted to prevent cache invalidations between the two cpus
+    // used section follows after padding (padding is inserted to prevent cache invalidations between the two cpus)
     vr->used = (void*)addr;
     vr->notify = notify;
     vr->avail_tail = 0; // by convention head (kernel) and tail indices start at 0
     vr->dbg_print = 0;
+    if (vr->dbg_print)
+        fprintf(stderr, "%s: used flags before init: x%08x\n", __func__, (unsigned int)vr->used->flags);
+    vr->used->flags = 0;    // make sure there no flags are set
 }
 
 
@@ -79,18 +83,18 @@ void vring_init(struct vring* vr, uint32_t addr, void (*notify)())
 int32_t vring_get_buf(struct vring* vr)
 {
     // the available index in the vring struct is moved by the linux kernel
-    // if it has advanced before us there is a buffer which we can use
+    // if it has advanced in front of us there is a buffer which we can use
     uint16_t krnl_avail_idx = vr->avail->avail_idx;
 
     if (krnl_avail_idx == vr->avail_tail)
     {
         //if (vr->dbg_print)
-        //    xil_printf("vring_get_buf: no buffer available\n");
+        //    fprintf(stderr, "vring_get_buf: no buffer available\n");
         return -1;    // no buffer available
     }
 
     if (vr->dbg_print)
-        xil_printf("vring_get_buf: krnl_avail_idx: %d  local_avail_idx: %d\n", krnl_avail_idx, vr->avail_tail);
+        fprintf(stderr, "vring_get_buf: krnl_avail_idx: %d  local_avail_idx: %d\n", (int)krnl_avail_idx, (int)vr->avail_tail);
 
     // ok, there is at least one descriptor (with attached buffer) available, use it
     // NOTE: the indices are free running uint16s, so we shorten them to the ring size here
@@ -99,7 +103,7 @@ int32_t vring_get_buf(struct vring* vr)
     // ok, lets see which buffer is indexed by the available ring at the given available ring's index
     uint16_t available_desc_ind = vr->avail->ring[a_index];
     if (vr->dbg_print)
-        xil_printf("   desc nr %d is available.\n", available_desc_ind);
+        fprintf(stderr, "   desc nr %d is available.\n", (int)available_desc_ind);
 
     // consume this entry from the ring buffer of available buffer heads
     vr->avail_tail++;   // this is the ring buffer tail index
@@ -123,7 +127,7 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
 
     if (idx > VRING_SIZE)
     {
-        xil_printf("vring_publish_buf: idx=%d is invalid (too big)\n", idx);
+        fprintf(stderr, "vring_publish_buf: idx=%d is invalid (too big)\n", (int)idx);
         return;
     }
 
@@ -132,7 +136,7 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
     vr->desc[idx].next = 0;
 
     if (vr->dbg_print)
-        xil_printf("vring: publishing desc %d within used ring entry %d\n", idx, used_idx);
+        fprintf(stderr, "vring: publishing desc %d within used ring entry %d\n", (int)idx, (int)used_idx);
     // place the index of the descriptor we want to publish in the ring.
     vr->used->ring[used_idx].id = idx;
     vr->used->ring[used_idx].len = len;
@@ -145,20 +149,24 @@ void vring_publish_buf(struct vring* vr, uint16_t idx, uint32_t len, int kick)
     vr->used->idx++;
 
     dsb();  // wait until the CPU has updated the memory
-    // cache are disabled by MMU
-    //Xil_L1DCacheFlush();    // make sure data arrives at the other end
+    // caches are disabled by MMU
+    Xil_L1DCacheFlush();    // make sure data arrives at the other end
 
     if (vr->dbg_print)
     {
-        xil_printf("vring: used index is now %d\n", vr->used->idx);
-        /*for (int i=0; i<4; i++)
-            xil_printf(" %02x", ((uint8_t*)vr->used)[i]);
-        xil_printf("\n");*/
+        fprintf(stderr, "vring: used index is now %d\n", (int)vr->used->idx);
     }
 
     // kick the kernel (linux) to make it aware of the new data
     if ((kick != 0) && (vr->notify != 0))
+    {
+        if (vr->avail->flags & (1<<VRING_AVAIL_F_NO_INTERRUPT))
+        {
+            fprintf(stderr, "%s: no interrupt flag set\n", __func__);
+            return;
+        }
         vr->notify();
+    }
 }
 
 

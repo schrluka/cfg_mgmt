@@ -51,7 +51,10 @@ extern char *__trace_buffer_end;
 #define TRACE_BUFFER_END		(unsigned int)&__trace_buffer_end
 
 /* This value should be shared with Linker script */
-#define TRACE_BUFFER_SIZE		0x8000
+#ifndef TRACE_BUFFER_SIZE
+    #warning Assuming default trace buffer size
+    #define TRACE_BUFFER_SIZE		0x8000
+#endif
 
 /* section helpers */
 #define __to_section(S)			__attribute__((__section__(#S)))
@@ -145,15 +148,6 @@ struct fw_rsc_vdev {
 	char reserved[2];
 };
 
-/* original from xilinx project
-struct rpmsg_hdr {
-	unsigned int src;
-	unsigned int dst;
-	unsigned int reserved;
-	unsigned short len;
-	unsigned short flags;
-	unsigned char data[0];
-} __packed; */
 
 /*************************************************************************************
 * Taken from Linux 3.18 (Xilinx)
