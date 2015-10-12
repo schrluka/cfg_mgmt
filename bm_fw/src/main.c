@@ -171,11 +171,11 @@ int main(void)
         {
             i = 0;
             // show the variable values
-            int32_t v;
+            /*int32_t v;
             cfgGetValId(CFG_VAR_1, &v);
             printf("var1: %d  ", (int)v);
             cfgGetValId(CFG_VAR_2, &v);
-            printf("var2: %d\n", (int)v);
+            printf("var2: %d\n", (int)v);*/
             //(*pLed) = led++;
         }
 
