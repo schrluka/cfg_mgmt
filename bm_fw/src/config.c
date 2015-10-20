@@ -441,4 +441,33 @@ int cfgSetCallback(int id, cfgCallback_t cb, bool read, void* data)
 	return 0;
 }
 
+// generic callback handler which writes and read the variable value from the location pointed
+// to by the data pointer passsed when registering it as CB for a variable
+void cfgCpyCB(struct cfg_var* var, bool isread, void* data)
+{
+    int32_t *dest;
+    if (!data)
+        return;
+    dest = data;
+    if (isread) {
+        // this is read access copy the value (which might have changed) to the variable
+        cfgSetId(var->id, *dest, false); // do not trigger callbacks
+    } else {
+        // copy new variable value to external location
+        *dest = var->val;
+    }
+
+}
+
+// generic callback for a float value, config variable
+// gets divided by 1000, works for read and write
+void cfgFloatMilliCB(struct cfg_var* var, bool isread, void* data)
+{
+    float* f = data;
+    if (isread)
+        var->val = (int32_t)(*f * 1000);
+    else
+       *f = var->val * 1.0e-3;
+}
+
 // end of file config.c
