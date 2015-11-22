@@ -55,6 +55,11 @@ extern const int n_vars;
 
 #define CFG_VAR_1           1
 #define CFG_VAR_2           2
+#define CFG_VAR_3           3
+#define CFG_VAR_4           4
+#define CFG_VAR_5           5
+#define CFG_VAR_6           6
+#define CFG_VAR_7           7
 
 
 
@@ -77,6 +82,41 @@ extern const int n_vars;
 #define CFG_DFLT_VAR_2	    {   .id=CFG_VAR_2,  \
                                 .name="var_2", \
                                 .desc="Second config variable, >0", \
+                                .val=0, \
+                                .min=0, \
+                                .max=2147483647 }
+
+#define CFG_DFLT_VAR_3	    {   .id=CFG_VAR_3,  \
+                                .name="var_3", \
+                                .desc="3rd config variable, >0", \
+                                .val=0, \
+                                .min=0, \
+                                .max=2147483647 }
+
+#define CFG_DFLT_VAR_4	    {   .id=CFG_VAR_4,  \
+                                .name="var_4", \
+                                .desc="4th config variable, >0", \
+                                .val=0, \
+                                .min=0, \
+                                .max=2147483647 }
+
+#define CFG_DFLT_VAR_5	    {   .id=CFG_VAR_5,  \
+                                .name="var_5", \
+                                .desc="5th config variable, >0", \
+                                .val=0, \
+                                .min=0, \
+                                .max=2147483647 }
+
+#define CFG_DFLT_VAR_6	    {   .id=CFG_VAR_6,  \
+                                .name="var_6", \
+                                .desc="6th config variable, >0", \
+                                .val=0, \
+                                .min=0, \
+                                .max=2147483647 }
+
+#define CFG_DFLT_VAR_7	    {   .id=CFG_VAR_7,  \
+                                .name="var_7", \
+                                .desc="7th config variable, >0", \
                                 .val=0, \
                                 .min=0, \
                                 .max=2147483647 }

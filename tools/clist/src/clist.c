@@ -40,6 +40,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/select.h>
 #include <fcntl.h>
 
 #define DFLT_PATH   "/debug/cfg_mgmt"
@@ -62,10 +63,12 @@ int show(const char* cfg_mgmt_path);
 
 void puts_pad(const char* str, int len);
 
-void load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** values,
+int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** values,
             char** minima, char** maxima, char** descs);
 
 int load_file(const char* fn, char* buf, int n);
+
+int read_fd(int fd, char* buf, int n);
 
 void help();
 
@@ -106,7 +109,9 @@ int main (int argc, char **argv)
     if (cfg_mgmt_path == NULL) {
         return -2;
     }
-    show(cfg_mgmt_path);
+    int ret = show(cfg_mgmt_path);
+    if (ret)
+        printf("show returned %d\n", ret);
 }
 
 
@@ -150,7 +155,11 @@ int show(const char* cfg_mgmt_path)
     maxima = malloc(num*sizeof(char*));
     descs = malloc(num*sizeof(char*));
     // load all file contents
-    load(dirp, num, cfg_mgmt_path, names, values, minima, maxima, descs);
+    ret = load(dirp, num, cfg_mgmt_path, names, values, minima, maxima, descs);
+    if (ret) {
+        printf("load returned %d\n", ret);
+        return ret;
+    }
 
 	// first task: find max length of the columns (for pretty formatting)
     int nName=4, nVal=5, nMin=7, nMax=7;	// max size of the columns, start values represent header of table
@@ -191,16 +200,21 @@ int show(const char* cfg_mgmt_path)
     }
 
     closedir(dirp);
+    return 0;
 }
 
 
-void load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** values,
+int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** values,
             char** minima, char** maxima, char** descs)
 {
     const int fn_buf_len = 256;
     char fn[fn_buf_len];
     struct dirent *ep;
     int ret;
+    int fd[4];
+    //fd_set fds, fds_sel;
+    //struct timeval tv;
+
     // load all required files into memory
     int i = 0;
     while (ep=readdir(dirp)) {
@@ -213,41 +227,103 @@ void load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** va
         // get memory and copy the name
         names[i] = malloc(strlen(ep->d_name)+1);
         strcpy(names[i], ep->d_name);
-        // load value
-        snprintf(fn, fn_buf_len, "%s/val/%s", cfg_mgmt_path, names[i]);
         values[i] = malloc(MAX_NUMERIC_LEN);
-        ret = load_file(fn, values[i], MAX_NUMERIC_LEN);
-        if (ret < 0) {
-            fprintf(stderr, "%s: can't read file %s: %d\n", __func__, fn, ret);
-            exit(-1);
-        }
-        // load minimum
-        snprintf(fn, fn_buf_len, "%s/min/%s", cfg_mgmt_path, names[i]);
         minima[i] = malloc(MAX_NUMERIC_LEN);
-        ret = load_file(fn, minima[i], MAX_NUMERIC_LEN);
-        if (ret < 0) {
-            fprintf(stderr, "%s: can't read file %s: %d\n", __func__, fn, ret);
-            exit(-1);
-        }
-        // load minimum
-        snprintf(fn, fn_buf_len, "%s/max/%s", cfg_mgmt_path, names[i]);
         maxima[i] = malloc(MAX_NUMERIC_LEN);
-        ret = load_file(fn, maxima[i], MAX_NUMERIC_LEN);
-        if (ret < 0) {
-            fprintf(stderr, "%s: can't read file %s: %d\n", __func__, fn, ret);
-            exit(-1);
-        }
-        // load description
-        snprintf(fn, fn_buf_len, "%s/desc/%s", cfg_mgmt_path, names[i]);
         descs[i] = malloc(MAX_DESC_LEN);
-        ret = load_file(fn, descs[i], MAX_DESC_LEN);
+
+        //FD_ZERO(&fds);
+
+        // open files for value, min, max and desc
+        snprintf(fn, fn_buf_len, "%s/val/%s", cfg_mgmt_path, names[i]);
+        fd[0] = open(fn,O_RDONLY);
+        if(fd[0]<0) {
+            printf("%s: can't open file: %d\n", __func__, fd[0]);
+            return -errno;
+        }
+        //FD_SET(fd[0], &fds);
+
+        snprintf(fn, fn_buf_len, "%s/min/%s", cfg_mgmt_path, names[i]);
+        fd[1] = open(fn,O_RDONLY);
+        if(fd[1]<0) {
+            printf("%s: can't open file: %d\n", __func__, fd[1]);
+            return -errno;
+        }
+        //FD_SET(fd[1], &fds);
+
+        snprintf(fn, fn_buf_len, "%s/max/%s", cfg_mgmt_path, names[i]);
+        fd[2] = open(fn,O_RDONLY);
+        if(fd[2]<0) {
+            printf("%s: can't open file: %d\n", __func__, fd[2]);
+            return -errno;
+        }
+        //FD_SET(fd[2], &fds);
+
+        snprintf(fn, fn_buf_len, "%s/desc/%s", cfg_mgmt_path, names[i]);
+        fd[3] = open(fn,O_RDONLY);
+        if(fd[3]<0) {
+            printf("%s: can't open file: %d\n", __func__, fd[3]);
+            return -errno;
+        }
+        //FD_SET(fd[3], &fds);
+
+        // block until data is available
+
+        //ret = 0;
+        /*
+        while (ret < 4) {
+            tv.tv_sec = 3;      // how long we want to wait for data
+            tv.tv_usec = 0;
+            fds_sel = fds;
+            ret = select(4, &fds_sel, NULL, NULL, &tv);
+            printf("select returned %d\n", ret);
+            // check for errors from select
+            if (ret < 0) {
+                printf("select failed: %d\n", errno);
+                for (int j=0; j<4; j++)
+                    close(fd[j]);
+                return -errno;
+            }
+
+            if (ret == 0) {
+                printf("timeout while waiting for files to become available\n");
+
+                 // close the files
+                for (int j=0; j<4; j++)
+                    close(fd[j]);
+
+                return -ETIMEDOUT;
+            }
+        }*/
+        // read the files
+        ret = read_fd(fd[0], values[i], MAX_NUMERIC_LEN);
         if (ret < 0) {
-            fprintf(stderr, "%s: can't read file %s: %d\n", __func__, fn, ret);
+            fprintf(stderr, "%s: can't read val file %d\n", __func__, ret);
             exit(-1);
         }
+        ret = read_fd(fd[1], minima[i], MAX_NUMERIC_LEN);
+        if (ret < 0) {
+            fprintf(stderr, "%s: can't read min file: %d\n", __func__, ret);
+            exit(-1);
+        }
+        ret = read_fd(fd[2], maxima[i], MAX_NUMERIC_LEN);
+        if (ret < 0) {
+            fprintf(stderr, "%s: can't read max file: %d\n", __func__, ret);
+            exit(-1);
+        }
+        ret = read_fd(fd[3], descs[i], MAX_DESC_LEN);
+        if (ret < 0) {
+            fprintf(stderr, "%s: can't read desc file: %d\n", __func__, ret);
+            exit(-1);
+        }
+
+        // close the files
+        for (int j=0; j<4; j++)
+            close(fd[j]);
+
         i++;
     }
-
+    return 0;
 }
 
 // reads the (\0 terminated) content of file fn into buf, will not read more than n-1 chars
@@ -273,9 +349,33 @@ int load_file(const char* fn, char* buf, int n)
         buf[bytes-1] = '\0';
 
     buf[bytes] = '\0';
+
+    close(fd);
     return bytes;
 }
 
+// read file descriptor fd into buf, max n bytes
+// returns number of bytes read (without \0) on success or neg error code
+int read_fd(int fd, char* buf, int n)
+{
+    int ret, bytes=0;
+    n--; // make sure we have space for a trailing \0
+    // read whole file or until the buffer is full
+    while((ret=read(fd,buf+bytes,n-bytes))>0)
+        bytes += ret;
+
+    //printf("read %d bytes from fd %d\n", bytes, fd);
+
+    if (ret < 0)
+        return ret;
+
+    // remove trailing \n
+    if (buf[bytes-1] == '\n')
+        buf[bytes-1] = '\0';
+
+    buf[bytes] = '\0';
+    return bytes;
+}
 
 // print (stdout) str and pad with ' ' to a total of len chars
 void puts_pad(const char* str, int len)

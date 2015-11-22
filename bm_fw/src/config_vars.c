@@ -44,6 +44,11 @@
 // initialize all config variables here (this allocates memory and makes them usable)
 cfgVar_t vars[] = { CFG_DFLT_VAR_1, \
                     CFG_DFLT_VAR_2, \
+                    CFG_DFLT_VAR_3, \
+                    CFG_DFLT_VAR_4, \
+                    CFG_DFLT_VAR_5, \
+                    CFG_DFLT_VAR_6, \
+                    CFG_DFLT_VAR_7, \
                     };
 
 // determine the number of variables specified above

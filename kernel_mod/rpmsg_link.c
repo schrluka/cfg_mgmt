@@ -73,13 +73,6 @@
 
 
 
-// all information about one request, chained in a list of pending transactions
-struct transaction {
-    u32 msg_seq_nr;         // cfg_mgmt sequence number used in the request
-    struct file_io_buf* buf;// where to store the data
-    wait_queue_head_t* wq;  // wait queue to be woken when response arrives
-    struct list_head list;  // used to chain the transactions
-};
 
 
 
@@ -110,9 +103,7 @@ static spinlock_t seq_lock;
 
 static u32 get_next_seq_nr(void);
 
-static int alloc_trans_struct(struct transaction** t);
-
-static inline void add_pend_trans(struct transaction* t);
+static inline void add_pend_trans(struct rpmsg_link_transaction* t);
 
 
 
@@ -124,19 +115,29 @@ static inline void add_pend_trans(struct transaction* t);
 // must be called first, channel to be used for communication is passed as argument
 int rpmsg_link_init(struct rpmsg_channel *ch)
 {
-    struct transaction* transactions;
+    struct rpmsg_link_transaction* t;
     const int N = 16;
+    int i;
+
+    rpmsg_chnl = ch;
 
     spin_lock_init(&pending_list_lock);
     spin_lock_init(&unused_list_lock);
     spin_lock_init(&seq_lock);
 
     // add some transaction structs to the list of unused structs to speed things up on the first transactions
-    transactions = kzalloc(sizeof(*transactions)*N, GFP_KERNEL);
-    if (!transactions)
-        return -ENOMEM;
+    spin_lock(&pending_list_lock);
+    for (i=0; i<N; i++) {
+        t = kzalloc(sizeof(*t), GFP_KERNEL);
+        if (!t)
+            return -ENOMEM;
 
-    rpmsg_chnl = ch;
+        dev_dbg(&ch->dev, "%s: creating transaction struct at 0x%08x\n", __func__, (u32)t);
+        INIT_LIST_HEAD(&(t->list));
+        list_add(&t->list, &unused_list);
+    }
+    spin_unlock(&pending_list_lock);
+
     return 0;
 }
 
@@ -152,7 +153,7 @@ void rpmsg_link_exit()
     list_for_each_safe(pos, temp, &pending_list) // we delete the object from the list -> use safe version
     {
         // convert list_head pointer to a pointer to the list object
-        struct transaction* t = list_entry ( pos, struct transaction , list );
+        struct rpmsg_link_transaction* t = list_entry ( pos, struct rpmsg_link_transaction , list );
 
         dev_err(&rpmsg_chnl->dev, "%s: found pending transcation: seq=%d\n", __func__, t->msg_seq_nr);
         list_del(pos);
@@ -162,7 +163,7 @@ void rpmsg_link_exit()
     list_for_each_safe(pos, temp, &unused_list) // we delete the object from the list -> use safe version
     {
         // convert list_head pointer to a pointer to the list object
-        struct transaction* t = list_entry ( pos, struct transaction , list );
+        struct rpmsg_link_transaction* t = list_entry ( pos, struct rpmsg_link_transaction , list );
         list_del(pos);
         kfree(t);
     }
@@ -177,8 +178,10 @@ void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *p
 {
     struct list_head* pos;
     struct list_head* temp;
-    struct transaction* trans = NULL;
+    struct rpmsg_link_transaction* trans = NULL;
     cfgMsg_t* response = data;
+
+    //dev_dbg(&rpdev->dev, "%s: starting\n", __func__);
 
 	// check length
 	if (len != sizeof(cfgMsg_t))
@@ -187,13 +190,14 @@ void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *p
 		return;
 	}
 
-    // get the correct transaction struct
+    dev_dbg(&rpdev->dev, "%s: processing reply with seq nr %d\n", __func__, response->seq);
 
+    // get the correct transaction struct
     spin_lock(&pending_list_lock);
     list_for_each_safe(pos, temp, &pending_list) // we delete the object from the list -> use safe version
     {
         // convert list_head pointer to a pointer to the list object
-        struct transaction* t = list_entry ( pos, struct transaction , list );
+        struct rpmsg_link_transaction* t = list_entry (pos, struct rpmsg_link_transaction, list);
 
         if (t->msg_seq_nr == response->seq) {
             // found it, remove it from the list
@@ -215,105 +219,82 @@ void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *p
     switch (response->type) {
     case RES_OK:
         dev_info(&rpmsg_chnl->dev, "%s: received OK responce", __func__);
-        if (trans->buf) {
-            trans->buf->len = 0;
-            trans->buf->valid = true;
-        }
+        trans->len = 0;
+        trans->valid = true;
+        trans->err = 0;
         break;
 
     case RES_N_VARS:
         // copy the number of variables to our global variable, no need to return it
         n_vars = response->val;
-        //*((int32_t*)trans->buf->buf) = response->val;
-        if (trans->buf) {
-            trans->buf->len = 0;        // no data in placed in io buffer
-            trans->buf->valid = true;   // we got the anser
-        }
+        trans->len = 0;        // no data in placed in io buffer
+        trans->valid = true;   // we got the answer
         break;
+
     case RES_RD_VAL:
     case RES_RD_MIN:
     case RES_RD_MAX:
-        if (trans->buf) {
-            // convert numerical results to a string for communication with the user space
-            trans->buf->len =  scnprintf(trans->buf->buf, IO_BUF_SIZE, "%d\n", response->val);
-            trans->buf->err = 0;
-            trans->buf->valid = true;
-        } else {
-            dev_err(&rpdev->dev, "%s: no io_buf\n", __func__);
-        }
+        // convert numerical results to a string for communication with the user space
+        trans->len =  scnprintf(trans->buf, IO_BUF_SIZE, "%d\n", response->val);
+        trans->err = 0;
+        trans->valid = true;
         break;
+
     case RES_NAME:
     case RES_DESC:
-        if (trans->buf) {
-            if (response->len  > IO_BUF_SIZE) {
-                dev_err(&rpdev->dev, "%s: data part of response too long\n", __func__);
-                trans->buf->err = -EINVAL;
-                trans->buf->len = scnprintf(trans->buf->buf, IO_BUF_SIZE, "data part of response too long\n");
-            } else {
-                // copy string response to io buffer
-                memcpy(trans->buf->buf, response->data, response->len);
-                trans->buf->len = response->len;
-                trans->buf->err = 0;
-            }
-            trans->buf->valid = true;
+        if (response->len  > IO_BUF_SIZE) {
+            dev_err(&rpdev->dev, "%s: data part of response too long\n", __func__);
+            trans->err = -EINVAL;
+            trans->len = scnprintf(trans->buf, IO_BUF_SIZE, "data part of response too long\n");
         } else {
-            dev_err(&rpdev->dev, "%s: no io_buf\n", __func__);
+            // copy string response to io buffer
+            memcpy(trans->buf, response->data, response->len);
+            trans->len = response->len;
+            trans->err = 0;
         }
+        trans->valid = true;
         break;
 
     case RES_ID_ERR:
-        if (trans->buf) {
-            trans->buf->len = scnprintf(trans->buf->buf, IO_BUF_SIZE,
-                "received ID error for id %d in msg nr %d\n", response->ind, response->seq);
-            trans->buf->valid = true;
-        } else {
-            dev_err(&rpdev->dev, "%s: no io_buf\n", __func__);
-        }
+        trans->len = scnprintf(trans->buf, IO_BUF_SIZE,
+            "received ID error for id %d in msg nr %d\n", response->ind, response->seq);
+        trans->valid = true;
+        trans->err = RES_ID_ERR;
         break;
 
     case RES_REQ_ERR:
-        if (trans->buf) {
-            trans->buf->len = scnprintf(trans->buf->buf, IO_BUF_SIZE,
+        trans->len = scnprintf(trans->buf, IO_BUF_SIZE,
                 "received request error for msg nr %d\n", response->seq);
-            trans->buf->valid = true;
-        } else {
-            dev_err(&rpdev->dev, "%s: no io_buf\n", __func__);
-        }
+        trans->valid = true;
+        trans->err = RES_REQ_ERR;
         break;
 
     default:
-        if (trans->buf) {
-            trans->buf->len = scnprintf(trans->buf->buf, IO_BUF_SIZE,
-                "unknonw type %d in msg nr %d\n", response->ind, response->seq);
-            trans->buf->valid = true;
-        } else {
-            dev_err(&rpdev->dev, "%s: no io_buf\n", __func__);
-        }
+        trans->len = scnprintf(trans->buf, IO_BUF_SIZE,
+            "unknonw type %d in msg nr %d\n", response->ind, response->seq);
+        trans->valid = true;
+        trans->err = -1;
     }
 
-    // if wait queue was registered wake it such that the process awaiting a result my continue
-    if (trans->wq) {
+    dev_dbg(&rpdev->dev, "%s: waking waitqueue\n",__func__);
+
+    // wait any sleeping processes, a result is available
+    if (trans->wq)
         wake_up_interruptible(trans->wq);
-    }
+    //wake_up(&(trans->wq));
 
-    // recycle transaction struct, iobuf is recycled or freed in cfg_mgmt
-    memset(trans, 0, sizeof(*trans));   // clear content, just to be sure
-    spin_lock(&unused_list_lock);
-    list_add(&(trans->list), &unused_list);
-    spin_unlock(&unused_list_lock);
+    dev_dbg(&rpdev->dev, "%s: done\n", __func__);
+
 }
 
 
-// query the number of config variables available at the remote side.
-// If wait_q_p points to a wait_queue_head the process will be blocked until the answer from the bare metal
-// application has arrived and the number of variables is returned.
-// if wait_q_p = 0 the function returns 0 immediatly, the global n_vars will be updated once the response arrives
-// neg value indicates an error
-int get_n_vars(wait_queue_head_t* wait_q_p)
+// Query the number of config variables available at the remote side.
+// The process will be blocked until the answer from the bare metal application has arrived and the number of variables is returned.
+int get_n_vars(wait_queue_head_t* wq)
 {
     int ret;
-    cfgMsg_t req;
-    struct transaction* t;
+    static cfgMsg_t req;    // keep this static to save stack space
+    struct rpmsg_link_transaction* t;
 
     if (!rpmsg_chnl)
         return -EINVAL;
@@ -328,14 +309,14 @@ int get_n_vars(wait_queue_head_t* wait_q_p)
 	req.type = REQ_N_VARS;
 
 	// create a structure for this transaction
-    ret = alloc_trans_struct(&t);   // get an empty (or new) struct
-    if (ret) {
-        dev_err(&rpmsg_chnl->dev, "%s: can't allocate transaction struct: %d\n", __func__, ret);
-        return ret;
+    t = rpmsg_link_alloc_trans();   // get an empty (or new) struct
+    if (!t) {
+        dev_err(&rpmsg_chnl->dev, "%s: can't allocate transaction struct, no memory\n", __func__);
+        return -ENOMEM;
     }
-    t->buf = NULL;  // need no IO buffer to read the number of variables (results goes to gobal var)
+
     t->msg_seq_nr = req.seq;    // rpmsg callback uses this for identification
-    t->wq = wait_q_p;
+    t->wq = wq;
 
     // add struct to list of pending transactions
     add_pend_trans(t); // contains the necessary locking
@@ -346,58 +327,50 @@ int get_n_vars(wait_queue_head_t* wait_q_p)
         dev_dbg(&rpmsg_chnl->dev, "%s: rpmsg send failed with %d\n", __func__, ret);
         return ret;
 	}
-	// block calling user context until we receive a reply
-	if (wait_q_p) {
-        ret = wait_event_interruptible((*wait_q_p), n_vars >= 0);
-        if (ret) {	// abort in case we got interrupted
-            dev_err(&rpmsg_chnl->dev, "%s: interrupted\n", __func__);
-            return ret;
-        }
-    } else
-        return 0;   // no wait queue, so we return immediately
 
-    dev_dbg(&rpmsg_chnl->dev, "%s: n_vars is %d\n", __func__, n_vars);
+	dev_dbg(&rpmsg_chnl->dev, "%s: message sent, waiting for reply\n", __func__);
+
+	// block calling user context until we receive a reply
+    ret = wait_event_interruptible((*wq), n_vars >= 0);
+    if (ret) {	// abort in case we got interrupted
+        dev_err(&rpmsg_chnl->dev, "%s: interrupted\n", __func__);
+        return ret;
+    }
+
+    //dev_dbg(&rpmsg_chnl->dev, "%s: n_vars is %d\n", __func__, n_vars);
     return n_vars;
 }
 
 
 // initiate a variable access (either read or write)
-int access_var(int index, access_t acc, struct file_io_buf* buf, wait_queue_head_t* wait_q_p)
+int access_var(int index, access_t acc, struct rpmsg_link_transaction* t)
 {
     int ret;
-    cfgMsg_t req;
-    struct transaction* t;
+    static cfgMsg_t req;    // save stack space
 
     if (!rpmsg_chnl)
         return -EINVAL;
 
-    if (!buf) {
-        dev_err(&rpmsg_chnl->dev, "%s: no io buffer, abort\n", __func__);
+    if (!t) {
+        dev_err(&rpmsg_chnl->dev, "%s: no transaction struct, abort\n", __func__);
         return -EINVAL;
     }
 
-    // create a structure for this transaction
-    ret = alloc_trans_struct(&t);   // get an empty (or new) struct
-    if (ret) {
-        dev_err(&rpmsg_chnl->dev, "%s: can't allocate transaction struct: %d\n", __func__, ret);
-        return ret;
-    }
-
-	// set all request fields
+  	// set all request fields
 	req.ind = index;
 	req.val = 0;
 	req.len = 0;
 	switch(acc) {
 	case ACC_VAL:
-        if (buf->rnw) {
+        if (t->rnw) {
             req.type = REQ_RD_VAL;
         } else {
             // write
             req.type = REQ_WR_VAL;
             // convert string to integer
-            ret = kstrtol(buf->buf, 0, (long int*)&req.val);
+            ret = kstrtol(t->buf, 0, (long int*)&req.val);
             if (ret) {
-                dev_err(&rpmsg_chnl->dev, "%s: can't parse string '%s' %d\n", __func__, buf->buf, ret);
+                dev_err(&rpmsg_chnl->dev, "%s: can't parse string '%s' %d\n", __func__, t->buf, ret);
                 return ret;
             }
             dev_dbg(&rpmsg_chnl->dev, "%s: writing val %ld to index %d\n", __func__, (long int)req.val, index);
@@ -420,13 +393,12 @@ int access_var(int index, access_t acc, struct file_io_buf* buf, wait_queue_head
 
 	}
 	req.seq = get_next_seq_nr();
-
-    t->buf = buf;
     t->msg_seq_nr = req.seq;    // rpmsg callback uses this for identification
-    t->wq = wait_q_p;
 
     // add struct to list of pending transactions
     add_pend_trans(t); // contains the necessary locking
+
+    dev_dbg(&rpmsg_chnl->dev, "%s: sending message nr %d.\n", __func__, req.seq);
 
 	// send the request to the other side,
 	ret = rpmsg_send(rpmsg_chnl, (void*)(&req), sizeof(req));
@@ -434,18 +406,47 @@ int access_var(int index, access_t acc, struct file_io_buf* buf, wait_queue_head
         dev_dbg(&rpmsg_chnl->dev, "%s: rpmsg send failed with %d\n", __func__, ret);
         return ret;
 	}
-	// check if we have a wait queue (ie if we should block)
-	if (wait_q_p) {
-        // block calling user context until we receive a reply
-        ret = wait_event_interruptible((*wait_q_p), buf->valid);
-        if (ret) {	// abort in case we got interrupted
-            dev_err(&rpmsg_chnl->dev, "%s: interrupted\n", __func__);
-            return ret;
-        }
-        return buf->err;
+
+    dev_dbg(&rpmsg_chnl->dev, "%s: done\n", __func__);
+    return 0;
+}
+
+
+// get a pointer to an empty (unused) transaction struct or allocate a new one if necessary
+// returns NULL if no memory is available
+struct rpmsg_link_transaction* rpmsg_link_alloc_trans()
+{
+    struct rpmsg_link_transaction* t = NULL;    // default assumption: no struct available
+
+    // try to reuse an empty struct
+    spin_lock(&unused_list_lock);
+    if (!list_empty(&unused_list)) {
+        // list is not empty, so simply grab the first entry
+        t = list_first_entry(&unused_list, struct rpmsg_link_transaction, list);
+        // remove it from the list of unused items, we will use it now ;)
+        list_del(&(t->list));
+    }
+    spin_unlock(&unused_list_lock);
+
+    if (!(t)) {
+        // nothing found in the list, make a new one
+        t = kzalloc(sizeof(*t), GFP_KERNEL);
+        INIT_LIST_HEAD(&(t->list));
     }
 
-    return 0;
+    memset((void*)t, 0, sizeof(*t));
+
+    return t;
+}
+
+
+void rpmsg_link_return_trans(struct rpmsg_link_transaction* trans)
+{
+    // recycle transaction struct
+    memset(trans, 0, sizeof(*trans));   // clear content, just to be sure
+    spin_lock(&unused_list_lock);
+    list_add(&(trans->list), &unused_list);
+    spin_unlock(&unused_list_lock);
 }
 
 
@@ -463,38 +464,7 @@ static u32 get_next_seq_nr(void)
 }
 
 
-// get a pointer to an empty (unused) transaction struct or allocate a new one if necessary
-// returns 0 on success or an error code <0
-static int alloc_trans_struct(struct transaction** t)
-{
-    if (!t)
-        return -EINVAL;
-    (*t) = NULL;    // default assumption: no struct available
-    // try to reuse an empty struct
-    spin_lock(&unused_list_lock);
-    if (!list_empty(&unused_list)) {
-        // list is not empty, so simply grab the first entry
-        (*t) = list_first_entry(&unused_list, struct transaction, list);
-        // remove it from the list of unused items, we will use it now ;)
-        list_del(&((*t)->list));
-    }
-    spin_unlock(&unused_list_lock);
-
-    if (!(*t)) {
-        // nothing found in the list, make a new one
-        (*t) = kzalloc(sizeof(struct transaction), GFP_KERNEL);
-        // TODO: we could add more than one to reduce the number of malloc calls, is it worth it?
-        INIT_LIST_HEAD(&((*t)->list));
-    }
-
-    if (!(*t))
-        return -ENOMEM; // still no entry, something is wrong
-
-    return 0;
-}
-
-
-static inline void add_pend_trans(struct transaction* t)
+static inline void add_pend_trans(struct rpmsg_link_transaction* t)
 {
     spin_lock(&pending_list_lock);
     list_add(&t->list, &pending_list);

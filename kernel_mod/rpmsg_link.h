@@ -3,6 +3,10 @@
 #ifndef __RPMSG_LINK__
 #define __RPMSG_LINK__
 
+
+#include <linux/wait.h>
+
+
 // configure size (max length) of the data field in messages exchanged with BM application
 //#define MSG_DATA_SIZE 	(DATA_LEN_MAX-sizeof(cfgMsg_t))
 // This is a super uggly hack, I have not found a good solution yet. (Total message length is 512 bytes, leave
@@ -30,23 +34,32 @@ typedef struct __attribute__((packed))       // make sure it has no holes (kerne
     uint8_t     data[MSG_DATA_SIZE]; // opt. data section, total message has to fit into TX_BUFFER_SIZE of rpmsg
 } cfgMsg_t;
 
-
-struct file_io_buf {
+// transaction struct: all information for one request, chained in a lists of pending, unused, etc transactions
+// also contains the buffers used for IO (communication with the user process)
+struct rpmsg_link_transaction {
+    struct  list_head list;  // used to chain the transactions
+    u32     msg_seq_nr;         // cfg_mgmt sequence number used in the request
     ssize_t len;                // length of string in buf
-    char buf[IO_BUF_SIZE];
-    bool dirty;                 // true if buffer was modified
-    bool valid;                 // true once data has arrived (in case of async io)
-    bool rnw;                   // read-not-write flag to determine direction of var access
-    int err;                    // error code (neg value) if access failed
+    char    buf[IO_BUF_SIZE];
+    bool    dirty;                 // true if buffer was modified (by user space application)
+    bool    valid;                 // true once data has arrived (in case of async io)
+    bool    rnw;                   // read-not-write flag to determine direction of var access
+    int     err;                    // error code (neg value) if access failed
+    wait_queue_head_t* wq;       // wait queue used to block the process reading this file
 };
+
 
 int rpmsg_link_init(struct rpmsg_channel *ch);
 
 void rpmsg_link_exit(void);
 
-int get_n_vars(wait_queue_head_t* wait_q_p);
+int get_n_vars(wait_queue_head_t* wq);
 
-int access_var(int index, access_t acc, struct file_io_buf* buf, wait_queue_head_t* wait_q_p);
+struct rpmsg_link_transaction* rpmsg_link_alloc_trans(void);
+
+void rpmsg_link_return_trans(struct rpmsg_link_transaction* trans);
+
+int access_var(int index, access_t acc, struct rpmsg_link_transaction* t);
 
 void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *priv, u32 src);
 

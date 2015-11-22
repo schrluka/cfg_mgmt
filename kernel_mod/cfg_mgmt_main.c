@@ -43,6 +43,7 @@
 #include <linux/rpmsg.h>
 #include <linux/string.h>
 #include <linux/debugfs.h>
+#include <linux/poll.h>
 
 #include "rpmsg_link.h"
 
@@ -80,6 +81,7 @@ static int debugfs_open_var(struct inode *inod, struct file *filp);
 static ssize_t debugfs_read_var(struct file *filp, char *buff, size_t len, loff_t *off);
 static ssize_t debugfs_write_var(struct file *filp, const char *buff, size_t len, loff_t *ppos);
 static int debugfs_release_var(struct inode *inod, struct file *filp);
+static unsigned int debugfs_poll(struct file *filp, struct poll_table_struct *poll_tbl);
 
 static int debugfs_open_ll(struct inode *inod, struct file *filp);
 
@@ -133,9 +135,10 @@ static struct file_operations fops_var = {
     .read       = &debugfs_read_var,
 	.write      = &debugfs_write_var,
 	.release    = &debugfs_release_var,
+	.poll       = &debugfs_poll,
 };
 
-// file operations for update file
+// file operations for load_list file
 static struct file_operations fops_ll = {
     .owner      = THIS_MODULE,
     .open       = &debugfs_open_ll,
@@ -166,7 +169,7 @@ static int __init cm_init(void)
 
     init_waitqueue_head(&usr_wait_q);
 
-	// register as rpmsg driver module, we will get probed once the other side establishes a connection
+    // register as rpmsg driver module, we will get probed once the other side establishes a connection
 	return register_rpmsg_driver(&cfg_mgmt_rpmsg_drv);
 }
 
@@ -174,34 +177,34 @@ static int __init cm_init(void)
 static int debugfs_open_var(struct inode *inod, struct file *filp)
 {
     int ret;
-    struct file_io_buf* iobuf;
-    struct var_access_info* acc_p = inod->i_private;
+    struct rpmsg_link_transaction* trans_p;  // this contains the buffer and meta data for this variable access
+    struct var_access_info* acc_p = inod->i_private;    // check the inode to see which type of access it is
 
-    dev_dbg(&rpmsg_chnl->dev, "CFG_MGMT %s: index %d\n", __func__, acc_p->index);
-    // get memory for a local kernel buffer
-    iobuf = kzalloc(sizeof(*iobuf), GFP_KERNEL);
-    if (!iobuf)
+    dev_dbg(&rpmsg_chnl->dev, "%s: index %d\n", __func__, acc_p->index);
+    // get a transaction struct
+    trans_p = rpmsg_link_alloc_trans();
+    if (!trans_p) {
+        dev_err(&rpmsg_chnl->dev, "%s: can't get a transaction struct, no memory.\n", __func__);
         return -ENOMEM;
+    }
+
+    dev_dbg(&rpmsg_chnl->dev, "%s: using transaction struct at 0x%08x\n", __func__, (u32)trans_p);
 
     // store a pointer to this buffer in the file structure where read/write functions can use it
-    filp->private_data = (void*)iobuf;
+    filp->private_data = (void*)trans_p;
 
     // if the file is opened for reading query the according variable
     if (filp->f_mode & FMODE_READ) {
-        iobuf->rnw = true;
+        trans_p->rnw = true;
         // query the value and print it to a local (kernel space) buffer
-        if (filp->f_flags & O_NONBLOCK) {
-            // user process requests non-blocking IO, so just start the request
-            // and return. Once data arrives it will be put in the iobuf by the rpmsg callback
-            ret = access_var(acc_p->index, acc_p->type, iobuf, NULL);
-        } else {
-            // query variable and block until we have the result
-            ret = access_var(acc_p->index, acc_p->type, iobuf, &usr_wait_q);
-        }
+        trans_p->wq = &usr_wait_q;
+        ret = access_var(acc_p->index, acc_p->type, trans_p);
+        if (!ret)
+            return ret;
     }
     if (filp->f_mode & FMODE_WRITE) {
-        iobuf->rnw = false;
-        iobuf->valid = true;    // file could be opened for reading and writing!
+        trans_p->rnw = false;
+        trans_p->valid = true;
     }
     return 0;
 }
@@ -210,82 +213,119 @@ static int debugfs_open_var(struct inode *inod, struct file *filp)
 static ssize_t debugfs_read_var(struct file *filp, char *buff, size_t len, loff_t *ppos)
 {
     int ret;
-    // use a simple helper to allow the user process to read our buffer
-    struct file_io_buf* iobuf;
-    iobuf = filp->private_data;
+    // this contains the buffer and meta data for this variable access
+    struct rpmsg_link_transaction* trans_p = filp->private_data;
 
-    dev_dbg(&rpmsg_chnl->dev, "%s: len %d, ppos %lld\n", __func__, len, *ppos);
+    dev_dbg(&rpmsg_chnl->dev, "%s: len %d, pos %lld\n", __func__, len, *ppos);
 
-    if (!iobuf)
+    if (!trans_p)
         return -EINVAL; // should never happen
 
-        // check that the buffer really has data
-    if (!iobuf->valid) {
+    // check that the buffer really has data
+    if (!trans_p->valid) {
         // there is no data in the buffer (yet)
         if (filp->f_flags & O_NONBLOCK) {
             // file is opened for async IO, so tell the user process to come back later
             return -EAGAIN;
         }
         // blocking IO, wait until we have the data
-        ret = wait_event_interruptible(usr_wait_q, iobuf->valid);
+        ret = wait_event_interruptible(usr_wait_q, trans_p->valid);
         if (ret) {	// abort in case we got interrupted
             dev_err(&rpmsg_chnl->dev, "%s: interrupted\n", __func__);
             return ret;
         }
     }
 
-    if (iobuf->err < 0) {
-        dev_err(&rpmsg_chnl->dev, "%s: config var query failed: %d\n", __func__, iobuf->err);
-        return iobuf->err;
+    if (!trans_p->valid) {
+        dev_err(&rpmsg_chnl->dev, "%s: buffer invalid even after wait\n", __func__);
+        return -EINVAL;
     }
 
-    return simple_read_from_buffer(buff, len, ppos, iobuf->buf, iobuf->len);
+    if (trans_p->err) {
+        dev_err(&rpmsg_chnl->dev, "%s: config var query failed: %d\n", __func__, trans_p->err);
+        if (trans_p->err > 0)
+            trans_p->err *= -1; // just to be sure it really is negative
+        return trans_p->err;
+    }
+
+    return simple_read_from_buffer(buff, len, ppos, trans_p->buf, trans_p->len);
 }
 
 
 static ssize_t debugfs_write_var(struct file *filp, const char *buff, size_t len, loff_t *ppos)
 {
-    // use a simple helper to allow the user process to write our buffer
-    struct file_io_buf* iobuf;
-    iobuf = filp->private_data;
+    // this contains the buffer and meta data for this variable access
+    struct rpmsg_link_transaction* trans_p = filp->private_data;
 
-    if (!iobuf)
+    if (!trans_p)
         return -EINVAL; // should never happen
 
-
     dev_dbg(&rpmsg_chnl->dev, "%s: len %d, ppos %lld\n", __func__, len, *ppos);
-    iobuf->dirty = true;    // buffer is now modified
-    return simple_write_to_buffer(iobuf->buf, IO_BUF_SIZE, ppos, (void*)buff, len);
+    trans_p->dirty = true;    // buffer is now modified
+    return simple_write_to_buffer(trans_p->buf, IO_BUF_SIZE, ppos, (void*)buff, len);
 }
 
 
 static int debugfs_release_var(struct inode *inod, struct file *filp)
 {
     int ret;
-    struct file_io_buf* iobuf = filp->private_data;
+    // this contains the buffer and meta data for this variable access
+    struct rpmsg_link_transaction* trans_p = filp->private_data;
     struct var_access_info* acc_p = inod->i_private;
 
-	if (!iobuf)
+	if (!trans_p)
         return -EINVAL; // should never happen
 
     // write the value back if the file was opened for writing
-    if ((filp->f_mode&FMODE_WRITE) && (iobuf->dirty)) {
+    if ((filp->f_mode&FMODE_WRITE) && (trans_p->dirty)) {
         if (acc_p->type != ACC_VAL) {
             dev_err(&rpmsg_chnl->dev, "%s: attempting to write anything other then variable value\n", __func__);
+            rpmsg_link_return_trans(trans_p);
             return -EINVAL;
         }
 
         // write the new value to the BM application
-        ret = access_var(acc_p->index, acc_p->type, iobuf, &usr_wait_q);
+        trans_p->wq = &usr_wait_q;
+        trans_p->valid = false; // will be set once transfer is complete
+        ret = access_var(acc_p->index, acc_p->type, trans_p);
         if (ret) {
             dev_err(&rpmsg_chnl->dev, "%s: can't set new value: %d\n", __func__, ret);
+            rpmsg_link_return_trans(trans_p);
             return ret;
         }
+        // wait until data was written
+        ret = wait_event_interruptible(usr_wait_q, trans_p->valid);
+        if (ret) {	// abort in case we got interrupted
+            dev_err(&rpmsg_chnl->dev, "%s: interrupted\n", __func__);
+            return ret;
+        }
+        if (trans_p->err) {
+            dev_err(&rpmsg_chnl->dev, "%s: transaction error: %d\n", __func__, trans_p->err);
+            return -EFAULT;
+        }
     }
-    // remove the io buffer, no longer need it as the file is closed
-    // todo: we could recycle those in a list of unused buffers
-    kfree(iobuf);
-	return 0;
+    // return the transaction struct, it will be recycled to save memory allocs
+    rpmsg_link_return_trans(trans_p);
+    return 0;
+}
+
+
+static unsigned int debugfs_poll(struct file *filp, struct poll_table_struct *poll_tbl)
+{
+    struct rpmsg_link_transaction* trans_p = filp->private_data;
+    unsigned int mask = 0;
+
+    dev_info(&rpmsg_chnl->dev, "%s: poll called, registering waitqueue\n", __func__);
+
+    poll_wait(filp, &usr_wait_q, poll_tbl);
+    // if the buffer is already valid report back to the kernel that the access may happen immediately
+    if (trans_p->valid) {
+        if (trans_p->rnw)
+            mask |= POLLIN | POLLRDNORM;
+        else
+            mask |= POLLOUT | POLLWRNORM;
+    }
+    return mask;
 }
 
 
@@ -296,76 +336,78 @@ static int debugfs_open_ll(struct inode *inod, struct file *filp)
     int ret,i;
     int n_vars;
     struct device* dev = &rpmsg_chnl->dev;  // abbrevation
-    // used to query the variable names, static to save stack space as this contains a rather large buffer
-    static struct file_io_buf query_buf;
-    // buffer for the message presented to the user (after it has opened the files which called this function)
-    struct file_io_buf* msg_buf;
+    struct rpmsg_link_transaction* trans_p;  // this contains the buffer and meta data for this variable access
 
     dev_dbg(dev, "%s: starting\n", __func__);
 
-    msg_buf = kzalloc(sizeof(*msg_buf), GFP_KERNEL);
-    if (!msg_buf)
+    // get a transaction struct (either a recycled one or a new allocated one)
+    trans_p = rpmsg_link_alloc_trans();
+    if (!trans_p) {
+        dev_err(&rpmsg_chnl->dev, "%s: can't get a transaction struct, no memory.\n", __func__);
         return -ENOMEM;
+    }
+
     // keep a pointer to the message buffer in the file pointer where the read function can access it
     // memory will be freed once the file is closed
-    filp->private_data = (void*)msg_buf;
+    filp->private_data = (void*)trans_p;
 
     if (val_access) {
         // already initialized, we could re-init here? (not coded yet)
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE,
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE,
             "Variables list was already loaded, can't reload (unimplemented)\n");
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->valid = true;
+        trans_p->rnw = true;
         return 0;   // Note: return with success, the file is opened, user will read the error text
     }
 
     // query the number of variables and block until we have a result
     n_vars = get_n_vars(&usr_wait_q);
+    dev_dbg(dev, "%s: n_vars is %d\n", __func__, n_vars);
 
 	if (n_vars <= 0) {
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE,
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE,
             "Can't query the number of configuration variables from BM firmware: %d\n", n_vars);
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->valid = true;
+        trans_p->rnw = true;
 		return 0;	// nothing todo as there are no vars or we don't know how many there are
     }
 
     ret = alloc_mem(n_vars);  // get memory for global arrays
     if (ret) {
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE,
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE,
             "Memory allocation failed: %d\n", ret);
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->valid = true;
+        trans_p->rnw = true;
         return 0;
     }
 
 	// allocate directories
     val_dir_p = debugfs_create_dir("val", cfg_mgmt_dir_p);
     if (!val_dir_p) {
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE, "Can't create debugfs dir 'val' %d\n", ret);
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE, "Can't create debugfs dir 'val' %d\n", ret);
+        trans_p->valid = true;
+        trans_p->rnw = true;
         return 0;
     }
     min_dir_p = debugfs_create_dir("min", cfg_mgmt_dir_p);
     if (!min_dir_p) {
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE, "Can't create debugfs dir 'min' %d\n", ret);
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE, "Can't create debugfs dir 'min' %d\n", ret);
+        trans_p->valid = true;
+        trans_p->rnw = true;
         return 0;
     }
     max_dir_p = debugfs_create_dir("max", cfg_mgmt_dir_p);
     if (!max_dir_p) {
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE, "Can't create debugfs dir 'max' %d\n", ret);
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE, "Can't create debugfs dir 'max' %d\n", ret);
+        trans_p->valid = true;
+        trans_p->rnw = true;
         return 0;
     }
     desc_dir_p = debugfs_create_dir("desc", cfg_mgmt_dir_p);
     if (!desc_dir_p) {
-        msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE, "Can't create debugfs dir 'desc' %d\n", ret);
-        msg_buf->valid = true;
-        msg_buf->rnw = true;
+        trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE, "Can't create debugfs dir 'desc' %d\n", ret);
+        trans_p->valid = true;
+        trans_p->rnw = true;
         return 0;
     }
 
@@ -380,31 +422,41 @@ static int debugfs_open_ll(struct inode *inod, struct file *filp)
         min_access[i].type = ACC_MIN;
         max_access[i].type = ACC_MAX;
         desc_access[i].type = ACC_DESC;
-        query_buf.dirty = false;
-        query_buf.rnw = true;
-        query_buf.valid = false;
-        query_buf.len = 0;
+        trans_p->dirty = false;
+        trans_p->rnw = true;
+        trans_p->valid = false;
+        trans_p->len = 0;
+        trans_p->wq = &usr_wait_q;
         // get the variable name
-        ret = access_var(i, ACC_NAME, &query_buf, &usr_wait_q);
+        ret = access_var(i, ACC_NAME, trans_p);
 		if (ret < 0) {
 			dev_err(dev, "%s: can't query variable name for index %d\n", __func__, i);
 			continue;   // we can keep the other variables and simply create no files for this index
 		}
+		// block calling user context until we receive a reply
+        ret = wait_event_interruptible(usr_wait_q, trans_p->valid);
+        if (ret) {	// abort in case we got interrupted
+            trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE, "%s: interrupted\n", __func__);
+            trans_p->valid = true;
+            trans_p->rnw = true;
+            return 0;
+        }
+
 		// create all files for this variable
-        debugfs_create_file(query_buf.buf, 0666, val_dir_p, (void*)(&val_access[i]),
+        debugfs_create_file(trans_p->buf, 0666, val_dir_p, (void*)(&val_access[i]),
 				       &fops_var);
-        debugfs_create_file(query_buf.buf, 0444, min_dir_p, (void*)(&min_access[i]),
+        debugfs_create_file(trans_p->buf, 0444, min_dir_p, (void*)(&min_access[i]),
 				       &fops_var);
-        debugfs_create_file(query_buf.buf, 0444, max_dir_p, (void*)(&max_access[i]),
+        debugfs_create_file(trans_p->buf, 0444, max_dir_p, (void*)(&max_access[i]),
 				       &fops_var);
-        debugfs_create_file(query_buf.buf, 0444, desc_dir_p, (void*)(&desc_access[i]),
+        debugfs_create_file(trans_p->buf, 0444, desc_dir_p, (void*)(&desc_access[i]),
 				       &fops_var);
 	}
 
     // alternatively we could do a 'happy programs don't talk' here.
-    msg_buf->len = scnprintf(msg_buf->buf, IO_BUF_SIZE, "ok\n");
-    msg_buf->valid = true;
-    msg_buf->rnw = true;
+    trans_p->len = scnprintf(trans_p->buf, IO_BUF_SIZE, "ok\n");
+    trans_p->valid = true;
+    trans_p->rnw = true;
 
     dev_dbg(dev, "%s: done\n", __func__);
     return 0;
@@ -419,6 +471,9 @@ static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
 	// save the rpmsg channel pointer for use by all other functions
 	rpmsg_chnl = rpdev;
 
+    // init communication logic
+    rpmsg_link_init(rpdev);
+
     // create a new directory in debugfs for our module
     cfg_mgmt_dir_p = debugfs_create_dir("cfg_mgmt", NULL);
     if (!cfg_mgmt_dir_p || (cfg_mgmt_dir_p<0)) {
@@ -427,10 +482,7 @@ static int cfg_mgmt_probe (struct rpmsg_channel *rpdev)
         return -ENOENT;
     }
 
-    // init communication logic
-    rpmsg_link_init(rpdev);
-
-    // create the update file, reading it will trigger a generation of the variable files
+    // create the 'load' file, reading it will trigger a generation of the variable files
     ll_file_p = debugfs_create_file("load_list", 0444, cfg_mgmt_dir_p, NULL, &fops_ll);
 
     dev_dbg(&rpdev->dev, "%s: done\n", __func__);
