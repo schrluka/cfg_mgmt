@@ -130,6 +130,13 @@ int cfgSetId(int id, int32_t val, bool trigCb);
 // data: pointer will passed to callback when executed
 int cfgSetCallback(int id, cfgCallback_t cb, bool read, void* data);
 
+// generic callback handler which writes and read the variable value from the location pointed
+// to by the data pointer passsed when registering it as CB for a variable
+void cfgCpyCB(struct cfg_var* var, bool isread, void* data);
+
+// generic callback for a float value, config variable
+// gets divided by 1000, works for read and write
+void cfgFloatMilliCB(struct cfg_var* var, bool isread, void* data);
 
 #endif
 
