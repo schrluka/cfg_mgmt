@@ -63,7 +63,7 @@ int show(const char* cfg_mgmt_path);
 
 void puts_pad(const char* str, int len);
 
-int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** values,
+int load(struct dirent** name_list, int num, const char* cfg_mgmt_path, char** names, char** values,
             char** minima, char** maxima, char** descs);
 
 int load_file(const char* fn, char* buf, int n);
@@ -81,7 +81,7 @@ void help();
 int main (int argc, char **argv)
 {
     char* cfg_mgmt_path = DFLT_PATH;  // location where debugfs is mounted
-    int index;
+    //int index;
     int c;
 
     opterr = 0;
@@ -115,6 +115,11 @@ int main (int argc, char **argv)
 }
 
 
+// simple filter which removes all files starting with . from the list of variables
+int no_dot_filter(const struct dirent* de)
+{
+     return (de->d_name[0] != '.');
+}
 
 int show(const char* cfg_mgmt_path)
 {
@@ -128,25 +133,20 @@ int show(const char* cfg_mgmt_path)
     const int fn_buf_len = 256;
     int i, ret;
 
-    // parse directory
-    DIR *dirp;
-    struct dirent *ep;
-
-    // check how many files we have
+    struct dirent** name_list;
     char fn[fn_buf_len];
+
+    // read all file names in the directory, remove all which start with a . and sort them alphabetically
     snprintf(fn, fn_buf_len, "%s/val", cfg_mgmt_path);
-    dirp = opendir(fn);
-    if (!dirp) {
-        fprintf(stderr, "%s: can't open directory %s: %d\n",__func__, fn, errno);
+    num = scandir(fn, &name_list, &no_dot_filter, alphasort);
+    if (num < 0) {
+        printf("scandir error: %d\n", errno);
         return -errno;
     }
-    num = 0;
-    while (ep=readdir(dirp)) {
-        // ignore all files starting with a .
-        if (ep->d_name[0] != '.')
-            num++;
+    if (num == 0) {
+        printf("no variables found\n");
+        return 0;
     }
-    rewinddir(dirp);    // reset directory stream
 
     // get memory for the pointers
     names = malloc(num*sizeof(char*));
@@ -155,13 +155,19 @@ int show(const char* cfg_mgmt_path)
     maxima = malloc(num*sizeof(char*));
     descs = malloc(num*sizeof(char*));
     // load all file contents
-    ret = load(dirp, num, cfg_mgmt_path, names, values, minima, maxima, descs);
+    ret = load(name_list, num, cfg_mgmt_path, names, values, minima, maxima, descs);
     if (ret) {
         printf("load returned %d\n", ret);
         return ret;
     }
 
-	// first task: find max length of the columns (for pretty formatting)
+    // free memory allocated by scandir
+    //printf("freeing scandir memory\n");
+    for (i=0; i<num; i++)
+        free(name_list[i]);
+    free(name_list);
+
+	// find max length of the columns (for pretty formatting)
     int nName=4, nVal=5, nMin=7, nMax=7;	// max size of the columns, start values represent header of table
 	for (i=0; i<num; i++) {
 		// load variable struct
@@ -179,7 +185,7 @@ int show(const char* cfg_mgmt_path)
 			nMax = l;
 	}
 
-	// add one to all length to include an extra space for the longest name
+	// add to all length to include an extra space for the longest name
 	nName += 2;
 	nVal += 2;
 	nMin += 2;
@@ -199,40 +205,29 @@ int show(const char* cfg_mgmt_path)
         puts(descs[i]); // this adds a newline
     }
 
-    closedir(dirp);
     return 0;
 }
 
 
-int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** values,
+int load(struct dirent** name_list, int num, const char* cfg_mgmt_path, char** names, char** values,
             char** minima, char** maxima, char** descs)
 {
     const int fn_buf_len = 256;
     char fn[fn_buf_len];
-    struct dirent *ep;
     int ret;
     int fd[4];
-    //fd_set fds, fds_sel;
-    //struct timeval tv;
 
     // load all required files into memory
-    int i = 0;
-    while (ep=readdir(dirp)) {
-        // ignore all files starting with a .
-        if (ep->d_name[0] == '.')
-            continue;
-        // make sure the index does not overflow
-        if (i >= num)
-            break;
+    int i;
+    for (i=0; i<num; i++) {
         // get memory and copy the name
-        names[i] = malloc(strlen(ep->d_name)+1);
-        strcpy(names[i], ep->d_name);
+        //printf("processing entry '%s'\n", name_list[i]->d_name);
+        names[i] = malloc(strlen(name_list[i]->d_name)+1);
+        strcpy(names[i], name_list[i]->d_name);
         values[i] = malloc(MAX_NUMERIC_LEN);
         minima[i] = malloc(MAX_NUMERIC_LEN);
         maxima[i] = malloc(MAX_NUMERIC_LEN);
         descs[i] = malloc(MAX_DESC_LEN);
-
-        //FD_ZERO(&fds);
 
         // open files for value, min, max and desc
         snprintf(fn, fn_buf_len, "%s/val/%s", cfg_mgmt_path, names[i]);
@@ -241,7 +236,6 @@ int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** val
             printf("%s: can't open file: %d\n", __func__, fd[0]);
             return -errno;
         }
-        //FD_SET(fd[0], &fds);
 
         snprintf(fn, fn_buf_len, "%s/min/%s", cfg_mgmt_path, names[i]);
         fd[1] = open(fn,O_RDONLY);
@@ -249,7 +243,6 @@ int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** val
             printf("%s: can't open file: %d\n", __func__, fd[1]);
             return -errno;
         }
-        //FD_SET(fd[1], &fds);
 
         snprintf(fn, fn_buf_len, "%s/max/%s", cfg_mgmt_path, names[i]);
         fd[2] = open(fn,O_RDONLY);
@@ -257,7 +250,6 @@ int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** val
             printf("%s: can't open file: %d\n", __func__, fd[2]);
             return -errno;
         }
-        //FD_SET(fd[2], &fds);
 
         snprintf(fn, fn_buf_len, "%s/desc/%s", cfg_mgmt_path, names[i]);
         fd[3] = open(fn,O_RDONLY);
@@ -265,36 +257,7 @@ int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** val
             printf("%s: can't open file: %d\n", __func__, fd[3]);
             return -errno;
         }
-        //FD_SET(fd[3], &fds);
 
-        // block until data is available
-
-        //ret = 0;
-        /*
-        while (ret < 4) {
-            tv.tv_sec = 3;      // how long we want to wait for data
-            tv.tv_usec = 0;
-            fds_sel = fds;
-            ret = select(4, &fds_sel, NULL, NULL, &tv);
-            printf("select returned %d\n", ret);
-            // check for errors from select
-            if (ret < 0) {
-                printf("select failed: %d\n", errno);
-                for (int j=0; j<4; j++)
-                    close(fd[j]);
-                return -errno;
-            }
-
-            if (ret == 0) {
-                printf("timeout while waiting for files to become available\n");
-
-                 // close the files
-                for (int j=0; j<4; j++)
-                    close(fd[j]);
-
-                return -ETIMEDOUT;
-            }
-        }*/
         // read the files
         ret = read_fd(fd[0], values[i], MAX_NUMERIC_LEN);
         if (ret < 0) {
@@ -321,7 +284,6 @@ int load(DIR* dirp, int num, const char* cfg_mgmt_path, char** names, char** val
         for (int j=0; j<4; j++)
             close(fd[j]);
 
-        i++;
     }
     return 0;
 }
