@@ -28,7 +28,7 @@
 *
 ************************************************************************************************************************/
 
-#define DEBUG
+//#define DEBUG
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -442,7 +442,7 @@ static int debugfs_open_ll(struct inode *inod, struct file *filp)
             return 0;
         }
 
-		// create all files for this variable
+	// create all files for this variable
         debugfs_create_file(trans_p->buf, 0666, val_dir_p, (void*)(&val_access[i]),
 				       &fops_var);
         debugfs_create_file(trans_p->buf, 0444, min_dir_p, (void*)(&min_access[i]),

@@ -17,21 +17,20 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0xbde6f95d, __VMLINUX_SYMBOL_STR(module_layout) },
-	{ 0xb79b5def, __VMLINUX_SYMBOL_STR(unregister_rpmsg_driver) },
-	{ 0x8f94489a, __VMLINUX_SYMBOL_STR(register_rpmsg_driver) },
+	{ 0xfdd9e48, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0xcdbf6b6a, __VMLINUX_SYMBOL_STR(unregister_rpmsg_driver) },
+	{ 0x7b210b55, __VMLINUX_SYMBOL_STR(register_rpmsg_driver) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0xfa2a45e, __VMLINUX_SYMBOL_STR(__memzero) },
 	{ 0xfbc74f64, __VMLINUX_SYMBOL_STR(__copy_from_user) },
-	{ 0xf162509d, __VMLINUX_SYMBOL_STR(rpmsg_send_offchannel_raw) },
-	{ 0x88dc4165, __VMLINUX_SYMBOL_STR(__register_chrdev) },
-	{ 0x4cbd8124, __VMLINUX_SYMBOL_STR(dev_err) },
+	{ 0x750b4d0f, __VMLINUX_SYMBOL_STR(rpmsg_send_offchannel_raw) },
+	{ 0x35b0bdb0, __VMLINUX_SYMBOL_STR(__register_chrdev) },
+	{ 0xd500cb5b, __VMLINUX_SYMBOL_STR(dev_err) },
 	{ 0x4578f528, __VMLINUX_SYMBOL_STR(__kfifo_to_user) },
 	{ 0x6bc3fbc0, __VMLINUX_SYMBOL_STR(__unregister_chrdev) },
-	{ 0xa54b9309, __VMLINUX_SYMBOL_STR(_dev_info) },
+	{ 0xa5bbb74d, __VMLINUX_SYMBOL_STR(_dev_info) },
 	{ 0xf23fcb99, __VMLINUX_SYMBOL_STR(__kfifo_in) },
-	{ 0x2e5810c6, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr1) },
-	{ 0x9bec22bd, __VMLINUX_SYMBOL_STR(dev_printk) },
+	{ 0x60309a3d, __VMLINUX_SYMBOL_STR(__dynamic_dev_dbg) },
 	{ 0xefd6cf06, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr0) },
 };
 

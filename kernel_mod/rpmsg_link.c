@@ -28,7 +28,7 @@
 *
 ************************************************************************************************************************/
 
-#define DEBUG
+//#define DEBUG
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -242,14 +242,16 @@ void cfg_mgmt_rpmsg_cb(struct rpmsg_channel *rpdev, void *data, int len, void *p
 
     case RES_NAME:
     case RES_DESC:
-        if (response->len  > IO_BUF_SIZE) {
+      if (response->len > IO_BUF_SIZE-1) {// -1 for \0 termination
             dev_err(&rpdev->dev, "%s: data part of response too long\n", __func__);
             trans->err = -EINVAL;
-            trans->len = scnprintf(trans->buf, IO_BUF_SIZE, "data part of response too long\n");
+            trans->len = scnprintf(trans->buf, IO_BUF_SIZE-1, "data part of response too long\n");
+	    trans->buf[trans->len] = '\0';
         } else {
             // copy string response to io buffer
             memcpy(trans->buf, response->data, response->len);
             trans->len = response->len;
+	    trans->buf[trans->len] = '\0'; // make sure we have \0 termination
             trans->err = 0;
         }
         trans->valid = true;

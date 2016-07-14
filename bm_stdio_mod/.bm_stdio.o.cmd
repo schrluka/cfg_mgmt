@@ -1,8 +1,8 @@
-cmd_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o := arm-xilinx-linux-gnueabi-gcc -Wp,-MD,/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/.bm_stdio.o.d  -nostdinc -isystem /opt/Xilinx/SDK/2014.4/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-linux-gnueabi/4.8.3/include -I./arch/arm/include -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Os -Wno-maybe-uninitialized --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(bm_stdio)"  -D"KBUILD_MODNAME=KBUILD_STR(bm_stdio)" -c -o /home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/.tmp_bm_stdio.o /home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.c
+cmd_/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o := arm-xilinx-linux-gnueabihf-gcc -Wp,-MD,/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/.bm_stdio.o.d  -nostdinc -isystem /home/pes/x-tools/arm-xilinx-linux-gnueabihf/lib/gcc/arm-xilinx-linux-gnueabihf/5.1.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Os -Wno-maybe-uninitialized --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(bm_stdio)"  -D"KBUILD_MODNAME=KBUILD_STR(bm_stdio)" -c -o /home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/.tmp_bm_stdio.o /home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.c
 
-source_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o := /home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.c
+source_/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o := /home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.c
 
-deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o := \
+deps_/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o := \
   include/linux/module.h \
     $(wildcard include/config/sysfs.h) \
     $(wildcard include/config/modules.h) \
@@ -15,6 +15,7 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/event/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
+    $(wildcard include/config/livepatch.h) \
     $(wildcard include/config/module/unload.h) \
     $(wildcard include/config/constructors.h) \
     $(wildcard include/config/debug/set/module/ronx.h) \
@@ -46,7 +47,7 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
   include/linux/compiler-gcc.h \
     $(wildcard include/config/arch/supports/optimized/inlining.h) \
     $(wildcard include/config/optimize/inlining.h) \
-  include/linux/compiler-gcc4.h \
+  include/linux/compiler-gcc5.h \
     $(wildcard include/config/arch/use/builtin/bswap.h) \
   arch/arm/include/uapi/asm/posix_types.h \
   include/uapi/asm-generic/posix_types.h \
@@ -60,7 +61,7 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/prove/locking.h) \
     $(wildcard include/config/panic/timeout.h) \
     $(wildcard include/config/ring/buffer.h) \
-  /opt/Xilinx/SDK/2014.4/gnu/arm/lin/lib/gcc/arm-xilinx-linux-gnueabi/4.8.3/include/stdarg.h \
+  /home/pes/x-tools/arm-xilinx-linux-gnueabihf/lib/gcc/arm-xilinx-linux-gnueabihf/5.1.0/include/stdarg.h \
   include/linux/linkage.h \
   include/linux/stringify.h \
   include/linux/export.h \
@@ -130,15 +131,6 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/arm/l1/cache/shift.h) \
     $(wildcard include/config/aeabi.h) \
   include/linux/dynamic_debug.h \
-  include/linux/string.h \
-    $(wildcard include/config/binary/printf.h) \
-  include/uapi/linux/string.h \
-  arch/arm/include/asm/string.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/arm/include/generated/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
   arch/arm/include/asm/div64.h \
   arch/arm/include/asm/compiler.h \
   arch/arm/include/asm/bug.h \
@@ -291,6 +283,7 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/compaction.h) \
     $(wildcard include/config/have/memblock/node/map.h) \
     $(wildcard include/config/flat/node/mem/map.h) \
+    $(wildcard include/config/page/extension.h) \
     $(wildcard include/config/no/bootmem.h) \
     $(wildcard include/config/numa/balancing.h) \
     $(wildcard include/config/have/memory/present.h) \
@@ -314,6 +307,10 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
   include/linux/nodemask.h \
     $(wildcard include/config/movable/node.h) \
   include/linux/bitmap.h \
+  include/linux/string.h \
+    $(wildcard include/config/binary/printf.h) \
+  include/uapi/linux/string.h \
+  arch/arm/include/asm/string.h \
   include/linux/pageblock-flags.h \
     $(wildcard include/config/hugetlb/page.h) \
     $(wildcard include/config/hugetlb/page/size/variable.h) \
@@ -324,6 +321,11 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/have/arch/nodedata/extension.h) \
     $(wildcard include/config/have/bootmem/info/node.h) \
   include/linux/notifier.h \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
+  arch/arm/include/generated/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
   include/linux/mutex.h \
     $(wildcard include/config/debug/mutexes.h) \
     $(wildcard include/config/mutex/spin/on/owner.h) \
@@ -336,9 +338,8 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
   include/linux/srcu.h \
   include/linux/rcupdate.h \
     $(wildcard include/config/tree/rcu.h) \
-    $(wildcard include/config/tree/preempt/rcu.h) \
-    $(wildcard include/config/rcu/trace.h) \
     $(wildcard include/config/preempt/rcu.h) \
+    $(wildcard include/config/rcu/trace.h) \
     $(wildcard include/config/rcu/stall/common.h) \
     $(wildcard include/config/rcu/user/qs.h) \
     $(wildcard include/config/rcu/nocb/cpu.h) \
@@ -379,6 +380,7 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/use/percpu/numa/node/id.h) \
     $(wildcard include/config/sched/smt.h) \
   include/linux/smp.h \
+    $(wildcard include/config/up/late/init.h) \
   include/linux/llist.h \
     $(wildcard include/config/arch/have/nmi/safe/cmpxchg.h) \
   arch/arm/include/asm/smp.h \
@@ -429,13 +431,12 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/fs/posix/acl.h) \
     $(wildcard include/config/security.h) \
     $(wildcard include/config/ima.h) \
-    $(wildcard include/config/quota.h) \
     $(wildcard include/config/fsnotify.h) \
     $(wildcard include/config/epoll.h) \
     $(wildcard include/config/file/locking.h) \
-    $(wildcard include/config/auditsyscall.h) \
+    $(wildcard include/config/quota.h) \
+    $(wildcard include/config/fs/dax.h) \
     $(wildcard include/config/block.h) \
-    $(wildcard include/config/fs/xip.h) \
     $(wildcard include/config/migration.h) \
   include/linux/kdev_t.h \
   include/uapi/linux/kdev_t.h \
@@ -448,13 +449,14 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/arch/use/cmpxchg/lockref.h) \
   include/linux/path.h \
   include/linux/list_lru.h \
+    $(wildcard include/config/memcg/kmem.h) \
+  include/linux/shrinker.h \
   include/linux/radix-tree.h \
   include/linux/pid.h \
   include/linux/capability.h \
   include/uapi/linux/capability.h \
   include/linux/semaphore.h \
   include/uapi/linux/fiemap.h \
-  include/linux/shrinker.h \
   include/linux/migrate_mode.h \
   include/linux/percpu-rwsem.h \
   include/linux/blk_types.h \
@@ -506,18 +508,14 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/arch/enable/split/pmd/ptlock.h) \
     $(wildcard include/config/have/cmpxchg/double.h) \
     $(wildcard include/config/have/aligned/struct/page.h) \
-    $(wildcard include/config/want/page/debug/flags.h) \
     $(wildcard include/config/kmemcheck.h) \
     $(wildcard include/config/aio.h) \
     $(wildcard include/config/mmu/notifier.h) \
+    $(wildcard include/config/x86/intel/mpx.h) \
   include/linux/auxvec.h \
   include/uapi/linux/auxvec.h \
   arch/arm/include/generated/asm/auxvec.h \
   include/uapi/asm-generic/auxvec.h \
-  include/linux/page-debug-flags.h \
-    $(wildcard include/config/page/poisoning.h) \
-    $(wildcard include/config/page/guard.h) \
-    $(wildcard include/config/page/debug/something/else.h) \
   include/linux/uprobes.h \
     $(wildcard include/config/uprobes.h) \
   arch/arm/include/asm/mmu.h \
@@ -528,6 +526,11 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
   arch/arm/include/generated/asm/resource.h \
   include/asm-generic/resource.h \
   include/uapi/asm-generic/resource.h \
+  include/linux/page_ext.h \
+    $(wildcard include/config/page/owner.h) \
+  include/linux/stacktrace.h \
+    $(wildcard include/config/stacktrace.h) \
+    $(wildcard include/config/user/stacktrace/support.h) \
   arch/arm/include/asm/pgtable.h \
     $(wildcard include/config/highpte.h) \
   arch/arm/include/asm/proc-fns.h \
@@ -593,12 +596,14 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/cc/stackprotector.h) \
     $(wildcard include/config/virt/cpu/accounting/gen.h) \
     $(wildcard include/config/sysvipc.h) \
+    $(wildcard include/config/auditsyscall.h) \
     $(wildcard include/config/rt/mutexes.h) \
     $(wildcard include/config/task/xacct.h) \
     $(wildcard include/config/cpusets.h) \
     $(wildcard include/config/futex.h) \
     $(wildcard include/config/fault/injection.h) \
     $(wildcard include/config/latencytop.h) \
+    $(wildcard include/config/kasan.h) \
     $(wildcard include/config/function/graph/tracer.h) \
     $(wildcard include/config/bcache.h) \
     $(wildcard include/config/have/unstable/sched/clock.h) \
@@ -691,6 +696,10 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
     $(wildcard include/config/xen.h) \
     $(wildcard include/config/xen/dom0.h) \
     $(wildcard include/config/xen/pvh.h) \
+  include/asm-generic/io.h \
+    $(wildcard include/config/generic/iomap.h) \
+    $(wildcard include/config/has/ioport/map.h) \
+  include/linux/vmalloc.h \
   arch/arm/include/asm/uaccess.h \
     $(wildcard include/config/have/efficient/unaligned/access.h) \
   include/linux/rpmsg.h \
@@ -705,9 +714,11 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
   include/linux/klist.h \
   include/linux/pinctrl/devinfo.h \
     $(wildcard include/config/pm.h) \
+  include/linux/pinctrl/consumer.h \
+  include/linux/seq_file.h \
+  include/linux/pinctrl/pinctrl-state.h \
   include/linux/pm.h \
     $(wildcard include/config/vt/console/sleep.h) \
-    $(wildcard include/config/pm/runtime.h) \
     $(wildcard include/config/pm/clk.h) \
     $(wildcard include/config/pm/generic/domains.h) \
   include/linux/ratelimit.h \
@@ -721,6 +732,6 @@ deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_std
   include/linux/uuid.h \
   include/uapi/linux/uuid.h \
 
-/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o: $(deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o)
+/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o: $(deps_/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o)
 
-$(deps_/home/lukas/e-/scarabaeus/zybo/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o):
+$(deps_/home/pes/schrluka/cfg_mgmt_github/cfg_mgmt/bm_stdio_mod/bm_stdio.o):
